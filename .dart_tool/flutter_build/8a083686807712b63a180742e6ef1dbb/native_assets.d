@@ -1,1 +1,0 @@
- /Volumes/DATA/project/ui-kit/prokit_v6.0.0/full_apps/carea_app/Carea/.dart_tool/flutter_build/8a083686807712b63a180742e6ef1dbb/native_assets.yaml: 
