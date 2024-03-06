@@ -27,6 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool isIconTrue = false;
 
+  // declare userSignupStore
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +44,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image(height: 110, width: 110, fit: BoxFit.cover, image: AssetImage(car), color: context.iconColor),
+                Image(
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.fitWidth,
+                    image: AssetImage(student_hub)),
                 SizedBox(height: 16),
-                Text('Create Your Account', style: boldTextStyle(size: 24)),
-                SizedBox(height: 40),
+                Text('Sign up as a Company', style: boldTextStyle(size: 24)),
+                SizedBox(height: 20),
+                TextFormField(
+                  autofocus: false,
+                  focusNode: focusEmail,
+                  onFieldSubmitted: (v) {
+                    focusEmail.unfocus();
+                    FocusScope.of(context).requestFocus(focusPassword);
+                  },
+                  controller: _emailController,
+                  decoration: inputDecoration(context,
+                      prefixIcon: Icons.person, hintText: "Fullname"),
+                ),
+                SizedBox(height: 20),
                 TextFormField(
                   autofocus: false,
                   validator: (value) {
@@ -61,7 +79,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     FocusScope.of(context).requestFocus(focusPassword);
                   },
                   controller: _emailController,
-                  decoration: inputDecoration(context, prefixIcon: Icons.mail_rounded, hintText: "Email"),
+                  decoration: inputDecoration(context,
+                      prefixIcon: Icons.mail_rounded, hintText: "Email"),
                 ),
                 SizedBox(height: 20),
                 Observer(
@@ -78,7 +97,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       if (_formKey.currentState!.validate()) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfileScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => ProfileScreen()),
                         );
                       }
                     },
@@ -87,7 +107,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       prefixIcon: Icons.lock,
                       hintText: "Password",
                       suffixIcon: Theme(
-                        data: ThemeData(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+                        data: ThemeData(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent),
                         child: IconButton(
                           highlightColor: Colors.transparent,
                           onPressed: () {
@@ -96,7 +118,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             });
                           },
                           icon: Icon(
-                            (isIconTrue) ? Icons.visibility_rounded : Icons.visibility_off,
+                            (isIconTrue)
+                                ? Icons.visibility_rounded
+                                : Icons.visibility_off,
                             size: 16,
                             color: appStore.isDarkModeOn ? white : gray,
                           ),
@@ -105,13 +129,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 5),
+                // Check box to agree to terms and conditions
+                Row(
+                  children: [
+                    Checkbox(
+                      value: true,
+                      onChanged: (value) {},
+                      // value: userSignupStore.isAgree,
+                      // onChanged: (value) {
+                      //   userSignupStore.isAgree = value!;
+                      // },
+                    ),
+                    Text(
+                      'I agree to the ',
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      'Terms and Conditions',
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+
                 GestureDetector(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
                       );
                     }
                   },
@@ -121,7 +175,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     alignment: Alignment.center,
                     decoration: boxDecorationWithRoundedCorners(
                       borderRadius: BorderRadius.all(Radius.circular(45)),
-                      backgroundColor: appStore.isDarkModeOn ? cardDarkColor : black,
+                      backgroundColor:
+                          appStore.isDarkModeOn ? cardDarkColor : black,
                     ),
                     child: Text('Sign Up', style: boldTextStyle(color: white)),
                   ),
@@ -133,84 +188,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 40,
                     child: Row(
                       children: [
-                        Expanded(child: Container(height: 0.2, color: Colors.black)),
+                        Expanded(
+                            child: Container(height: 0.2, color: Colors.black)),
                         SizedBox(width: 10),
                         Text(
-                          'Or continue with',
-                          style: TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.w600),
+                          'Or looking for a project?',
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600),
                         ),
                         SizedBox(width: 10),
-                        Expanded(child: Container(height: 0.2, color: primaryBlackColor)),
+                        Expanded(
+                            child: Container(
+                                height: 0.2, color: primaryBlackColor)),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.65,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          await customDialoge(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          width: 65,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: context.iconColor),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Image(height: 24, width: 24, image: AssetImage(facebook)),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          await customDialoge(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          width: 65,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: context.iconColor),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Image(height: 24, width: 24, image: AssetImage(google)),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          await customDialoge(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          width: 65,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: context.iconColor),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Image(height: 24, width: 24, image: AssetImage(apple), color: context.iconColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15),
+
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginWithPassScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => LoginWithPassScreen()),
                     );
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: "Already have account? ",
+                      text: "Apply as a student? ",
                       style: secondaryTextStyle(),
                       children: [
                         TextSpan(text: ' Sign in', style: primaryTextStyle()),

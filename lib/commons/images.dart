@@ -1,4 +1,5 @@
 const car = 'assets/car.png';
+const student_hub = 'assets/student_hub.png';
 const loding = 'assets/loading.png';
 const bugati = 'assets/bugati.jpeg';
 const whiteCar = 'assets/white_car.jpg';
@@ -39,4 +40,7 @@ const car13 = 'assets/car13.png';
 
 const bmwgif = 'assets/bmw.gif';
 const car_gif = 'assets/car_gif.gif';
+const student_gif = 'assets/comp-1.gif';
+const company_gif = 'assets/company.gif';
+const students_gif = 'assets/students.gif';
 const wrongkeyword = 'assets/wrongkeyword.png';

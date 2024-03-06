@@ -1,4 +1,5 @@
 import 'package:carea/screens/details_screen.dart';
+import 'package:carea/screens/sign_up_choose_options_screen.dart';
 
 import '../screens/create_new_pass_screen.dart';
 import '../screens/create_pin_screen.dart';
@@ -25,6 +26,7 @@ class Routes {
     'login_screen': (context) => const RegistrationScreen(),
     'sign_up_screen': (context) => const SignUpScreen(),
     'login_with_pass_screen': (context) => const LoginWithPassScreen(),
+    'sign_up_choose_options': (context) => const SignUpChooseOptionsScreen(),
     'profile_screen': (context) => ProfileScreen(),
     'create_pin_screen': (context) => const CreatePinScreen(),
     'set_finger_print_screen': (context) => SetFingerPrintScreen(),
