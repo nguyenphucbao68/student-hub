@@ -1,3 +1,4 @@
+import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -13,7 +14,8 @@ class WalkThroughScreen extends StatefulWidget {
   State<WalkThroughScreen> createState() => _WalkThroughScreenState();
 }
 
-class _WalkThroughScreenState extends State<WalkThroughScreen> with SingleTickerProviderStateMixin {
+class _WalkThroughScreenState extends State<WalkThroughScreen>
+    with SingleTickerProviderStateMixin {
   PageController pageController = PageController();
   int currentPage = 0;
   List<WalkThroughModelClass> list = [];
@@ -25,9 +27,15 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> with SingleTicker
   }
 
   Future<void> init() async {
-    list.add(WalkThroughModelClass(title: 'The best car in your \nhands with carea', image: car_gif));
-    list.add(WalkThroughModelClass(title: 'The best car in your \nhands with carea', image: car_gif));
-    list.add(WalkThroughModelClass(title: 'The best car in your \nhands with carea', image: car_gif));
+    list.add(WalkThroughModelClass(
+        title:
+            'A comprehensive app facilitates connections between students and companies',
+        image: student_gif));
+    list.add(WalkThroughModelClass(
+        title: 'Students can seek real-world projects', image: students_gif));
+    list.add(WalkThroughModelClass(
+        title: 'Companies can search for talents to develop their MVP',
+        image: company_gif));
   }
 
   @override
@@ -50,7 +58,9 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> with SingleTicker
                 children: [
                   Image.asset(e.image.validate()),
                   SizedBox(height: 20),
-                  Text(e.title.validate(), style: boldTextStyle(size: 28), textAlign: TextAlign.center),
+                  Text(e.title.validate(),
+                      style: boldTextStyle(size: 20),
+                      textAlign: TextAlign.center),
                 ],
               );
             }).toList(),
@@ -93,7 +103,7 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> with SingleTicker
             child: GestureDetector(
               onTap: () {
                 if (currentPage == 2) {
-                  RegistrationScreen().launch(context, isNewTask: true);
+                  LoginWithPassScreen().launch(context, isNewTask: true);
                 } else {
                   pageController.animateToPage(
                     currentPage + 1,

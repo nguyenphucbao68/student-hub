@@ -3,6 +3,7 @@ import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/forgot_pass_screen.dart';
 import 'package:carea/screens/home_screen.dart';
+import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/screens/signup_screen.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,8 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
       } else {
         userinfo as UserCreadential;
         _emailController = TextEditingController(text: userinfo.user_email);
-        _passwordController = TextEditingController(text: userinfo.user_password);
+        _passwordController =
+            TextEditingController(text: userinfo.user_password);
       }
     }
   }
@@ -65,7 +67,8 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(elevation: 0, iconTheme: IconThemeData(color: context.iconColor)),
+        appBar: AppBar(
+            elevation: 0, iconTheme: IconThemeData(color: context.iconColor)),
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.all(16),
@@ -76,7 +79,12 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image(height: 130, width: 130, fit: BoxFit.fitWidth, image: AssetImage(car), color: context.iconColor),
+                  Image(
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage(student_hub)),
+                  SizedBox(height: 10),
                   Text('Login to Your Account', style: boldTextStyle(size: 24)),
                   SizedBox(height: 20),
                   TextFormField(
@@ -92,7 +100,8 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                       return null;
                     },
                     controller: _emailController,
-                    decoration: inputDecoration(context, prefixIcon: Icons.mail_rounded, hintText: "Email"),
+                    decoration: inputDecoration(context,
+                        prefixIcon: Icons.mail_rounded, hintText: "Email"),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
@@ -105,7 +114,10 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                     onFieldSubmitted: (v) {
                       f2.unfocus();
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()));
                       }
                     },
                     decoration: inputDecoration(
@@ -113,7 +125,9 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                       prefixIcon: Icons.lock,
                       hintText: "Password",
                       suffixIcon: Theme(
-                        data: ThemeData(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+                        data: ThemeData(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent),
                         child: IconButton(
                           highlightColor: Colors.transparent,
                           onPressed: () {
@@ -122,7 +136,9 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                             });
                           },
                           icon: Icon(
-                            (isIconTrue) ? Icons.visibility_rounded : Icons.visibility_off,
+                            (isIconTrue)
+                                ? Icons.visibility_rounded
+                                : Icons.visibility_off,
                             size: 16,
                             color: appStore.isDarkModeOn ? white : gray,
                           ),
@@ -132,7 +148,9 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                   ),
                   SizedBox(height: 8),
                   Theme(
-                    data: ThemeData(unselectedWidgetColor: appStore.isDarkModeOn ? Colors.white : black),
+                    data: ThemeData(
+                        unselectedWidgetColor:
+                            appStore.isDarkModeOn ? Colors.white : black),
                     child: CheckboxListTile(
                       contentPadding: EdgeInsets.all(0),
                       title: Text("Remember Me", style: primaryTextStyle()),
@@ -149,7 +167,10 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()));
                       }
                     },
                     child: Container(
@@ -157,92 +178,49 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: boxDecorationWithRoundedCorners(
                         borderRadius: BorderRadius.all(Radius.circular(45)),
-                        backgroundColor: appStore.isDarkModeOn ? cardDarkColor : black,
+                        backgroundColor:
+                            appStore.isDarkModeOn ? cardDarkColor : black,
                       ),
-                      child: Text('Sign in', style: boldTextStyle(color: white)),
+                      child:
+                          Text('Sign in', style: boldTextStyle(color: white)),
                     ),
                   ),
                   SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPassScreen()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ForgotPassScreen()));
                     },
-                    child: Text('Forgot the password ?', style: boldTextStyle()),
+                    child:
+                        Text('Forgot the password ?', style: boldTextStyle()),
                   ),
                   SizedBox(height: 8),
                   SizedBox(
                     height: 30,
                     child: Row(
                       children: [
-                        Expanded(child: Container(height: 0.2, color: Colors.black26)),
+                        Expanded(
+                            child:
+                                Container(height: 0.2, color: Colors.black26)),
                         SizedBox(width: 10),
                         Text('Or continue with', style: secondaryTextStyle()),
                         SizedBox(width: 10),
-                        Expanded(child: Container(height: 0.2, color: Colors.black26)),
+                        Expanded(
+                            child:
+                                Container(height: 0.2, color: Colors.black26)),
                       ],
                     ),
                   ),
-                  SizedBox(height: 24),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.65,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            await customDialoge(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            width: 65,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: context.iconColor),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Image(height: 24, width: 24, image: AssetImage(facebook)),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            await customDialoge(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            width: 65,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: context.iconColor),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Image(height: 24, width: 24, image: AssetImage(google)),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            await customDialoge(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            width: 65,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: context.iconColor),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Image(height: 24, width: 24, image: AssetImage(apple), color: context.iconColor),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 5),
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => SignUpScreen()),
+                        // MaterialPageRoute(builder: (context) => SignUpScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => SignUpChooseOptionsScreen()),
                       );
                     },
                     child: Text.rich(
@@ -250,7 +228,8 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                         text: "Already have an account? ",
                         style: secondaryTextStyle(),
                         children: [
-                          TextSpan(text: ' Sign up', style: boldTextStyle(size: 14)),
+                          TextSpan(
+                              text: ' Sign up', style: boldTextStyle(size: 14)),
                         ],
                       ),
                     ),
