@@ -187,7 +187,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => SpacialOfferScreen()));
                   },
-                  child: Text('See All', style: Theme.of(context).textTheme.bodyText2),
+                  child: Text('See All', style: Theme.of(context).textTheme.bodyMedium),
                 ),
               ],
             ).paddingOnly(left: 16, right: 8),

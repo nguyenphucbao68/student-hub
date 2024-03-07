@@ -12,7 +12,6 @@ class AppThemeData {
     scaffoldBackgroundColor: whiteColor,
     primaryColor: appColorPrimary,
     primaryColorDark: appColorPrimary,
-    errorColor: Colors.red,
     hoverColor: Colors.white54,
     dividerColor: viewLineColor,
     fontFamily: GoogleFonts.openSans().fontFamily,
@@ -23,19 +22,17 @@ class AppThemeData {
           statusBarIconBrightness: Brightness.dark, statusBarColor: white),
     ),
     textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.black),
-    // colorScheme: ColorScheme.light(primary: appColorPrimary, primaryVariant: appColorPrimary),
-    colorScheme: ColorScheme.light(
-        primary: appColorPrimary, primaryContainer: appColorPrimary),
     cardTheme: CardTheme(color: Colors.white),
     cardColor: Colors.white,
     iconTheme: IconThemeData(color: textPrimaryColor),
     bottomSheetTheme: BottomSheetThemeData(backgroundColor: whiteColor),
     textTheme: TextTheme(
-      button: TextStyle(color: appColorPrimary),
-      headline6: TextStyle(color: textPrimaryColor),
-      subtitle2: TextStyle(color: textSecondaryColor),
+      labelLarge: TextStyle(color: appColorPrimary),
+      titleLarge: TextStyle(color: textPrimaryColor),
+      titleSmall: TextStyle(color: textSecondaryColor),
     ),
-    visualDensity: VisualDensity.adaptivePlatformDensity,
+    visualDensity: VisualDensity.adaptivePlatformDensity, colorScheme: ColorScheme.light(
+        primary: appColorPrimary, primaryContainer: appColorPrimary).copyWith(error: Colors.red),
   ).copyWith(
     pageTransitionsTheme:
         PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
@@ -49,7 +46,6 @@ class AppThemeData {
   static final ThemeData darkTheme = ThemeData(
     scaffoldBackgroundColor: appBackgroundColorDark,
     highlightColor: appBackgroundColorDark,
-    errorColor: Color(0xFFCF6676),
     appBarTheme: AppBarTheme(
       color: appBackgroundColorDark,
       iconTheme: IconThemeData(color: blackColor),
@@ -65,26 +61,21 @@ class AppThemeData {
     bottomSheetTheme:
         BottomSheetThemeData(backgroundColor: appBackgroundColorDark),
     primaryTextTheme: TextTheme(
-        headline6: primaryTextStyle(color: Colors.white),
-        overline: primaryTextStyle(color: Colors.white)),
+        titleLarge: primaryTextStyle(color: Colors.white),
+        labelSmall: primaryTextStyle(color: Colors.white)),
     cardTheme: CardTheme(color: cardBackgroundBlackDark),
     cardColor: appSecondaryBackgroundColor,
     iconTheme: IconThemeData(color: whiteColor),
     textTheme: TextTheme(
-      button: TextStyle(color: color_primary_black),
-      headline6: TextStyle(color: whiteColor),
-      subtitle2: TextStyle(color: Colors.white54),
+      labelLarge: TextStyle(color: color_primary_black),
+      titleLarge: TextStyle(color: whiteColor),
+      titleSmall: TextStyle(color: Colors.white54),
     ),
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-    // colorScheme: ColorScheme.dark(
-    //         primary: appBackgroundColorDark,
-    //         onPrimary: cardBackgroundBlackDark,
-    //         primaryVariant: color_primary_black)
-    colorScheme: ColorScheme.dark(
+    visualDensity: VisualDensity.adaptivePlatformDensity, colorScheme: ColorScheme.dark(
             primary: appBackgroundColorDark,
             onPrimary: cardBackgroundBlackDark,
             primaryContainer: color_primary_black)
-        .copyWith(secondary: whiteColor),
+        .copyWith(secondary: whiteColor).copyWith(error: Color(0xFFCF6676)),
   ).copyWith(
     pageTransitionsTheme:
         PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{

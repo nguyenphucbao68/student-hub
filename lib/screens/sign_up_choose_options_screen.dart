@@ -1,6 +1,5 @@
 import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
-import 'package:carea/screens/home_screen.dart';
 import 'package:carea/screens/signup_screen.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';

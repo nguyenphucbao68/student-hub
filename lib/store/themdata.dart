@@ -5,10 +5,7 @@ import '../commons/colors.dart';
 
 ThemeData lightTheme = ThemeData(
   highlightColor: Colors.grey,
-  primarySwatch: primaryColor,
-  backgroundColor: Colors.white,
   iconTheme: IconThemeData(color: primaryBlackColor),
-  colorScheme: ThemeData().colorScheme.copyWith(primary: primaryBlackColor),
   appBarTheme: AppBarTheme(
     elevation: 0,
     backgroundColor: Colors.white,
@@ -43,20 +40,21 @@ ThemeData lightTheme = ThemeData(
         borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
   ),
   textTheme: TextTheme(
-    bodyText1: TextStyle(
+    bodyLarge: TextStyle(
       fontSize: 16,
       color: primaryBlackColor,
       fontWeight: FontWeight.w600,
     ),
-    bodyText2: TextStyle(
+    bodyMedium: TextStyle(
       fontSize: 14,
       color: primaryBlackColor,
       fontWeight: FontWeight.w400,
     ),
-    headline1: TextStyle(
+    displayLarge: TextStyle(
       fontSize: 20,
       color: primaryBlackColor,
       fontWeight: FontWeight.w600,
     ),
   ),
+  colorScheme: ThemeData().colorScheme.copyWith(primary: primaryBlackColor),
 );

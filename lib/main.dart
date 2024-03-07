@@ -1,11 +1,14 @@
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/constants.dart';
-import 'package:carea/screens/flash_screen.dart';
 import 'package:carea/store/AppStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
+
+import 'package:carea/screens/switch_account_screen.dart';
+import 'package:carea/screens/profile_input_ahaa_screen.dart';
+import 'package:carea/screens/profile_input_nhap_screen.dart';
 
 void main() async {
   //region Entry Point
@@ -43,7 +46,8 @@ class _MyAppState extends State<MyApp> {
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-        home: FlashScreen(),
+        // home: FlashScreen(),
+        home: SwitchAccountScreen(),
       ),
     );
   }
