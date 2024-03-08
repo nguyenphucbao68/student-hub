@@ -2,11 +2,12 @@ import 'package:carea/commons/images.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/forgot_pass_screen.dart';
-import 'package:carea/screens/home_screen.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:carea/screens/home.dart';
 
 class LoginWithPassScreen extends StatefulWidget {
   const LoginWithPassScreen({Key? key}) : super(key: key);
@@ -113,10 +114,10 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                     onFieldSubmitted: (v) {
                       f2.unfocus();
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => HomeScreen()));
                       }
                     },
                     decoration: inputDecoration(
