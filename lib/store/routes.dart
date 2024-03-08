@@ -6,7 +6,7 @@ import '../screens/create_pin_screen.dart';
 import '../screens/flash_screen.dart';
 import '../screens/forgot_pass_screen.dart';
 import '../screens/forgotpass_otp.dart';
-import '../screens/home_screen.dart';
+import '../screens/dashboard_screen.dart';
 import '../screens/login_with_pass_screen.dart';
 import '../screens/notification_screen.dart';
 import '../screens/profile_screen.dart';

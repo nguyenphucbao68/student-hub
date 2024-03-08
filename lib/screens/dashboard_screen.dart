@@ -1,8 +1,7 @@
 import 'package:carea/fragments/dashboard_fragment.dart';
-import 'package:carea/fragments/inbox_fragment.dart';
-import 'package:carea/fragments/orders_fragment.dart';
-import 'package:carea/fragments/setting_fragment.dart';
-import 'package:carea/fragments/wallet_fragment.dart';
+import 'package:carea/fragments/message_fragment.dart';
+import 'package:carea/fragments/projects_fragment.dart';
+import 'package:carea/fragments/alert_fragment.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -16,11 +15,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   var _pages = <Widget>[
+    ProjectFragment(),
     DashBoardFragment(),
-    OrderFragment(),
-    InboxFragment(),
-    WalletFragment(),
-    SettingFragment(),
+    MessageFragment(),
+    AlertFragment(),
   ];
 
   Widget _bottomTab() {
@@ -34,15 +32,23 @@ class _HomeScreenState extends State<HomeScreen> {
       iconSize: 20,
       unselectedItemColor: gray,
       items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'Orders'),
-        BottomNavigationBarItem(icon: Icon(Icons.message_outlined), activeIcon: Icon(Icons.message_sharp), label: 'Inbox'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_balance_wallet_outlined),
-          activeIcon: Icon(Icons.account_balance_wallet),
-          label: 'Wallet',
+            icon: Icon(Icons.list_alt_outlined),
+            activeIcon: Icon(Icons.list),
+            label: 'Projects'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard_outlined),
+            activeIcon: Icon(Icons.dashboard),
+            label: 'Dashboard'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.message_outlined),
+            activeIcon: Icon(Icons.message_sharp),
+            label: 'Message'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications_active_outlined),
+          activeIcon: Icon(Icons.notifications_active),
+          label: 'Alert',
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profile'),
       ],
     );
   }

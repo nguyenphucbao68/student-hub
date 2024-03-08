@@ -1,7 +1,7 @@
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
-import 'package:carea/screens/home_screen.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 

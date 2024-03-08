@@ -5,7 +5,7 @@ import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
-import 'package:carea/screens/home_screen.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +22,11 @@ Widget text({
   return Text(
     txt,
     textAlign: textAlign,
-    style: TextStyle(backgroundColor: backgroundColor, color: color, fontSize: size, fontWeight: fontWeight),
+    style: TextStyle(
+        backgroundColor: backgroundColor,
+        color: color,
+        fontSize: size,
+        fontWeight: fontWeight),
   );
 }
 
@@ -45,7 +49,10 @@ Widget customButton({
         height: high,
         width: wid,
         alignment: Alignment.center,
-        decoration: BoxDecoration(border: border, color: color, borderRadius: BorderRadius.circular(45)),
+        decoration: BoxDecoration(
+            border: border,
+            color: color,
+            borderRadius: BorderRadius.circular(45)),
         child: Text(txt, style: TextStyle(color: txtcolor)),
       ),
     ),
@@ -68,7 +75,10 @@ Widget customButton_1({
       child: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(border: border, color: color, borderRadius: BorderRadius.circular(15)),
+        decoration: BoxDecoration(
+            border: border,
+            color: color,
+            borderRadius: BorderRadius.circular(15)),
         child: Text(txt, style: TextStyle(color: txtcolor)),
       ),
     ),
@@ -96,7 +106,8 @@ Future customDialoge(
         Duration(seconds: 1),
         () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
         },
       );
       final high = MediaQuery.of(context).size.width;
@@ -121,10 +132,13 @@ Future customDialoge(
                         padding: EdgeInsets.all(42),
                         decoration: boxDecorationWithRoundedCorners(
                           boxShape: BoxShape.circle,
-                          backgroundColor: appStore.isDarkModeOn ? cardDarkColor : black,
+                          backgroundColor:
+                              appStore.isDarkModeOn ? cardDarkColor : black,
                         ),
                       ),
-                      Icon(Icons.person, size: 50, color: appStore.isDarkModeOn ? white : white)
+                      Icon(Icons.person,
+                          size: 50,
+                          color: appStore.isDarkModeOn ? white : white)
                     ],
                   ),
                   24.height,
@@ -139,7 +153,11 @@ Future customDialoge(
                   Observer(
                     builder: (context) => Transform.rotate(
                       angle: appStore.i + 0.5,
-                      child: Image(image: AssetImage(loding), color: context.iconColor, height: high / 24 * 3, width: high / 24 * 3),
+                      child: Image(
+                          image: AssetImage(loding),
+                          color: context.iconColor,
+                          height: high / 24 * 3,
+                          width: high / 24 * 3),
                     ),
                   ),
                 ],
@@ -152,7 +170,8 @@ Future customDialoge(
   );
 }
 
-PreferredSizeWidget careaAppBarWidget(BuildContext context, {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
+PreferredSizeWidget careaAppBarWidget(BuildContext context,
+    {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
   return AppBar(
     backgroundColor: context.scaffoldBackgroundColor,
     leading: IconButton(
@@ -164,6 +183,53 @@ PreferredSizeWidget careaAppBarWidget(BuildContext context, {String? titleText, 
     actions: [actionWidget ?? SizedBox(), actionWidget2 ?? SizedBox()],
     title: Text(titleText ?? "", style: boldTextStyle(size: 18)),
     elevation: 0.0,
+  );
+}
+
+PreferredSizeWidget commonAppBarWidget(BuildContext context,
+    {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
+  return AppBar(
+    elevation: 0,
+    toolbarHeight: 50,
+    // backgroundColor: appStore.isDarkModeOn ? scaffoldDarkColor : white,
+    backgroundColor: Color.fromARGB(255, 228, 227, 227),
+    title: Text("Student Hub", style: boldTextStyle()),
+    automaticallyImplyLeading: false,
+    // leading: GestureDetector(
+    //   child: Padding(
+    //     padding: EdgeInsets.only(top: 8, right: 8, bottom: 8, left: 16),
+    //     child: Image.asset("assets/student_hub_icon.png", fit: BoxFit.cover)
+    //         .cornerRadiusWithClipRRect(60),
+    //   ),
+    //   onTap: () {
+    //     // Navigator.push(
+    //     //   context,
+    //     //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+    //     // );
+    //   },
+    // ),
+    actions: [
+      IconButton(
+        icon: Icon(Icons.person, size: 22, color: context.iconColor),
+        onPressed: () {
+          print('Hello wolrd');
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => NotificationScreen()),
+          // );
+        },
+      ),
+      // IconButton(
+      //   icon: Icon(Icons.favorite_border_rounded,
+      //       size: 22, color: context.iconColor),
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => WishListScreen()),
+      //     );
+      //   },
+      // )
+    ],
   );
 }
 
@@ -184,7 +250,10 @@ InputDecoration inputDecoration(
     hintText: hintText.validate(),
     hintStyle: secondaryTextStyle(),
     isDense: true,
-    prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 16, color: appStore.isDarkModeOn ? white : gray) : null,
+    prefixIcon: prefixIcon != null
+        ? Icon(prefixIcon,
+            size: 16, color: appStore.isDarkModeOn ? white : gray)
+        : null,
     suffixIcon: suffixIcon.validate(),
     enabledBorder: OutlineInputBorder(
       borderRadius: radius(borderRadius ?? defaultRadius),
@@ -213,7 +282,8 @@ Decoration commonDecoration({double? cornorRadius}) {
   return boxDecorationWithRoundedCorners(
     backgroundColor: appStore.isDarkModeOn ? cardDarkColor : white,
     borderRadius: BorderRadius.all(Radius.circular(cornorRadius ?? 8.0)),
-    border: Border.all(color: appStore.isDarkModeOn ? white : gray.withOpacity(0.1)),
+    border: Border.all(
+        color: appStore.isDarkModeOn ? white : gray.withOpacity(0.1)),
   );
 }
 
@@ -231,12 +301,17 @@ class ChatMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: isMe.validate() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          isMe.validate() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           margin: isMe.validate()
-              ? EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0, left: (500 * 0.25).toDouble())
+              ? EdgeInsets.only(
+                  top: 3.0,
+                  bottom: 3.0,
+                  right: 0,
+                  left: (500 * 0.25).toDouble())
               : EdgeInsets.only(
                   top: 4.0,
                   bottom: 4.0,
@@ -247,12 +322,21 @@ class ChatMessageWidget extends StatelessWidget {
             color: !isMe ? Colors.red.withOpacity(0.85) : context.cardColor,
             boxShadow: defaultBoxShadow(),
             borderRadius: isMe.validate()
-                ? BorderRadius.only(bottomLeft: Radius.circular(10), topLeft: Radius.circular(10), topRight: Radius.circular(10))
-                : BorderRadius.only(topLeft: Radius.circular(10), bottomRight: Radius.circular(10), topRight: Radius.circular(10)),
-            border: Border.all(color: isMe ? Theme.of(context).dividerColor : Colors.transparent),
+                ? BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))
+                : BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+            border: Border.all(
+                color:
+                    isMe ? Theme.of(context).dividerColor : Colors.transparent),
           ),
           child: Column(
-            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
@@ -286,9 +370,12 @@ class ChatMessageWidget extends StatelessWidget {
   }
 }
 
-String formatDate(String? dateTime, {String format = DATE_FORMAT_2, bool isFromMicrosecondsSinceEpoch = false}) {
+String formatDate(String? dateTime,
+    {String format = DATE_FORMAT_2,
+    bool isFromMicrosecondsSinceEpoch = false}) {
   if (isFromMicrosecondsSinceEpoch) {
-    return DateFormat(format).format(DateTime.fromMicrosecondsSinceEpoch(dateTime.validate().toInt() * 1000));
+    return DateFormat(format).format(DateTime.fromMicrosecondsSinceEpoch(
+        dateTime.validate().toInt() * 1000));
   } else {
     return DateFormat(format).format(DateTime.parse(dateTime.validate()));
   }

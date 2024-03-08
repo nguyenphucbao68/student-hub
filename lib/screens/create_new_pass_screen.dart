@@ -2,7 +2,7 @@ import 'package:carea/commons/app_component.dart';
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
-import 'package:carea/screens/home_screen.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
