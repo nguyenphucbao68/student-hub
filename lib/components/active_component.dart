@@ -1,5 +1,5 @@
 import 'package:carea/commons/data_provider.dart';
-import 'package:carea/commons/order_widget.dart';
+import 'package:carea/commons/project_widget.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +35,8 @@ class _ActiveComponentState extends State<ActiveComponent> {
       itemBuilder: (context, index) {
         CallingModel data = activeData[index];
 
-        return OrderWidget(data: data, btnText1: "In Delivery", btnText2: "Track order");
+        return ProjectWidget(
+            data: data, btnText1: "In Delivery", btnText2: "Track order");
       },
     );
   }
