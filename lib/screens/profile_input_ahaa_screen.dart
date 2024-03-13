@@ -61,7 +61,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
       child: Scaffold(
         appBar: careaAppBarWidget(
           context,
-          titleText: "StudentHub",
+          titleText: "Student Hub",
           actionWidget: IconButton(
               onPressed: () {},
               icon: Icon(Icons.search, color: context.iconColor)),
@@ -259,13 +259,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                   SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreatePinScreen()),
-                        );
-                      }
+                      Navigator.pop(context);
                     },
                     child: Container(
                       alignment: Alignment.center,

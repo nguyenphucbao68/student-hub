@@ -117,7 +117,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ProfileInputAhaaScreen()),
