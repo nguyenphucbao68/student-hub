@@ -1,5 +1,17 @@
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/constants.dart';
+import 'package:carea/screens/create_new_pass_screen.dart';
+import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/details_screen.dart';
+import 'package:carea/screens/flash_screen.dart';
+import 'package:carea/screens/forgot_pass_screen.dart';
+import 'package:carea/screens/payment_screen.dart';
+import 'package:carea/screens/profile_input_nhap_screen.dart';
+import 'package:carea/screens/profile_screen.dart';
+import 'package:carea/screens/registration_screen.dart';
+import 'package:carea/screens/set_finger_print_screen.dart';
+import 'package:carea/screens/signup_screen.dart';
+import 'package:carea/screens/special_offer_screen.dart';
 import 'package:carea/store/AppStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +20,6 @@ import 'package:nb_utils/nb_utils.dart';
 
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/screens/profile_input_ahaa_screen.dart';
-import 'package:carea/screens/profile_input_nhap_screen.dart';
 
 void main() async {
   //region Entry Point
@@ -47,7 +58,10 @@ class _MyAppState extends State<MyApp> {
         darkTheme: AppThemeData.darkTheme,
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
         // home: FlashScreen(),
-        home: SwitchAccountScreen(),
+        // home: PaymentScreen(),
+        // home: ProfileInputAhaaScreen(),
+        home: ProfileInputNhapScreen(),
+        // home: SwitchAccountScreen(),
       ),
     );
   }

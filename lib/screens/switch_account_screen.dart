@@ -1,185 +1,178 @@
-import 'package:carea/screens/profile_input_nhap_screen.dart';
+import 'package:carea/commons/widgets.dart';
+import 'package:carea/main.dart';
+import 'package:carea/screens/login_with_pass_screen.dart';
+import 'package:carea/screens/notification_screen.dart';
+import 'package:carea/screens/payment_screen.dart';
+import 'package:carea/screens/profile_input_ahaa_screen.dart';
+import 'package:carea/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:carea/screens/profile_input_nhap_screen.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class SwitchAccountScreen extends StatefulWidget {
-  SwitchAccountScreen({Key? key, this.isAppbarNeeded, this.appBar})
-      : super(key: key);
-  bool? isAppbarNeeded;
-  final PreferredSizeWidget? appBar;
-
   @override
-  State<SwitchAccountScreen> createState() => _SwitchAccountScreenState();
+  _SwitchAccountScreenState createState() => _SwitchAccountScreenState();
 }
 
 class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  TextEditingController accountController = TextEditingController();
-
-  bool isListVisible = false;
-
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init() async {
+    //
   }
 
   @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  bool showRow = false;
+  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        FocusScope.of(context).unfocus();
-        return true;
-      },
-      child: Scaffold(
-        // appBar: (widget.isAppbarNeeded == null)
-        // ? careaAppBarWidget(context, titleText: "Fill Your Profile")
-        // : widget.appBar,
-        body: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(16),
-            alignment: Alignment.center,
-            child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 15,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isListVisible = !isListVisible;
-                      });
-                    },
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        children: [
-                          Icon(Icons.person, color: Colors.black, size: 38),
-                          SizedBox(width: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Hai Pham', // Text lớn
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                'Company', // Text nhỏ
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[800]),
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 150),
-                          Icon(
-                            Icons.keyboard_arrow_up,
-                            size: 38,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (isListVisible) ...[
-                    SizedBox(
-                      height: 200,
-                      width: 340,
-                      child: ListView(
-                        children: [
-                          ListTile(
-                            leading: Icon(Icons.person), // Icon
-                            title: Text('Hai Pham Student 1'), // Text 1
-                            subtitle: Text('Student'), // Text 2
-                          ),
-                          Divider(
-                            color: Colors.black,
-                            indent: 30,
-                            endIndent: 30,
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.person), // Icon
-                            title: Text('Hai Pham Student 3'), // Text 1
-                            subtitle: Text('Student'), // Text 2
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  Divider(
-                    color: Colors.black,
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileInputNhapScreen()),
-                      );
-                    },
-                    icon: Icon(Icons.person),
-                    label: Text(
-                        'Profiles                                                          '),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 30),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    indent: 30,
-                    endIndent: 30,
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.settings),
-                    label: Text(
-                        'Settings                                                          '),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 30),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    indent: 30,
-                    endIndent: 30,
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.logout),
-                    label: Text(
-                        'Log out                                                          '),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 30),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    indent: 30,
-                    endIndent: 30,
-                  ),
-                ],
+    return Scaffold(
+      appBar: careaAppBarWidget(
+        context,
+        titleText: "StudentHub",
+        actionWidget: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.search, color: context.iconColor)),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: 16),
+        child: Column(
+          children: [
+            SizedBox(height: 16),
+            Stack(
+              children: [
+                Image.asset("assets/userImage.jpg",
+                        height: 100, width: 100, fit: BoxFit.cover)
+                    .cornerRadiusWithClipRRect(60),
+                // Positioned(
+                //   right: 0,
+                //   bottom: 0,
+                //   // child:
+                //   // Container(
+                //   //   alignment: Alignment.center,
+                //   //   padding: EdgeInsets.all(6),
+                //   //   decoration: BoxDecoration(
+                //   //     color: Colors.black,
+                //   //     // border: Border.all(color: Colors.black.withOpacity(0.3)),
+                //   //     // borderRadius: BorderRadius.circular(8),
+                //   //   ),
+                //   //   child: Icon(Icons.edit, color: white, size: 16),
+                //   // ).onTap(() {
+                //   //   ProfileScreen().launch(context);
+                //   // }),
+                // ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text('Andrew Desuza', style: boldTextStyle(size: 18)),
+            SizedBox(height: 8),
+            Text('+1 111 455 654 321', style: secondaryTextStyle()),
+            SizedBox(height: 16),
+            SettingItemWidget(
+              leading: Icon(Icons.person_outline, color: context.iconColor),
+              title: "Hai Pham",
+              subTitle: "Company",
+              titleTextStyle: boldTextStyle(),
+              onTap: () {
+                setState(() {
+                  showRow = !showRow;
+                });
+              },
+              trailing: showRow
+                  ? Transform.rotate(
+                      angle: 3.14 / 2, // Độ xoay 90 độ
+                      child: Icon(Icons.arrow_forward_ios_rounded,
+                          size: 18, color: context.iconColor))
+                  : Icon(Icons.arrow_forward_ios_rounded,
+                      size: 18, color: context.iconColor),
+            ),
+            SizedBox(
+              width: 340,
+              child: showRow
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SettingItemWidget(
+                          leading: Icon(Icons.person_outline,
+                              color: context.iconColor),
+                          title: "Hai Pham",
+                          subTitle: "Student",
+                          titleTextStyle: boldTextStyle(),
+                          onTap: () {},
+                          trailing: Icon(Icons.arrow_forward_ios_rounded,
+                              size: 18, color: context.iconColor),
+                        ),
+                      ],
+                    )
+                  : null,
+            ),
+            SettingItemWidget(
+              leading: Icon(Icons.person_2, color: context.iconColor),
+              title: "Profile",
+              titleTextStyle: boldTextStyle(),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProfileInputAhaaScreen()),
+                );
+              },
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
+            ),
+            SettingItemWidget(
+              leading: Icon(Icons.settings, color: context.iconColor),
+              title: "Setting",
+              titleTextStyle: boldTextStyle(),
+              onTap: () {
+                NotificationScreen().launch(context);
+              },
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
+            ),
+            SettingItemWidget(
+              leading: Icon(Icons.wb_sunny_outlined, color: context.iconColor),
+              title: "Dark Mode",
+              titleTextStyle: boldTextStyle(),
+              onTap: () async {
+                if (appStore.isDarkModeOn) {
+                  appStore.toggleDarkMode(value: false);
+                } else {
+                  appStore.toggleDarkMode(value: true);
+                }
+              },
+              trailing: SizedBox(
+                height: 20,
+                width: 30,
+                child: Switch(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: appStore.isDarkModeOn,
+                  onChanged: (bool value) {
+                    appStore.toggleDarkMode(value: value);
+                    setState(() {});
+                  },
+                ),
               ),
             ),
-          ),
+            SettingItemWidget(
+              leading: Icon(Icons.login, color: context.iconColor),
+              title: "Logout",
+              titleTextStyle: boldTextStyle(),
+              onTap: () {
+                showConfirmDialogCustom(context, onAccept: (c) {
+                  LoginWithPassScreen().launch(context, isNewTask: true);
+                }, dialogType: DialogType.CONFIRMATION);
+              },
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
+            ),
+          ],
         ),
       ),
     );
