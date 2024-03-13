@@ -93,12 +93,12 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                       f1.unfocus();
                       FocusScope.of(context).requestFocus(f2);
                     },
-                    validator: (k) {
-                      if (!k!.contains('@')) {
-                        return 'Please enter the correct email';
-                      }
-                      return null;
-                    },
+                    // validator: (k) {
+                    //   if (!k!.contains('@')) {
+                    //     return 'Please enter the correct email';
+                    //   }
+                    //   return null;
+                    // },
                     controller: _emailController,
                     decoration: inputDecoration(context,
                         prefixIcon: Icons.mail_rounded, hintText: "Email"),
@@ -108,9 +108,9 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                     controller: _passwordController,
                     obscureText: isIconTrue,
                     focusNode: f2,
-                    validator: (value) {
-                      return Validate.validate(value!);
-                    },
+                    // validator: (value) {
+                    //   return Validate.validate(value!);
+                    // },
                     onFieldSubmitted: (v) {
                       f2.unfocus();
                       if (_formKey.currentState!.validate()) {

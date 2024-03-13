@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:carea/screens/walkthrough_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
@@ -19,6 +20,7 @@ class _FlashScreenState extends State<FlashScreen> {
     Timer(
       Duration(seconds: 2),
       () {
+        // WalkThroughScreen().launch(context, isNewTask: true);
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(builder: (context) => Home()),

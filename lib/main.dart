@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:carea/screens/flash_screen.dart';
 
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/screens/profile_input_ahaa_screen.dart';
 import 'package:carea/screens/profile_input_nhap_screen.dart';
+import 'package:carea/screens/project_details_screen.dart';
 
 void main() async {
   //region Entry Point
@@ -46,8 +48,9 @@ class _MyAppState extends State<MyApp> {
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-        // home: FlashScreen(),
-        home: SwitchAccountScreen(),
+        home: FlashScreen(),
+        // home: ProjectDetailScreen(),
+        // home: SwitchAccountScreen(),
       ),
     );
   }
