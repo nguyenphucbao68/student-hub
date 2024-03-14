@@ -3,6 +3,7 @@ import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/forgot_pass_screen.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/input_profile_tech_stack_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';
@@ -170,7 +171,8 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                                builder: (context) =>
+                                    InputProfileTechStackScreen()));
                       }
                     },
                     child: Container(
