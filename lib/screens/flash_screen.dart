@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:carea/screens/input_profile_cv_screen.dart';
+import 'package:carea/screens/input_profile_experience_screen.dart';
+import 'package:carea/screens/input_profile_tech_stack_screen.dart';
 import 'package:carea/screens/walkthrough_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -25,8 +28,8 @@ class _FlashScreenState extends State<FlashScreen> {
         //   context,
         //   MaterialPageRoute(builder: (context) => Home()),
         // );
-        Home().launch(context, isNewTask: true);
-        // LoginWithPassScreen().launch(context, isNewTask: true);
+        // Si().launch(context, isNewTask: true);
+        LoginWithPassScreen().launch(context, isNewTask: true);
       },
     );
   }
