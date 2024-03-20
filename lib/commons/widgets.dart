@@ -380,3 +380,45 @@ String formatDate(String? dateTime,
     return DateFormat(format).format(DateTime.parse(dateTime.validate()));
   }
 }
+
+Row dialogWithTitle(
+  BuildContext context, {
+  required String title,
+  required List<Widget> childrenWidget,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        title,
+        style: boldTextStyle(size: 14),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        backgroundColor: Colors.white,
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                left: 20.0,
+                                right: 20.0,
+                                bottom: 15.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: childrenWidget,
+                            )),
+                      );
+                    });
+              },
+              icon: Icon(Icons.add_circle_outline)),
+        ],
+      ),
+    ],
+  );
+}

@@ -377,6 +377,93 @@ List<CallingModel> activeDataList() {
   return activeList;
 }
 
+List<CallingModel> projectDataList() {
+  List<CallingModel> projectList = [];
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car1.png",
+      countNumber: "\$187.256",
+      userName: "Nissan Official",
+      colorValue: Colors.blue,
+      subTitle: "Blue",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car2.png",
+      countNumber: "\$250.150",
+      userName: "Opel Store",
+      colorValue: Colors.green,
+      subTitle: "Green",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car3.png",
+      countNumber: "\$300.100",
+      userName: "Tesla Motor",
+      colorValue: Colors.yellow,
+      subTitle: "Yellow",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car4.png",
+      countNumber: "\$500.250",
+      userName: "Dongfeng Store",
+      colorValue: Colors.red,
+      subTitle: "Red",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car5.png",
+      countNumber: "\$600.150",
+      userName: "BMW Store",
+      colorValue: Colors.blueAccent,
+      subTitle: "BlueAccent",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car6.png",
+      countNumber: "\$600.200",
+      userName: "Valkswagen official",
+      colorValue: Colors.greenAccent,
+      subTitle: "GreenAccent",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car7.png",
+      countNumber: "\$187.300",
+      userName: "Mercedes-Benz",
+      colorValue: Colors.purple,
+      subTitle: "Purple",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car8.png",
+      countNumber: "\200.400",
+      userName: "Honda Motor",
+      colorValue: Colors.pink,
+      subTitle: "Pink",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car9.png",
+      countNumber: "\210.600",
+      userName: "BMW Store",
+      colorValue: Colors.blue,
+      subTitle: "Blue",
+    ),
+  );
+
+  return projectList;
+}
+
 List<BHMessageModel> getChatMsgData() {
   List<BHMessageModel> list = [];
 
@@ -512,7 +599,8 @@ List<BHMessageModel> getChatMsgData() {
 List<CallingModel> carBrandList() {
   List<CallingModel> carBrandData = [];
   carBrandData.add(CallingModel(userName: "All", selectCarCategory: false));
-  carBrandData.add(CallingModel(userName: "Mercedes", selectCarCategory: false));
+  carBrandData
+      .add(CallingModel(userName: "Mercedes", selectCarCategory: false));
   carBrandData.add(CallingModel(userName: "Tesla", selectCarCategory: false));
   carBrandData.add(CallingModel(userName: "BMW", selectCarCategory: false));
   carBrandData.add(CallingModel(userName: "Honda", selectCarCategory: false));
@@ -524,7 +612,8 @@ List<CallingModel> carConditionList() {
   List<CallingModel> carConditionData = [];
   carConditionData.add(CallingModel(userName: "All", selectCarCategory: false));
   carConditionData.add(CallingModel(userName: "New", selectCarCategory: false));
-  carConditionData.add(CallingModel(userName: "Used", selectCarCategory: false));
+  carConditionData
+      .add(CallingModel(userName: "Used", selectCarCategory: false));
 
   return carConditionData;
 }
