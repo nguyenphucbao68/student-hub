@@ -1,4 +1,4 @@
-import 'package:carea/fragments/dashboard_fragment2.dart';
+import 'package:carea/fragments/dashboard_fragment.dart';
 import 'package:carea/fragments/message_fragment.dart';
 import 'package:carea/fragments/orders_fragment.dart';
 import 'package:carea/fragments/projects_fragment.dart';
