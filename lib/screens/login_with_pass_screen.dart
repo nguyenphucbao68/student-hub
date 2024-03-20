@@ -171,8 +171,7 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    InputProfileTechStackScreen()));
+                                builder: (context) => HomeScreen()));
                       }
                     },
                     child: Container(

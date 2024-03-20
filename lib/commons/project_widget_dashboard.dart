@@ -185,7 +185,9 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               ],
             ),
           ),
-          Text("Created 3 days ago", style: primaryTextStyle(size: 15)),
+          5.height,
+          Text("Created 3 days ago",
+              style: primaryTextStyle(size: 14, color: Colors.black38)),
           SizedBox(height: 5),
           new Container(
             width: MediaQuery.of(context).size.width * 0.8,
@@ -200,17 +202,27 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               ],
             ),
           ),
+          10.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                children: [
-                  Text("6", style: primaryTextStyle()),
-                  Text("Proposals", style: primaryTextStyle()),
-                ],
+              Container(
+                width: 90,
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: boxDecorationWithRoundedCorners(
+                  backgroundColor: appStore.isDarkModeOn
+                      ? scaffoldDarkColor
+                      : gray.withOpacity(0.3),
+                ),
+                child: Column(
+                  children: [
+                    Text("6", style: primaryTextStyle()),
+                    Text("Proposals", style: primaryTextStyle(size: 12)),
+                  ],
+                ),
               ),
               Container(
-                width: 100,
+                width: 90,
                 padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: boxDecorationWithRoundedCorners(
                   backgroundColor: appStore.isDarkModeOn
@@ -220,21 +232,22 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 child: Column(
                   children: [
                     Text("8", style: primaryTextStyle()),
-                    Text("Messages", style: primaryTextStyle()),
+                    Text("Messages", style: primaryTextStyle(size: 12)),
                   ],
                 ),
               ),
               Container(
-                width: 100,
+                width: 90,
                 padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor:
-                      appStore.isDarkModeOn ? scaffoldDarkColor : Colors.black,
+                  backgroundColor: appStore.isDarkModeOn
+                      ? scaffoldDarkColor
+                      : gray.withOpacity(0.3),
                 ),
                 child: Column(
                   children: [
-                    Text("2", style: primaryTextStyle(color: Colors.white)),
-                    Text("Hired", style: primaryTextStyle(color: Colors.white)),
+                    Text("2", style: primaryTextStyle()),
+                    Text("Hired", style: primaryTextStyle(size: 12)),
                   ],
                 ),
               ),

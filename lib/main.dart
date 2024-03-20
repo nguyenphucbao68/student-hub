@@ -19,6 +19,7 @@ import 'package:carea/screens/registration_screen.dart';
 import 'package:carea/screens/set_finger_print_screen.dart';
 import 'package:carea/screens/signup_screen.dart';
 import 'package:carea/screens/special_offer_screen.dart';
+import 'package:carea/screens/submit_proposal_screen.dart';
 import 'package:carea/store/AppStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,13 +69,14 @@ class _MyAppState extends State<MyApp> {
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-        // home: FlashScreen(),
+        home: FlashScreen(),
+        // home: SubmitProposalScreen(),
         // home: PaymentScreen(),
         // home: ProfileInputNhapScreen(),
         // home: SavedProjectsFragment(),
         // home: ProjectSearchScreen(),
         // home: DashBoardFragment(),
-        home: SwitchAccountScreen(),
+        // home: SwitchAccountScreen(),
       ),
     );
   }
