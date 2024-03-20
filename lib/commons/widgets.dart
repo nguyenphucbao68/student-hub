@@ -36,15 +36,16 @@ Widget customButton({
   double? wid,
   double? high = 40,
   final Color? color = primaryBlackColor,
-  final double? elevation = 10,
+  final double? elevation = 5,
   final BoxBorder? border,
   final Color? txtcolor = primaryWhiteColor,
+  final double? textSize = 14,
 }) {
   return InkWell(
     onTap: onTap,
     child: Card(
-      elevation: elevation,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
+      // elevation: elevation,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       child: Container(
         height: high,
         width: wid,
@@ -52,8 +53,8 @@ Widget customButton({
         decoration: BoxDecoration(
             border: border,
             color: color,
-            borderRadius: BorderRadius.circular(45)),
-        child: Text(txt, style: TextStyle(color: txtcolor)),
+            borderRadius: BorderRadius.circular(40)),
+        child: Text(txt, style: TextStyle(color: txtcolor, fontSize: textSize)),
       ),
     ),
   );

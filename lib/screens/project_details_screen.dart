@@ -2,6 +2,7 @@ import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/registration_screen.dart';
+import 'package:carea/screens/submit_proposal_screen.dart';
 import 'package:carea/screens/wish_list_screen.dart';
 import 'package:carea/screens/zoom_image_screen.dart';
 import 'package:flutter/material.dart';
@@ -225,7 +226,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RegistrationScreen()),
+                                  builder: (context) => SubmitProposalScreen()),
                             );
                           },
                           child: Container(

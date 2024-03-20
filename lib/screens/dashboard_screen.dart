@@ -1,4 +1,5 @@
 import 'package:carea/fragments/dashboard_fragment.dart';
+import 'package:carea/fragments/inbox_fragment.dart';
 import 'package:carea/fragments/message_fragment.dart';
 import 'package:carea/fragments/orders_fragment.dart';
 import 'package:carea/fragments/projects_fragment.dart';
@@ -18,11 +19,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   var _pages = <Widget>[
-    ProjectFragment(),
-    DashBoardFragment(),
+    SavedProjectsFragment(),
+    // DashBoardFragment(),
     // MessageFragment(),
     // OrderFragment(),
-    SavedProjectsFragment(),
+    DashBoardFragment(),
+    InboxFragment(),
     // AlertFragment(),
     SettingFragment(),
   ];
