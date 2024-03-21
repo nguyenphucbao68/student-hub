@@ -20,9 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
   var _pages = <Widget>[
     ProjectFragment(),
     DashBoardFragment(),
-    // MessageFragment(),
+    MessageFragment(),
     // OrderFragment(),
-    SavedProjectsFragment(),
+    // SavedProjectsFragment(),
     // AlertFragment(),
     SettingFragment(),
   ];

@@ -6,6 +6,7 @@ import 'package:carea/fragments/inbox_fragment.dart';
 import 'package:carea/fragments/orders_fragment.dart';
 import 'package:carea/fragments/projects_fragment.dart';
 import 'package:carea/fragments/saved_projects_fragment.dart';
+import 'package:carea/screens/chat_screen.dart';
 import 'package:carea/screens/create_new_pass_screen.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/details_screen.dart';
@@ -74,7 +75,8 @@ class _MyAppState extends State<MyApp> {
         // home: SavedProjectsFragment(),
         // home: ProjectSearchScreen(),
         // home: DashBoardFragment(),
-        home: SwitchAccountScreen(),
+
+        home: InboxFragment(),
       ),
     );
   }
