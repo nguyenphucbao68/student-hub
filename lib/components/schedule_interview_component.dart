@@ -23,6 +23,8 @@ class ScheduleInterviewComponent extends StatefulWidget {
 
 class _ScheduleInterviewComponentState
     extends State<ScheduleInterviewComponent> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController titleController = TextEditingController();
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
@@ -109,229 +111,271 @@ class _ScheduleInterviewComponentState
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: context.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5),
-            Center(
-                child: Text('Schedule a video interview',
-                    style: boldTextStyle(size: 19))),
-            SizedBox(height: 5),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Divider(color: primaryColor)),
-            Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: Text(
-                textAlign: TextAlign.start,
-                'Title',
-                style: boldTextStyle(),
-              ),
-            ),
-            TextFormField(
-              focusNode: f1,
-              controller: titleController,
-              decoration: inputDecoration(context, hintText: "Interview title"),
-            ),
-            SizedBox(height: 16),
-            Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Text('Start time', style: boldTextStyle())),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: context.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+          ),
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: context.width() * 0.45,
-                  alignment: Alignment.centerLeft,
-                  child: TextFormField(
-                    controller: startDateController,
-                    focusNode: f1,
-                    readOnly: true,
-                    onTap: () {
-                      selectDate(context, startDateController);
-                    },
-                    onFieldSubmitted: (v) {
-                      f1.unfocus();
-                      FocusScope.of(context).requestFocus(f1);
-                    },
-                    decoration: inputDecoration(
-                      context,
-                      hintText: "Start date",
-                      suffixIcon: Icon(Icons.calendar_month_rounded,
-                          size: 16,
-                          color: appStore.isDarkModeOn ? white : gray),
-                    ),
+                SizedBox(height: 5),
+                Center(
+                    child: Text('Schedule a video interview',
+                        style: boldTextStyle(size: 19))),
+                SizedBox(height: 5),
+                Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Divider(color: primaryColor)),
+                Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Text(
+                    textAlign: TextAlign.start,
+                    'Title',
+                    style: boldTextStyle(),
                   ),
                 ),
-                SizedBox(width: 8),
-                Text(
-                  "/",
-                  style: primaryTextStyle(size: 30),
-                ),
-                SizedBox(width: 8),
-                Container(
-                  width: context.width() * 0.35,
-                  alignment: Alignment.bottomRight,
-                  child: TextFormField(
-                    controller: startTimeController,
-                    focusNode: f2,
-                    readOnly: true,
-                    onTap: () {
-                      selectTime(context, startTimeController);
-                    },
-                    onFieldSubmitted: (v) {
-                      f2.unfocus();
-                      FocusScope.of(context).requestFocus(f2);
-                    },
-                    decoration: inputDecoration(
-                      context,
-                      hintText: "Start time",
-                      suffixIcon: Icon(Icons.access_time,
-                          size: 16,
-                          color: appStore.isDarkModeOn ? white : gray),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Text('End time', style: boldTextStyle())),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: context.width() * 0.45,
-                  alignment: Alignment.centerLeft,
-                  child: TextFormField(
-                    controller: endDateController,
-                    focusNode: f3,
-                    readOnly: true,
-                    onTap: () {
-                      selectDate(context, endDateController);
-                    },
-                    onFieldSubmitted: (v) {
-                      f3.unfocus();
-                      FocusScope.of(context).requestFocus(f3);
-                    },
-                    decoration: inputDecoration(
-                      context,
-                      hintText: "End date",
-                      suffixIcon: Icon(Icons.calendar_month_rounded,
-                          size: 16,
-                          color: appStore.isDarkModeOn ? white : gray),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  "/",
-                  style: primaryTextStyle(size: 30),
-                ),
-                SizedBox(width: 8),
-                Container(
-                  width: context.width() * 0.35,
-                  alignment: Alignment.bottomRight,
-                  child: TextFormField(
-                    controller: endTimeController,
-                    focusNode: f4,
-                    readOnly: true,
-                    onTap: () {
-                      selectTime(context, endTimeController);
-                    },
-                    onFieldSubmitted: (v) {
-                      f4.unfocus();
-                      FocusScope.of(context).requestFocus(f4);
-                    },
-                    decoration: inputDecoration(
-                      context,
-                      hintText: "End time",
-                      suffixIcon: Icon(Icons.access_time,
-                          size: 16,
-                          color: appStore.isDarkModeOn ? white : gray),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Text('Duration: 60 minutes',
-                    style:
-                        TextStyle(fontSize: 15, fontStyle: FontStyle.italic))),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
+                TextFormField(
+                  focusNode: f1,
+                  controller: titleController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter interview title';
+                    }
+                    return null;
                   },
-                  child: Container(
-                    width: context.width() * 0.45,
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: appStore.isDarkModeOn
-                          ? dividerDarkColor
-                          : primaryColor.shade300,
-                      borderRadius: BorderRadius.circular(45),
-                    ),
-                    child: Text(
-                      "Cancel",
-                      style: boldTextStyle(
-                          color:
-                              appStore.isDarkModeOn ? white : Colors.black54),
-                    ),
-                  ),
+                  onFieldSubmitted: (v) {
+                    f1.unfocus();
+                    FocusScope.of(context).requestFocus(f2);
+                  },
+                  decoration:
+                      inputDecoration(context, hintText: "Interview title"),
                 ),
-                SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                    var meetingModel = MeetingModel();
-                    meetingModel.scheduleTitle = titleController.text;
-                    meetingModel.startTime = startDateController.text +
-                        " " +
-                        startTimeController.text;
-                    meetingModel.endTime =
-                        endDateController.text + " " + endTimeController.text;
+                SizedBox(height: 16),
+                Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text('Start time', style: boldTextStyle())),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: context.width() * 0.45,
+                      alignment: Alignment.centerLeft,
+                      child: TextFormField(
+                        controller: startDateController,
+                        focusNode: f2,
+                        readOnly: true,
+                        onTap: () {
+                          selectDate(context, startDateController);
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please choice start date';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (v) {
+                          f2.unfocus();
+                          FocusScope.of(context).requestFocus(f1);
+                        },
+                        decoration: inputDecoration(
+                          context,
+                          hintText: "Start date",
+                          suffixIcon: Icon(Icons.calendar_month_rounded,
+                              size: 16,
+                              color: appStore.isDarkModeOn ? white : gray),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "/",
+                      style: primaryTextStyle(size: 30),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: context.width() * 0.35,
+                      alignment: Alignment.bottomRight,
+                      child: TextFormField(
+                        controller: startTimeController,
+                        focusNode: f3,
+                        readOnly: true,
+                        onTap: () {
+                          selectTime(context, startTimeController);
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please choice start time';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (v) {
+                          f3.unfocus();
+                          FocusScope.of(context).requestFocus(f2);
+                        },
+                        decoration: inputDecoration(
+                          context,
+                          hintText: "Start time",
+                          suffixIcon: Icon(Icons.access_time,
+                              size: 16,
+                              color: appStore.isDarkModeOn ? white : gray),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text('End time', style: boldTextStyle())),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: context.width() * 0.45,
+                      alignment: Alignment.centerLeft,
+                      child: TextFormField(
+                        controller: endDateController,
+                        focusNode: f4,
+                        readOnly: true,
+                        onTap: () {
+                          selectDate(context, endDateController);
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter end date';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (v) {
+                          f4.unfocus();
+                          FocusScope.of(context).requestFocus(f3);
+                        },
+                        decoration: inputDecoration(
+                          context,
+                          hintText: "End date",
+                          suffixIcon: Icon(Icons.calendar_month_rounded,
+                              size: 16,
+                              color: appStore.isDarkModeOn ? white : gray),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "/",
+                      style: primaryTextStyle(size: 30),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: context.width() * 0.35,
+                      alignment: Alignment.bottomRight,
+                      child: TextFormField(
+                        controller: endTimeController,
+                        focusNode: f5,
+                        readOnly: true,
+                        onTap: () {
+                          selectTime(context, endTimeController);
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter end time';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (v) {
+                          f5.unfocus();
+                          FocusScope.of(context).requestFocus(f4);
+                        },
+                        decoration: inputDecoration(
+                          context,
+                          hintText: "End time",
+                          suffixIcon: Icon(Icons.access_time,
+                              size: 16,
+                              color: appStore.isDarkModeOn ? white : gray),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text('Duration: 60 minutes',
+                        style: TextStyle(
+                            fontSize: 15, fontStyle: FontStyle.italic))),
+                SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        width: context.width() * 0.45,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: appStore.isDarkModeOn
+                              ? dividerDarkColor
+                              : primaryColor.shade300,
+                          borderRadius: BorderRadius.circular(45),
+                        ),
+                        child: Text(
+                          "Cancel",
+                          style: boldTextStyle(
+                              color: appStore.isDarkModeOn
+                                  ? white
+                                  : Colors.black54),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          var meetingModel = MeetingModel();
+                          meetingModel.scheduleTitle = titleController.text;
+                          meetingModel.startTime = startDateController.text +
+                              " " +
+                              startTimeController.text;
+                          meetingModel.endTime = endDateController.text +
+                              " " +
+                              endTimeController.text;
 
-                    var msgModel = BHMessageModel();
-                    msgModel.msg = "A meeting was scheduled";
-                    msgModel.time = formatter.format(DateTime.now());
-                    msgModel.senderId = BHSender_id;
-                    msgModel.meetingInfo = meetingModel;
-                    widget.scheduleMeetingCallback(msgModel);
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: context.width() * 0.45,
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: appStore.isDarkModeOn ? cardDarkColor : black,
-                      borderRadius: BorderRadius.circular(45),
+                          var msgModel = BHMessageModel();
+                          msgModel.msg = "A meeting was scheduled";
+                          msgModel.time = formatter.format(DateTime.now());
+                          msgModel.senderId = BHSender_id;
+                          msgModel.meetingInfo = meetingModel;
+                          widget.scheduleMeetingCallback(msgModel);
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Container(
+                        width: context.width() * 0.45,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: appStore.isDarkModeOn ? cardDarkColor : black,
+                          borderRadius: BorderRadius.circular(45),
+                        ),
+                        child: Text("Send Invite",
+                            style: boldTextStyle(color: white)),
+                      ),
                     ),
-                    child:
-                        Text("Send Invite", style: boldTextStyle(color: white)),
-                  ),
+                  ],
                 ),
+                SizedBox(height: 24),
               ],
             ),
-            SizedBox(height: 24),
-          ],
-        ),
-      ),
+          )),
     );
   }
 }
