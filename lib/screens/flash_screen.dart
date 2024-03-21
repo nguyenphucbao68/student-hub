@@ -1,13 +1,8 @@
 import 'dart:async';
 
-import 'package:carea/screens/input_profile_cv_screen.dart';
-import 'package:carea/screens/input_profile_experience_screen.dart';
-import 'package:carea/screens/input_profile_tech_stack_screen.dart';
-import 'package:carea/screens/walkthrough_screen.dart';
+import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:carea/screens/login_with_pass_screen.dart';
-import 'package:carea/screens/home.dart';
 
 class FlashScreen extends StatefulWidget {
   const FlashScreen({Key? key}) : super(key: key);
