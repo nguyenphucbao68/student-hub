@@ -27,26 +27,6 @@ class BHMessageModel {
   int? receiverId;
   String? msg;
   String? time;
-  MeetingModel? meetingInfo;
 
-  BHMessageModel(
-      {this.senderId, this.receiverId, this.msg, this.time, this.meetingInfo});
-}
-
-class MeetingModel {
-  String? scheduleTitle;
-  String? startTime;
-  String? endTime;
-  String? duration;
-  bool? isCancel;
-
-  MeetingModel(
-      {this.scheduleTitle,
-      this.startTime,
-      this.endTime,
-      this.duration,
-      this.isCancel}) {
-    duration = "60 minutes";
-    isCancel = false;
-  }
+  BHMessageModel({this.senderId, this.receiverId, this.msg, this.time});
 }

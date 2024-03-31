@@ -1,12 +1,8 @@
-import 'package:carea/commons/chat_widget.dart';
 import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/data_provider.dart';
 import 'package:carea/components/chat_message_componet.dart';
-import 'package:carea/components/project_filter_component.dart';
-import 'package:carea/components/schedule_interview_component.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
-import 'package:carea/store/logicprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -27,17 +23,6 @@ class ChatScreenState extends State<ChatScreen> {
   TextEditingController msgController = TextEditingController();
 
   FocusNode msgFocusNode = FocusNode();
-
-  void createScheduleMeeting(BHMessageModel data) async {
-    msgListing.insert(0, data);
-    if (mounted) scrollController.animToTop();
-    FocusScope.of(context).requestFocus(msgFocusNode);
-    setState(() {});
-
-    await Future.delayed(Duration(seconds: 1));
-    if (mounted) scrollController.animToTop();
-    setState(() {});
-  }
 
   var msgListing = getChatMsgData();
   var personName = '';
@@ -64,10 +49,10 @@ class ChatScreenState extends State<ChatScreen> {
       hideKeyboard(context);
       msgListing.insert(0, msgModel);
 
-      // var msgModel1 = BHMessageModel();
-      // msgModel1.msg = msgController.text.toString();
-      // msgModel1.time = formatter.format(DateTime.now());
-      // msgModel1.senderId = BHReceiver_id;
+      var msgModel1 = BHMessageModel();
+      msgModel1.msg = msgController.text.toString();
+      msgModel1.time = formatter.format(DateTime.now());
+      msgModel1.senderId = BHReceiver_id;
 
       msgController.text = '';
 
@@ -77,12 +62,13 @@ class ChatScreenState extends State<ChatScreen> {
 
       await Future.delayed(Duration(seconds: 1));
 
-      // msgListing.insert(0, msgModel1);jj
+      msgListing.insert(0, msgModel1);
 
       if (mounted) scrollController.animToTop();
     } else {
       FocusScope.of(context).requestFocus(msgFocusNode);
     }
+
     setState(() {});
   }
 
@@ -93,24 +79,21 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.3,
-          iconTheme:
-              IconThemeData(color: appStore.isDarkModeOn ? white : black),
+          iconTheme: IconThemeData(color: appStore.isDarkModeOn ? white : black),
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(widget.name!, style: boldTextStyle(size: 18)),
-              // 8.width,
-              // Container(
-              //   padding: EdgeInsets.all(2),
-              //   decoration: boxDecorationWithRoundedCorners(
-              //       boxShape: BoxShape.circle, backgroundColor: Colors.blue),
-              //   child: Icon(Icons.done, color: white, size: 10),
-              // )
+              8.width,
+              Container(
+                padding: EdgeInsets.all(2),
+                decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: Colors.blue),
+                child: Icon(Icons.done, color: white, size: 10),
+              )
             ],
           ),
           actions: [
@@ -120,24 +103,10 @@ class ChatScreenState extends State<ChatScreen> {
                 },
                 icon: Icon(Icons.call, color: context.iconColor, size: 18)),
             IconButton(
-              icon: Icon(Icons.more_horiz, color: context.iconColor, size: 26),
-              onPressed: () {
-                showModalBottomSheet(
-                  enableDrag: true,
-                  isDismissible: true,
-                  isScrollControlled: true,
-                  constraints: BoxConstraints(
-                    minHeight: height * 0.55,
-                    maxHeight: height,
-                  ),
-                  context: context,
-                  builder: (context) {
-                    return ScheduleInterviewComponent(
-                        scheduleMeetingCallback: createScheduleMeeting);
-                  },
-                );
-              },
-            ),
+                onPressed: () {
+                  launch('sms:${123456789}');
+                },
+                icon: Icon(Icons.chat, color: context.iconColor, size: 18)),
           ],
         ),
         body: Stack(
@@ -155,25 +124,18 @@ class ChatScreenState extends State<ChatScreen> {
                   BHMessageModel data = msgListing[index];
                   var isMe = data.senderId == BHSender_id;
 
-                  return ChatWidget(
-                    isMe: isMe,
-                    data: data,
-                  );
+                  return ChatMessageComponent(isMe: isMe, data: data);
                 },
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding:
-                    EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 8),
-                decoration: BoxDecoration(
-                    color: context.cardColor, boxShadow: defaultBoxShadow()),
+                padding: EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 8),
+                decoration: BoxDecoration(color: context.cardColor, boxShadow: defaultBoxShadow()),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.calendar_month_rounded),
-                    8.width,
                     TextField(
                       controller: msgController,
                       focusNode: msgFocusNode,
@@ -181,9 +143,7 @@ class ChatScreenState extends State<ChatScreen> {
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration.collapsed(
-                        hintText: personName.isNotEmpty
-                            ? 'Write to ${widget.name}'
-                            : 'Type a message',
+                        hintText: personName.isNotEmpty ? 'Write to ${widget.name}' : 'Type a message',
                         hintStyle: primaryTextStyle(),
                         fillColor: context.cardColor,
                         filled: true,

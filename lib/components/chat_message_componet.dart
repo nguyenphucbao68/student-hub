@@ -17,17 +17,12 @@ class ChatMessageComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment:
-          isMe.validate() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe.validate() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           margin: isMe.validate()
-              ? EdgeInsets.only(
-                  top: 3.0,
-                  bottom: 3.0,
-                  right: 0,
-                  left: (500 * 0.25).toDouble())
+              ? EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0, left: (500 * 0.25).toDouble())
               : EdgeInsets.only(
                   top: 4.0,
                   bottom: 4.0,
@@ -56,8 +51,7 @@ class ChatMessageComponent extends StatelessWidget {
                   ),
           ),
           child: Column(
-            crossAxisAlignment:
-                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(

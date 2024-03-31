@@ -40,11 +40,7 @@ class _CallingComponentState extends State<CallingComponent> {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image.asset(data.imageUrl.validate(),
-            //     color: context.iconColor,
-            //     height: 40,
-            //     width: 40,
-            //     fit: BoxFit.cover),
+            Image.asset(data.imageUrl.validate(), color: context.iconColor, height: 40, width: 40, fit: BoxFit.cover),
             16.width,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,9 +67,7 @@ class _CallingComponentState extends State<CallingComponent> {
               onPressed: () {
                 launch('tel:${123456789}');
               },
-              icon: Icon(Icons.call,
-                  size: 18,
-                  color: appStore.isDarkModeOn ? white : gray.withOpacity(0.7)),
+              icon: Icon(Icons.call, size: 18, color: appStore.isDarkModeOn ? white : gray.withOpacity(0.7)),
             ),
           ],
         ).paddingSymmetric(vertical: 8);

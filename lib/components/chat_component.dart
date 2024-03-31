@@ -40,24 +40,14 @@ class _ChatComponentState extends State<ChatComponent> {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              margin: EdgeInsets.only(top: 15),
-              child: Image.asset(data.imageUrl.validate(),
-                  color: context.iconColor,
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                  fit: BoxFit.cover),
-            ),
+            Image.asset(data.imageUrl.validate(), color: context.iconColor, height: 40, width: 40, fit: BoxFit.cover),
             16.width,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(data.userName.validate(), style: boldTextStyle()),
-                2.height,
-                Text(data.subTitle.validate(), style: secondaryTextStyle()),
                 8.height,
-                Text(data.subTitle.validate(), style: primaryTextStyle()),
+                Text(data.subTitle.validate(), style: secondaryTextStyle()),
               ],
             ).expand(),
             Column(
@@ -65,22 +55,15 @@ class _ChatComponentState extends State<ChatComponent> {
                 data.countNumber.validate().isNotEmpty
                     ? Container(
                         padding: EdgeInsets.all(5),
-                        decoration: boxDecorationWithRoundedCorners(
-                            boxShape: BoxShape.circle,
-                            backgroundColor: context.iconColor),
+                        decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: context.iconColor),
                         child: Text(
                           data.countNumber.validate(),
-                          style: boldTextStyle(
-                              color: appStore.isDarkModeOn ? black : white,
-                              size: 12),
+                          style: boldTextStyle(color: appStore.isDarkModeOn ? black : white, size: 12),
                         ),
                       )
                     : Container(
                         padding: EdgeInsets.all(5),
-                        child: Text("",
-                            style: boldTextStyle(
-                                color: appStore.isDarkModeOn ? black : white,
-                                size: 12)),
+                        child: Text("", style: boldTextStyle(color: appStore.isDarkModeOn ? black : white, size: 12)),
                       ),
                 4.height,
                 Text(data.arriveTime.validate(), style: secondaryTextStyle()),

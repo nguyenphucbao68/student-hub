@@ -8,9 +8,6 @@ class LogicProvider = _LogicProvider with _$LogicProvider;
 
 abstract class _LogicProvider with Store {
   @observable
-  bool isLogined = false;
-
-  @observable
   int conter = 0;
 
   @observable

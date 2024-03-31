@@ -10,8 +10,7 @@ class InboxFragment extends StatefulWidget {
   _InboxFragmentState createState() => _InboxFragmentState();
 }
 
-class _InboxFragmentState extends State<InboxFragment>
-    with SingleTickerProviderStateMixin {
+class _InboxFragmentState extends State<InboxFragment> with SingleTickerProviderStateMixin {
   TabController? tabController;
 
   @override
@@ -46,7 +45,13 @@ class _InboxFragmentState extends State<InboxFragment>
             onPressed: () {
               //
             },
-            icon: Icon(Icons.person, color: context.iconColor, size: 20),
+            icon: Icon(Icons.search, color: context.iconColor, size: 20),
+          ),
+          actionWidget2: IconButton(
+            onPressed: () {
+              //
+            },
+            icon: Icon(Icons.chat, color: context.iconColor, size: 20),
           ),
         ),
         body: Column(
@@ -55,8 +60,7 @@ class _InboxFragmentState extends State<InboxFragment>
               unselectedLabelColor: gray.withOpacity(0.6),
               labelColor: Colors.red,
               labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              unselectedLabelStyle:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               indicatorColor: context.iconColor,
               tabs: [
                 Tab(child: Text('Chats')),
