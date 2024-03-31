@@ -1,28 +1,12 @@
-import 'package:carea/commons/app_component.dart';
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/constants.dart';
-import 'package:carea/components/active_component.dart';
+import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_project_component.dart';
-import 'package:carea/components/completed_component.dart';
-import 'package:carea/main.dart';
-import 'package:carea/screens/details_screen.dart';
-import 'package:carea/screens/notification_screen.dart';
-import 'package:carea/screens/payment_screen.dart';
-import 'package:carea/screens/profile_input_ahaa_screen.dart';
-import 'package:carea/screens/profile_screen.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
-import 'package:carea/screens/project_post_step2_screen.dart';
-import 'package:carea/screens/search_delageate.dart';
-import 'package:carea/screens/special_offer_screen.dart';
-import 'package:carea/screens/top_deals_screen.dart';
-import 'package:carea/screens/wish_list_screen.dart';
 import 'package:carea/store/logicprovider.dart';
 import 'package:carea/store/search_delagete_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:carea/commons/widgets.dart';
 
 class DashBoardFragment extends StatefulWidget {
   @override
@@ -109,9 +93,9 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Your jobs', style: boldTextStyle()),
+                      Text('Your projects', style: boldTextStyle()),
                       customButton(
-                        txt: 'Post a job',
+                        txt: 'Post a project',
                         wid: 120,
                         onTap: () {
                           Navigator.push(
@@ -123,7 +107,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                       )
                     ],
                   ),
-                  SizedBox(height: 25),
+                  SizedBox(height: 10),
                   Container(
                     height: MediaQuery.of(context).size.height -
                         MediaQuery.of(context).padding.top,
@@ -142,13 +126,21 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                         labelColor: Colors.white,
                         unselectedLabelColor: Colors.black,
                         tabs: tabs,
+                        // font size
+                        labelStyle: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                        // font weight
+
                         indicatorSize: TabBarIndicatorSize.tab,
                       ),
                       Expanded(
                         child: TabBarView(
                           controller: tabController,
                           children: [
-                            AllProjectComponents(titleProject: "all"),
+                            AllProjectComponents(
+                              titleProject: "all",
+                              isStudent: true,
+                            ),
                             AllProjectComponents(titleProject: "working"),
                             AllProjectComponents(titleProject: "archieved"),
                           ],

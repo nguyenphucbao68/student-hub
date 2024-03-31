@@ -1,6 +1,5 @@
 import 'package:carea/commons/colors.dart';
 import 'package:carea/components/active_component.dart';
-import 'package:carea/components/completed_component.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/project_search_screen.dart';
 import 'package:flutter/material.dart';

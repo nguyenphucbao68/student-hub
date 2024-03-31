@@ -40,15 +40,12 @@ class _ChatComponentState extends State<ChatComponent> {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              margin: EdgeInsets.only(top: 15),
-              child: Image.asset(data.imageUrl.validate(),
-                  color: context.iconColor,
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                  fit: BoxFit.cover),
-            ),
+            Image.asset(data.imageUrl.validate(),
+                color: context.iconColor,
+                height: 40,
+                width: 40,
+                alignment: Alignment.center,
+                fit: BoxFit.cover),
             16.width,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
