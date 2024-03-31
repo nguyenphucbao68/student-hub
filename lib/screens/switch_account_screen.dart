@@ -117,11 +117,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProfileInputAhaaScreen()),
-                );
+                //
               },
               trailing: Icon(Icons.arrow_forward_ios_rounded,
                   size: 18, color: context.iconColor),

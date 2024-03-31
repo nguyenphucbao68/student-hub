@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/images.dart';
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/screens/profile_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -18,16 +25,96 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  late AuthProvider auth;
 
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   FocusNode focusEmail = FocusNode();
+  FocusNode focusName = FocusNode();
   FocusNode focusPassword = FocusNode();
 
   bool isIconTrue = false;
 
   // declare userSignupStore
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    auth = Provider.of<AuthProvider>(context);
+  }
+
+  void _signup() async {
+    // if (_formKey.currentState!.validate()) {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final name = _nameController.text;
+
+    log("Email: " + email);
+    log("Password: " + password);
+    log("Name: " + name);
+
+    // code request api here (restful): http://localhost:4400/auth/sign-in
+    await http
+        .post(
+      Uri.parse(AppConstants.BASE_URL + '/auth/sign-up'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'fullName': name,
+        'role': auth.authSignUp == UserRole.STUDENT ? 0 : 1,
+      }),
+    )
+        .then((response) {
+      log("Res" + response.statusCode.toString());
+      if (response.statusCode == 201) {
+        // If the server returns an OK response, then parse the JSON.
+        var data = jsonDecode(response.body);
+        Widget okButton = TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginWithPassScreen()),
+            );
+          },
+        );
+
+        AlertDialog alert = AlertDialog(
+          title: Text("Congrats"),
+          content: Text("You've successfully signed up"),
+          actions: [
+            okButton,
+          ],
+        );
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+
+        log("Data" + data.toString());
+      } else {
+        // If the server returns an error response, then throw an exception.
+        // throw Exception('Failed to login');
+        log('Failed to login 2');
+      }
+    }).catchError((error) {
+      log('Failed to login' + error.toString());
+      // show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to login'),
+        ),
+      );
+    });
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +137,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fit: BoxFit.fitWidth,
                     image: AssetImage(student_hub)),
                 SizedBox(height: 16),
-                Text('Sign up as a Company', style: boldTextStyle(size: 24)),
+                Text(
+                    'Sign up as a ' +
+                        userRoleToText[auth.authSignUp as UserRole]!,
+                    style: boldTextStyle(size: 24)),
                 SizedBox(height: 20),
                 TextFormField(
-                  autofocus: false,
-                  focusNode: focusEmail,
+                  autofocus: true,
+                  focusNode: focusName,
                   onFieldSubmitted: (v) {
-                    focusEmail.unfocus();
-                    FocusScope.of(context).requestFocus(focusPassword);
+                    focusName.unfocus();
+                    FocusScope.of(context).requestFocus(focusEmail);
                   },
-                  controller: _emailController,
+                  controller: _nameController,
                   decoration: inputDecoration(context,
-                      prefixIcon: Icons.person, hintText: "Fullname"),
+                      prefixIcon: Icons.person, hintText: "Full Name"),
                 ),
                 SizedBox(height: 20),
                 TextFormField(
@@ -162,11 +252,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 GestureDetector(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()),
-                      );
+                      _signup();
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => ProfileScreen()),
+                      // );
                     }
                   },
                   child: Container(

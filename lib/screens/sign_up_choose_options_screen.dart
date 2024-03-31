@@ -2,9 +2,11 @@ import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/signup_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 class SignUpChooseOptionsScreen extends StatefulWidget {
   const SignUpChooseOptionsScreen({Key? key}) : super(key: key);
@@ -15,6 +17,8 @@ class SignUpChooseOptionsScreen extends StatefulWidget {
 }
 
 class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
+  late AuthProvider auth;
+
   TextEditingController? _emailController;
   TextEditingController? _passwordController;
 
@@ -23,6 +27,8 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
 
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
+
+  UserRole currentUserRole = UserRole.STUDENT;
 
   final _formKey = GlobalKey<FormState>();
   var userinfo;
@@ -38,6 +44,8 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     var userinfo = ModalRoute.of(context)!.settings.arguments;
+    auth = Provider.of<AuthProvider>(context);
+
     if (_emailController == null || _passwordController == null) {
       if (userinfo == null) {
         _emailController = TextEditingController();
@@ -84,7 +92,7 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
                 Text('Join as company or Student',
                     style: boldTextStyle(size: 24)),
                 SizedBox(height: 20),
-                RadioListTile<String>(
+                RadioListTile<UserRole>(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -97,9 +105,13 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
                       Text('I am a company, find engineer for project'),
                     ],
                   ),
-                  value: "company",
-                  groupValue: "userType",
-                  onChanged: (value) {},
+                  value: UserRole.COMPANY,
+                  groupValue: currentUserRole,
+                  onChanged: (value) {
+                    setState(() {
+                      currentUserRole = value!;
+                    });
+                  },
                   controlAffinity: ListTileControlAffinity.trailing,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -107,7 +119,7 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                RadioListTile<String>(
+                RadioListTile<UserRole>(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -120,10 +132,14 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
                       Text('I am a student looking for projects'),
                     ],
                   ),
-                  value: "student",
-                  groupValue: "userType",
+                  value: UserRole.STUDENT,
+                  groupValue: currentUserRole,
                   // color of the radio button
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      currentUserRole = value!;
+                    });
+                  },
                   controlAffinity: ListTileControlAffinity.trailing,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -133,6 +149,7 @@ class _SignUpChooseOptionsScreenState extends State<SignUpChooseOptionsScreen> {
                 SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
+                    auth.setAuthSignUp(currentUserRole);
                     Navigator.push(
                         context,
                         MaterialPageRoute(

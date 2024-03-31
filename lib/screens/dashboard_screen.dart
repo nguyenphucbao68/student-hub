@@ -20,11 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   var _pages = <Widget>[
     SavedProjectsFragment(),
-    // DashBoardFragment(),
-    // MessageFragment(),
-    // OrderFragment(),
     DashBoardFragment(),
-    InboxFragment(),
+    MessageFragment(),
+    // OrderFragment(),
     // AlertFragment(),
     SettingFragment(),
   ];
