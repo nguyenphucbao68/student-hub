@@ -133,7 +133,7 @@ List<CallingModel> chatDataList() {
   );
   chatList.add(
     CallingModel(
-      imageUrl: "assets/toyota.png",
+      imageUrl: "assets/honda.png",
       arriveTime: "06.30",
       countNumber: "8",
       userName: "BMW Store",
@@ -143,7 +143,7 @@ List<CallingModel> chatDataList() {
   );
   chatList.add(
     CallingModel(
-      imageUrl: "assets/volvo.png",
+      imageUrl: "assets/honda.png",
       arriveTime: "08.15",
       countNumber: "",
       userName: "Valkswagen official",
@@ -153,7 +153,7 @@ List<CallingModel> chatDataList() {
   );
   chatList.add(
     CallingModel(
-      imageUrl: "assets/hyundai.png",
+      imageUrl: "assets/honda.png",
       arriveTime: "10.20",
       countNumber: "4",
       userName: "Mercedes-Benz",
@@ -173,7 +173,7 @@ List<CallingModel> chatDataList() {
   );
   chatList.add(
     CallingModel(
-      imageUrl: "assets/volvo.png",
+      imageUrl: "assets/honda.png",
       arriveTime: "09.10",
       countNumber: "8",
       userName: "BMW Store",
@@ -377,6 +377,93 @@ List<CallingModel> activeDataList() {
   return activeList;
 }
 
+List<CallingModel> projectDataList() {
+  List<CallingModel> projectList = [];
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car1.png",
+      countNumber: "\$187.256",
+      userName: "Nissan Official",
+      colorValue: Colors.blue,
+      subTitle: "Blue",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car2.png",
+      countNumber: "\$250.150",
+      userName: "Opel Store",
+      colorValue: Colors.green,
+      subTitle: "Green",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car3.png",
+      countNumber: "\$300.100",
+      userName: "Tesla Motor",
+      colorValue: Colors.yellow,
+      subTitle: "Yellow",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car4.png",
+      countNumber: "\$500.250",
+      userName: "Dongfeng Store",
+      colorValue: Colors.red,
+      subTitle: "Red",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car5.png",
+      countNumber: "\$600.150",
+      userName: "BMW Store",
+      colorValue: Colors.blueAccent,
+      subTitle: "BlueAccent",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car6.png",
+      countNumber: "\$600.200",
+      userName: "Valkswagen official",
+      colorValue: Colors.greenAccent,
+      subTitle: "GreenAccent",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car7.png",
+      countNumber: "\$187.300",
+      userName: "Mercedes-Benz",
+      colorValue: Colors.purple,
+      subTitle: "Purple",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car8.png",
+      countNumber: "\200.400",
+      userName: "Honda Motor",
+      colorValue: Colors.pink,
+      subTitle: "Pink",
+    ),
+  );
+  projectList.add(
+    CallingModel(
+      imageUrl: "assets/car9.png",
+      countNumber: "\210.600",
+      userName: "BMW Store",
+      colorValue: Colors.blue,
+      subTitle: "Blue",
+    ),
+  );
+
+  return projectList;
+}
+
 List<BHMessageModel> getChatMsgData() {
   List<BHMessageModel> list = [];
 
@@ -384,21 +471,21 @@ List<BHMessageModel> getChatMsgData() {
   c1.senderId = BHSender_id;
   c1.receiverId = BHReceiver_id;
   c1.msg = 'Helloo';
-  c1.time = '1:43 AM';
+  c1.time = '1:49 AM';
   list.add(c1);
 
   BHMessageModel c2 = BHMessageModel();
   c2.senderId = BHSender_id;
   c2.receiverId = BHReceiver_id;
   c2.msg = 'How are you? What are you doing?';
-  c2.time = '1:45 AM';
+  c2.time = '1:48 AM';
   list.add(c2);
 
   BHMessageModel c3 = BHMessageModel();
   c3.senderId = BHReceiver_id;
   c3.receiverId = BHSender_id;
   c3.msg = 'Helloo...';
-  c3.time = '1:45 AM';
+  c3.time = '1:46 AM';
   list.add(c3);
 
   BHMessageModel c4 = BHMessageModel();
@@ -408,111 +495,14 @@ List<BHMessageModel> getChatMsgData() {
   c4.time = '1:45 AM';
   list.add(c4);
 
-  BHMessageModel c5 = BHMessageModel();
-  c5.senderId = BHSender_id;
-  c5.receiverId = BHReceiver_id;
-  c5.msg = 'I am good. Can you do something for me? I need your help.';
-  c5.time = '1:45 AM';
-  list.add(c5);
-
-  BHMessageModel c6 = BHMessageModel();
-  c6.senderId = BHReceiver_id;
-  c6.receiverId = BHSender_id;
-  c6.msg = 'I am good. Can you do something for me? I need your help.';
-  c6.time = '1:45 AM';
-  list.add(c6);
-
-  BHMessageModel c7 = BHMessageModel();
-  c7.senderId = BHSender_id;
-  c7.receiverId = BHReceiver_id;
-  c7.msg = 'I am good. Can you do something for me? I need your help.';
-  c7.time = '1:45 AM';
-  list.add(c7);
-
-  BHMessageModel c8 = BHMessageModel();
-  c8.senderId = BHReceiver_id;
-  c8.receiverId = BHSender_id;
-  c8.msg = 'I am good. Can you do something for me? I need your help.';
-  c8.time = '1:45 AM';
-  list.add(c8);
-
-  BHMessageModel c9 = BHMessageModel();
-  c9.senderId = BHSender_id;
-  c9.receiverId = BHReceiver_id;
-  c9.msg = 'I am good. Can you do something for me? I need your help.';
-  c9.time = '1:45 AM';
-  list.add(c9);
-
-  BHMessageModel c10 = BHMessageModel();
-  c10.senderId = BHReceiver_id;
-  c10.receiverId = BHSender_id;
-  c10.msg = 'I am good. Can you do something for me? I need your help.';
-  c10.time = '1:45 AM';
-  list.add(c10);
-
-  BHMessageModel c11 = BHMessageModel();
-  c11.senderId = BHReceiver_id;
-  c11.receiverId = BHSender_id;
-  c11.msg = 'I am good. Can you do something for me? I need your help.';
-  c11.time = '1:45 AM';
-  list.add(c11);
-
-  BHMessageModel c12 = BHMessageModel();
-  c12.senderId = BHSender_id;
-  c12.receiverId = BHReceiver_id;
-  c12.msg = 'I am good. Can you do something for me? I need your help.';
-  c12.time = '1:45 AM';
-  list.add(c12);
-
-  BHMessageModel c13 = BHMessageModel();
-  c13.senderId = BHSender_id;
-  c13.receiverId = BHReceiver_id;
-  c13.msg = 'I am good. Can you do something for me? I need your help.';
-  c13.time = '1:45 AM';
-  list.add(c13);
-
-  BHMessageModel c14 = BHMessageModel();
-  c14.senderId = BHReceiver_id;
-  c14.receiverId = BHSender_id;
-  c14.msg = 'I am good. Can you do something for me? I need your help.';
-  c14.time = '1:45 AM';
-  list.add(c14);
-
-  BHMessageModel c15 = BHMessageModel();
-  c15.senderId = BHSender_id;
-  c15.receiverId = BHReceiver_id;
-  c15.msg = 'I am good. Can you do something for me? I need your help.';
-  c15.time = '1:45 AM';
-  list.add(c15);
-
-  BHMessageModel c16 = BHMessageModel();
-  c16.senderId = BHReceiver_id;
-  c16.receiverId = BHSender_id;
-  c16.msg = 'I am good. Can you do something for me? I need your help.';
-  c16.time = '1:45 AM';
-  list.add(c16);
-
-  BHMessageModel c17 = BHMessageModel();
-  c17.senderId = BHSender_id;
-  c17.receiverId = BHReceiver_id;
-  c17.msg = 'I am good. Can you do something for me? I need your help.';
-  c17.time = '1:45 AM';
-  list.add(c17);
-
-  BHMessageModel c18 = BHMessageModel();
-  c18.senderId = BHReceiver_id;
-  c18.receiverId = BHSender_id;
-  c18.msg = 'I am good. Can you do something for me? I need your help.';
-  c18.time = '1:45 AM';
-  list.add(c18);
-
   return list;
 }
 
 List<CallingModel> carBrandList() {
   List<CallingModel> carBrandData = [];
   carBrandData.add(CallingModel(userName: "All", selectCarCategory: false));
-  carBrandData.add(CallingModel(userName: "Mercedes", selectCarCategory: false));
+  carBrandData
+      .add(CallingModel(userName: "Mercedes", selectCarCategory: false));
   carBrandData.add(CallingModel(userName: "Tesla", selectCarCategory: false));
   carBrandData.add(CallingModel(userName: "BMW", selectCarCategory: false));
   carBrandData.add(CallingModel(userName: "Honda", selectCarCategory: false));
@@ -524,7 +514,8 @@ List<CallingModel> carConditionList() {
   List<CallingModel> carConditionData = [];
   carConditionData.add(CallingModel(userName: "All", selectCarCategory: false));
   carConditionData.add(CallingModel(userName: "New", selectCarCategory: false));
-  carConditionData.add(CallingModel(userName: "Used", selectCarCategory: false));
+  carConditionData
+      .add(CallingModel(userName: "Used", selectCarCategory: false));
 
   return carConditionData;
 }

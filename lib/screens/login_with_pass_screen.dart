@@ -3,6 +3,7 @@ import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/forgot_pass_screen.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/input_profile_tech_stack_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/material.dart';
@@ -93,12 +94,12 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                       f1.unfocus();
                       FocusScope.of(context).requestFocus(f2);
                     },
-                    validator: (k) {
-                      if (!k!.contains('@')) {
-                        return 'Please enter the correct email';
-                      }
-                      return null;
-                    },
+                    // validator: (k) {
+                    //   if (!k!.contains('@')) {
+                    //     return 'Please enter the correct email';
+                    //   }
+                    //   return null;
+                    // },
                     controller: _emailController,
                     decoration: inputDecoration(context,
                         prefixIcon: Icons.mail_rounded, hintText: "Email"),
@@ -108,9 +109,9 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                     controller: _passwordController,
                     obscureText: isIconTrue,
                     focusNode: f2,
-                    validator: (value) {
-                      return Validate.validate(value!);
-                    },
+                    // validator: (value) {
+                    //   return Validate.validate(value!);
+                    // },
                     onFieldSubmitted: (v) {
                       f2.unfocus();
                       if (_formKey.currentState!.validate()) {

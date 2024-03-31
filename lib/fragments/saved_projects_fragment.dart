@@ -1,17 +1,16 @@
 import 'package:carea/commons/colors.dart';
 import 'package:carea/components/active_component.dart';
-import 'package:carea/components/completed_component.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/project_search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-class ProjectsFragment extends StatefulWidget {
+class SavedProjectsFragment extends StatefulWidget {
   @override
-  _ProjectsFragmentState createState() => _ProjectsFragmentState();
+  _SavedProjectsFragmentState createState() => _SavedProjectsFragmentState();
 }
 
-class _ProjectsFragmentState extends State<ProjectsFragment>
+class _SavedProjectsFragmentState extends State<SavedProjectsFragment>
     with SingleTickerProviderStateMixin {
   TabController? tabController;
 

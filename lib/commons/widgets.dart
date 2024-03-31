@@ -36,15 +36,16 @@ Widget customButton({
   double? wid,
   double? high = 40,
   final Color? color = primaryBlackColor,
-  final double? elevation = 10,
+  final double? elevation = 5,
   final BoxBorder? border,
   final Color? txtcolor = primaryWhiteColor,
+  final double? textSize = 14,
 }) {
   return InkWell(
     onTap: onTap,
     child: Card(
-      elevation: elevation,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
+      // elevation: elevation,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       child: Container(
         height: high,
         width: wid,
@@ -52,8 +53,8 @@ Widget customButton({
         decoration: BoxDecoration(
             border: border,
             color: color,
-            borderRadius: BorderRadius.circular(45)),
-        child: Text(txt, style: TextStyle(color: txtcolor)),
+            borderRadius: BorderRadius.circular(40)),
+        child: Text(txt, style: TextStyle(color: txtcolor, fontSize: textSize)),
       ),
     ),
   );
@@ -379,4 +380,46 @@ String formatDate(String? dateTime,
   } else {
     return DateFormat(format).format(DateTime.parse(dateTime.validate()));
   }
+}
+
+Row dialogWithTitle(
+  BuildContext context, {
+  required String title,
+  required List<Widget> childrenWidget,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        title,
+        style: boldTextStyle(size: 14),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        backgroundColor: Colors.white,
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                left: 20.0,
+                                right: 20.0,
+                                bottom: 15.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: childrenWidget,
+                            )),
+                      );
+                    });
+              },
+              icon: Icon(Icons.add_circle_outline)),
+        ],
+      ),
+    ],
+  );
 }
