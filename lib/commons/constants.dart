@@ -241,3 +241,4 @@ const List listOfCarBrandName = [
 ];
 
 const DATE_FORMAT_2 = 'd MMM, yyyy';
+const DATE_FORMAT_3 = 'dd/MM/yyyy';
