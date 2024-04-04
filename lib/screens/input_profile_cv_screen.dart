@@ -5,6 +5,8 @@ import 'package:carea/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/main.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:open_app_file/open_app_file.dart';
 
 class InputProfileCVScreen extends StatefulWidget {
   const InputProfileCVScreen({super.key});
@@ -14,6 +16,8 @@ class InputProfileCVScreen extends StatefulWidget {
 }
 
 class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
+  PlatformFile? file;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +59,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    UploadFile(onTapOverride: () {}),
+                    UploadFile(onTapOverride: pickSingleFile),
                     SizedBox(
                       height: 20,
                     ),
@@ -70,7 +74,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    UploadFile(onTapOverride: () {}),
+                    UploadFile(onTapOverride: pickSingleFile),
                     SizedBox(
                       height: 100,
                     ),
@@ -85,6 +89,41 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
                   //       builder: (context) => RegistrationScreen()),
                   // );
                   HomeScreen().launch(context, isNewTask: true);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          backgroundColor: Colors.white,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                left: 20.0,
+                                right: 20.0,
+                                bottom: 15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Welcome",
+                                  style: boldTextStyle(size: 14),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                    "Welcome to StudentHub, a marketplace to connect Student <> Real-world projects"),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Next",
+                                      style: boldTextStyle(color: white)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      });
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -101,5 +140,15 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
             ],
           )),
     );
+  }
+
+  Future<void> pickSingleFile() async {
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+
+    if (result != null) {
+      file = result.files.first;
+      file == null ? false : OpenAppFile.open(file!.path.toString());
+    }
   }
 }
