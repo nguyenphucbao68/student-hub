@@ -1,19 +1,18 @@
-import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
+import 'package:carea/model/project.dart';
 import 'package:carea/screens/registration_screen.dart';
 import 'package:carea/screens/submit_proposal_screen.dart';
 import 'package:carea/screens/wish_list_screen.dart';
-import 'package:carea/screens/zoom_image_screen.dart';
+import 'package:carea/utils/Date.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import '../commons/colors.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
   // ProjectDetailScreen({Key? key, required this.image}) : super(key: key);
-  const ProjectDetailScreen({super.key});
+  Project? data = Project();
+
+  ProjectDetailScreen({super.key, this.data});
   // String image = "";
 
   @override
@@ -57,6 +56,8 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   void didChangeDependencies() {
     tabController;
     super.didChangeDependencies();
+
+    log(widget.data);
   }
 
   @override
@@ -91,54 +92,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   height: MediaQuery.of(context).size.width * 0.65,
-                //   child: PageView.builder(
-                //     controller: pageController,
-                //     itemCount: carname.length,
-                //     itemBuilder: (context, index) => Container(
-                //       width: MediaQuery.of(context).size.width,
-                //       height: MediaQuery.of(context).size.width * 0.55,
-                //       padding: EdgeInsets.all(20),
-                //       margin: EdgeInsets.all(5),
-                //       alignment: Alignment.center,
-                //       child: Image.asset(
-                //           (widget.image.isNotEmpty)
-                //               ? widget.image
-                //               : ListOfCarImg[0],
-                //           alignment: Alignment.topCenter),
-                //     ),
-                //   ),
-                // ),
-
-                // Align(
-                //   alignment: Alignment.bottomCenter,
-                //   child: SmoothPageIndicator(
-                //     controller: pageController,
-                //     count: 3,
-                //     effect: CustomizableEffect(
-                //       activeDotDecoration: DotDecoration(
-                //         height: 8,
-                //         width: 8,
-                //         color:
-                //             appStore.isDarkModeOn ? white : primaryBlackColor,
-                //         borderRadius: BorderRadius.circular(40),
-                //       ),
-                //       dotDecoration: DotDecoration(
-                //         height: 8,
-                //         width: 8,
-                //         color: Colors.grey,
-                //         borderRadius: BorderRadius.circular(40),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 15),
                 Padding(
                     padding: EdgeInsets.only(left: 16),
-                    child:
-                        Text("ItViec Project", style: boldTextStyle(size: 20))),
+                    child: Text(widget.data!.title!,
+                        style: boldTextStyle(size: 20))),
                 SizedBox(height: 15),
                 Padding(
                   padding: EdgeInsets.only(left: 16),
@@ -150,15 +107,17 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             borderRadius: BorderRadius.circular(6)),
-                        child: Text("3 days ago",
+                        child: Text(
+                            DateHandler.getDateTimeDifference(
+                                DateTime.parse(widget.data!.createdAt!)),
                             style:
                                 TextStyle(color: Colors.black, fontSize: 12)),
                       ),
                       SizedBox(width: 8),
-                      Icon(Icons.star_half_rounded, color: context.iconColor),
-                      SizedBox(width: 8),
-                      Text('4.9 (86 reviews)', style: secondaryTextStyle()),
-                      SizedBox(width: 8),
+                      // Icon(Icons.star_half_rounded, color: context.iconColor),
+                      // SizedBox(width: 8),
+                      // Text('4.9 (86 reviews)', style: secondaryTextStyle()),
+                      // SizedBox(width: 8),
                     ],
                   ),
                 ),
@@ -174,10 +133,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                 Text.rich(
                   TextSpan(
                     style: secondaryTextStyle(),
-                    text:
-                        "  - Clear expectation about your project and deliverables\n"
-                        "  - The skills required for your project\n"
-                        "  - Detail about your project",
+                    // text:
+                    //     "  - Clear expectation about your project and deliverables\n"
+                    //     "  - The skills required for your project\n"
+                    //     "  - Detail about your project",
+                    text: widget.data!.description,
                     // children: [
                     //   TextSpan(
                     //       text: ' view more ...', style: primaryTextStyle()),
@@ -192,7 +152,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       child: Text("Extra Information", style: boldTextStyle())),
                 ),
                 SizedBox(height: 5),
-
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 16),
                   leading: Icon(Icons.alarm_rounded, size: 30),
@@ -207,12 +166,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                   leading: Icon(Icons.people, size: 30),
                   title: Text("Student required", style: boldTextStyle()),
                   subtitle: Text(
-                    "6 students",
+                    widget.data!.numberOfStudents.toString() + " students",
                     style: secondaryTextStyle(),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width * 0.015),
-
                 Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(

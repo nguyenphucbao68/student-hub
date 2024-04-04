@@ -86,15 +86,13 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
       }),
     )
         .then((response) {
-      log("Res" + response.statusCode.toString());
       if (response.statusCode == 201) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
         log("Data" + data.toString());
         if (data['result'] != null) {
           // save token to local storage
-          // setStringAsync('token', data['token']);
-          // observer.token = data['result']['token'];
+
           observer.login(data['result']['token']);
           log('Login success' + data['result']['token']);
 
