@@ -19,7 +19,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   var _pages = <Widget>[
-    SavedProjectsFragment(),
+    // SavedProjectsFragment(),
+    ProjectsFragment(),
     DashBoardFragment(),
     MessageFragment(),
     // OrderFragment(),

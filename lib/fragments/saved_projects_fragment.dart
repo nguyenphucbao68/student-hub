@@ -63,7 +63,7 @@ class _SavedProjectsFragmentState extends State<SavedProjectsFragment>
               icon: Icon(Icons.chat, color: context.iconColor),
             ),
           ],
-          title: Text("Saved Projects", style: boldTextStyle(size: 18)),
+          title: Text("All Projects", style: boldTextStyle(size: 18)),
           elevation: 0.0,
         ),
         body: new ActiveComponent(),
