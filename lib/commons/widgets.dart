@@ -188,14 +188,18 @@ PreferredSizeWidget careaAppBarWidget(BuildContext context,
 }
 
 PreferredSizeWidget commonAppBarWidget(BuildContext context,
-    {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
+    {String? titleText,
+    Widget? actionWidget,
+    Widget? actionWidget2,
+    bool? automaticallyImplyLeading}) {
   return AppBar(
     elevation: 0,
     toolbarHeight: 50,
     // backgroundColor: appStore.isDarkModeOn ? scaffoldDarkColor : white,
     backgroundColor: Color.fromARGB(255, 228, 227, 227),
     title: Text("Student Hub", style: boldTextStyle()),
-    automaticallyImplyLeading: false,
+    automaticallyImplyLeading:
+        automaticallyImplyLeading != null ? automaticallyImplyLeading : false,
     // leading: GestureDetector(
     //   child: Padding(
     //     padding: EdgeInsets.only(top: 8, right: 8, bottom: 8, left: 16),
@@ -386,6 +390,7 @@ Row dialogWithTitle(
   BuildContext context, {
   required String title,
   required List<Widget> childrenWidget,
+  VoidCallback? beforeDialogOpen,
 }) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -399,6 +404,7 @@ Row dialogWithTitle(
         children: [
           IconButton(
               onPressed: () {
+                beforeDialogOpen != null ? beforeDialogOpen() : {};
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {

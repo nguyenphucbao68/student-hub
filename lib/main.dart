@@ -69,14 +69,14 @@ class _MyAppState extends State<MyApp> {
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-        // home: FlashScreen(),
+        home: FlashScreen(),
         // home: PaymentScreen(),
         // home: ProfileInputNhapScreen(),
         // home: SavedProjectsFragment(),
         // home: ProjectSearchScreen(),
         // home: DashBoardFragment(),
 
-        home: InboxFragment(),
+        // home: InboxFragment(),
       ),
     );
   }
