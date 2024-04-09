@@ -7,9 +7,11 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_search_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ProjectsFragment extends StatefulWidget {
   @override
@@ -19,6 +21,7 @@ class ProjectsFragment extends StatefulWidget {
 class _ProjectsFragmentState extends State<ProjectsFragment>
     with SingleTickerProviderStateMixin {
   TabController? tabController;
+  late AuthProvider authStore;
 
   // list projects
   List<Project> projects = [];
@@ -26,6 +29,12 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
     init();
   }
 
@@ -45,6 +54,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
       Uri.parse(AppConstants.BASE_URL + '/project'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
       },
     ).then((response) {
       log(response.body);

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/constants.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/store/AppStore.dart';
@@ -7,8 +10,10 @@ import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
   //region Entry Point
@@ -45,9 +50,55 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late AuthProvider authStore;
+  int isAuthenticated = 0;
+
   @override
-  Widget build(BuildContext context) {
-    final authStore = Provider.of<AuthProvider>(context);
+  initState() {
+    super.initState();
+    checkAuth();
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+  }
+
+  Future<void> checkAuth() async {
+    final _storage = new FlutterSecureStorage();
+    final token = await _storage.read(key: 'token') ?? '';
+
+    // code request api here (restful): http://localhost:4400/auth/sign-in
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + token,
+      },
+    ).then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        log("Data" + data.toString());
+        setState(() {
+          isAuthenticated = 1;
+        });
+      } else {
+        setState(() {
+          isAuthenticated = 2;
+        });
+      }
+    }).catchError((error) {
+      // authStore.setLoggedIn(false);
+      setState(() {
+        isAuthenticated = 2;
+      });
+    });
+  }
+
+  @override
+  build(BuildContext context) {
+    log('test');
 
     return Observer(
       builder: (_) => MaterialApp(
@@ -61,17 +112,17 @@ class _MyAppState extends State<MyApp> {
         // home: LoginWithPassScreen(),
         home: Observer(
           builder: (context) {
-            log("token" + authStore.token.toString());
-            return !authStore.isLoggedIn ? LoginWithPassScreen() : HomeScreen();
+            authStore.setLoggedIn(isAuthenticated == 1);
+            if (isAuthenticated == 0) {
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            return isAuthenticated == 2 ? LoginWithPassScreen() : HomeScreen();
           },
         ),
-        // home: PaymentScreen(),
-        // home: ProfileInputNhapScreen(),
-        // home: SavedProjectsFragment(),
-        // home: ProjectSearchScreen(),
-        // home: DashBoardFragment(),
-
-        // home: InboxFragment(),
       ),
     );
   }
