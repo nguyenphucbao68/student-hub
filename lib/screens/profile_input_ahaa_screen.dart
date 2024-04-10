@@ -99,7 +99,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
 
   void hadleUpdateCompany() async {
     final name = companyNameController.text;
-    final size = int.parse(sizeController.text) | 1;
+    final size = int.tryParse(sizeController.text) ?? 1;
     final web = websiteController.text;
     final desc = descriptionController.text;
     int companyID = profi.userInfo?.company['id'];

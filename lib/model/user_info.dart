@@ -28,7 +28,6 @@ class UserInfo {
   UserInfo({
     this.id,
     this.fullName,
-    this.currentRole,
     this.roles,
     this.student,
     this.company,

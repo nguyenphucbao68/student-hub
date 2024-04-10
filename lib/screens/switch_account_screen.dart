@@ -62,7 +62,6 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
           UserInfo userInfo = UserInfo(
             id: data['result']['id'],
             fullName: data['result']['fullname'],
-            currentRole: data['result']['currentRole'],
             roles: data['result']['roles'],
             student: data['result']['student'],
             company: data['result']['company'],
