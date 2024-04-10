@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
-import 'package:carea/screens/create_pin_screen.dart';
+import 'package:carea/screens/welcome_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class ProfileInputNhapScreen extends StatefulWidget {
   ProfileInputNhapScreen({Key? key, this.isAppbarNeeded, this.appBar})
       : super(key: key);
@@ -15,38 +22,81 @@ class ProfileInputNhapScreen extends StatefulWidget {
 }
 
 class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
+  late AuthProvider authStore;
+
   final _formKey = GlobalKey<FormState>();
-
   FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  FocusNode f3 = FocusNode();
-
-  // String? selectedOption;
-
   TextEditingController companyNameController = TextEditingController();
   TextEditingController websiteController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-
-  final List<String> paymentList = [
+  final List<String> compSizeList = [
     "It's just me",
     "2-9 employees",
     "10-99 employees",
     "100-1000 employees",
     "More than 1000 employees",
   ];
-  // final List<String> paymentImageList = [
-  //   'assets/ic_wallet.png',
-  //   'assets/ic_paypal.png',
-  //   'assets/google.png',
-  //   'assets/apple.png',
-  //   'assets/ic_master_card.png',
-  // ];
-
-  var payment = '';
+  var compSize = '';
+  final List<int> compSizeListInt = [1, 5, 55, 555, 1001];
 
   @override
   void initState() {
     super.initState();
+    compSize = compSizeList[0];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+  }
+
+  void hadleCreateCompany() async {
+    final name = companyNameController.text;
+    final size = compSizeListInt[compSizeList.indexOf(compSize)];
+    final web = websiteController.text;
+    final desc = descriptionController.text;
+
+    await http
+        .post(
+      Uri.parse(AppConstants.BASE_URL + '/profile/company'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "companyName": name,
+        "size": size,
+        "website": web,
+        "description": desc
+      }),
+    )
+        .then((response) {
+      if (response.statusCode == 201) {
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['message']),
+            ),
+          );
+        }
+      } else {
+        print(response.statusCode);
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to login'),
+        ),
+      );
+    });
+    // }
   }
 
   @override
@@ -59,10 +109,10 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
       child: Scaffold(
         appBar: careaAppBarWidget(
           context,
-          titleText: "StudentHub",
+          titleText: "Company Profile",
           actionWidget: IconButton(
               onPressed: () {},
-              icon: Icon(Icons.search, color: context.iconColor)),
+              icon: Icon(Icons.person, color: context.iconColor)),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -106,7 +156,7 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
                       height: 350,
                       child: ListView.separated(
                         controller: ScrollController(),
-                        itemCount: paymentList.length,
+                        itemCount: compSizeList.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 10),
                         itemBuilder: (context, index) => Container(
                           margin: EdgeInsets.only(bottom: 8),
@@ -123,18 +173,18 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
                             title: Row(
                               children: [
                                 SizedBox(width: 16),
-                                Text(paymentList[index],
+                                Text(compSizeList[index],
                                     style: primaryTextStyle()),
                               ],
                             ),
                             controlAffinity: ListTileControlAffinity.trailing,
-                            value: paymentList[index],
-                            groupValue: payment,
+                            value: compSizeList[index],
+                            groupValue: compSize,
                             activeColor: context.iconColor,
                             hoverColor: Colors.black,
                             onChanged: (value) {
                               setState(() {
-                                payment = value.toString();
+                                compSize = value.toString();
                               });
                             },
                           ),
@@ -159,7 +209,7 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
                       },
                       onFieldSubmitted: (v) {
                         f1.unfocus();
-                        FocusScope.of(context).requestFocus(f2);
+                        FocusScope.of(context).requestFocus(f1);
                       },
                       decoration:
                           inputDecoration(context, hintText: "Company name"),
@@ -174,11 +224,6 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
                     SizedBox(height: 10),
                     TextFormField(
                       controller: websiteController,
-                      focusNode: f2,
-                      onFieldSubmitted: (v) {
-                        f2.unfocus();
-                        FocusScope.of(context).requestFocus(f3);
-                      },
                       decoration: inputDecoration(context, hintText: "Website"),
                     ),
                     SizedBox(height: 15),
@@ -191,13 +236,8 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
                     SizedBox(height: 10),
                     TextFormField(
                       controller: descriptionController,
-                      focusNode: f3,
                       minLines: 3,
                       maxLines: 3,
-                      onFieldSubmitted: (v) {
-                        f3.unfocus();
-                        FocusScope.of(context).requestFocus(f3);
-                      },
                       decoration:
                           inputDecoration(context, hintText: "Description"),
                     ),
@@ -205,11 +245,7 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
                     GestureDetector(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreatePinScreen()),
-                          );
+                          hadleCreateCompany();
                         }
                       },
                       child: Container(

@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/screens/notification_screen.dart';
-import 'package:carea/screens/payment_screen.dart';
 import 'package:carea/screens/profile_input_ahaa_screen.dart';
-import 'package:carea/screens/profile_screen.dart';
+import 'package:carea/screens/profile_input_nhap_screen.dart';
+import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class SwitchAccountScreen extends StatefulWidget {
   @override
@@ -14,14 +20,25 @@ class SwitchAccountScreen extends StatefulWidget {
 }
 
 class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
+  late AuthProvider authStore;
+  late ProfileOb profi;
+  bool hasComp = true;
+  bool showRow = false;
+
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
     init();
   }
 
   void init() async {
-    //
+    await getMe();
   }
 
   @override
@@ -29,13 +46,34 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
     if (mounted) super.setState(fn);
   }
 
-  bool showRow = false;
+  Future<void> getMe() async {
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    ).then((response) {
+      log(response.body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          authStore.setCurrentRole(data['result']['roles'][0].toString());
+          authStore.setFullName(data['result']['fullname'].toString());
+          setState(() {
+            hasComp = data['result']['company'] != null;
+          });
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
-        titleText: "StudentHub",
+        titleText: "Setting",
         actionWidget: IconButton(
             onPressed: () {},
             icon: Icon(Icons.search, color: context.iconColor)),
@@ -117,7 +155,13 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                //
+                var destinationScreen = authStore.currentRole == "1" && hasComp
+                    ? ProfileInputAhaaScreen()
+                    : ProfileInputNhapScreen();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => destinationScreen),
+                );
               },
               trailing: Icon(Icons.arrow_forward_ios_rounded,
                   size: 18, color: context.iconColor),

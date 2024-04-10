@@ -22,6 +22,12 @@ abstract class _AuthProvider with Store {
   String? token = '';
 
   @observable
+  String? currentRole = '0';
+
+  @observable
+  String? fullName = '';
+
+  @observable
   UserRole authSignUp = UserRole.STUDENT;
 
   // @computed
@@ -54,5 +60,15 @@ abstract class _AuthProvider with Store {
   @action
   Future<void> checkLoggedIn() async {
     token = await _storage.read(key: 'token');
+  }
+
+  @action
+  Future<void> setCurrentRole(String currentRole) async {
+    this.currentRole = currentRole;
+  }
+
+  @action
+  Future<void> setFullName(String fullName) async {
+    this.fullName = fullName;
   }
 }
