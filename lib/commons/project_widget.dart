@@ -73,7 +73,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                             size: 25,
                             color: context.iconColor),
                         onPressed: () {},
-                        padding: EdgeInsets.only(left: 15)),
+                        padding: EdgeInsets.only(left: 5, right: 5)),
                   ],
                 ),
               ),
