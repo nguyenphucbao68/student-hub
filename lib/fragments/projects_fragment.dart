@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:carea/commons/colors.dart';
 import 'package:carea/components/active_component.dart';
-import 'package:carea/components/completed_component.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
-import 'package:carea/screens/project_search_screen.dart';
+import 'package:carea/screens/search_delageate.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
 class ProjectsFragment extends StatefulWidget {
@@ -49,7 +48,6 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
   }
 
   Future<void> getProjects() async {
-    log('test');
     await http.get(
       Uri.parse(AppConstants.BASE_URL + '/project'),
       headers: <String, String>{
@@ -61,7 +59,6 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
       if (response.statusCode == 200) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
-        log(data);
 
         if (data['result'] != null) {
           setState(() {
@@ -76,9 +73,10 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
                     title: item['title'],
                     description: item['description'],
                     numberOfStudents: item['numberOfStudents'],
-                    typeFlag: item['typeFlag']))
+                    typeFlag: item['typeFlag'],
+                    countProposals: item['countProposals'],
+                    isFavorite: item['isFavorite']))
                 .toList();
-            log(projects);
           });
         } else {
           log('error');
@@ -118,10 +116,9 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProjectSearchScreen()),
+                showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate.initialize(""),
                 );
               },
               icon: Icon(Icons.search, color: context.iconColor),

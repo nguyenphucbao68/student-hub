@@ -1,4 +1,5 @@
 import 'package:carea/commons/constants.dart';
+import 'package:carea/model/project.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -9,6 +10,9 @@ class LogicProvider = _LogicProvider with _$LogicProvider;
 abstract class _LogicProvider with Store {
   @observable
   bool isLogined = false;
+
+  @observable
+  List<Project> projects = [];
 
   @observable
   int conter = 0;
@@ -104,5 +108,10 @@ abstract class _LogicProvider with Store {
     }
     listofcolor[index] = bgColor;
     listofTextColor[index] = textColor;
+  }
+
+  @action
+  void setProjects(List<Project> projects) {
+    this.projects = projects;
   }
 }

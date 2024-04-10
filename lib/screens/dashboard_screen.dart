@@ -1,10 +1,6 @@
 import 'package:carea/fragments/dashboard_fragment.dart';
-import 'package:carea/fragments/inbox_fragment.dart';
 import 'package:carea/fragments/message_fragment.dart';
-import 'package:carea/fragments/orders_fragment.dart';
 import 'package:carea/fragments/projects_fragment.dart';
-import 'package:carea/fragments/alert_fragment.dart';
-import 'package:carea/fragments/saved_projects_fragment.dart';
 import 'package:carea/fragments/setting_fragment.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';

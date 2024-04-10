@@ -98,8 +98,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   build(BuildContext context) {
-    log('test');
-
     return Observer(
       builder: (_) => MaterialApp(
         scrollBehavior: SBehavior(),
