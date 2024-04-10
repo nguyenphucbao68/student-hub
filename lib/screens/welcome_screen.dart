@@ -28,7 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String name = authStore.fullName.toString();
+    String name = authStore.userInfo!.fullName.toString();
     return Scaffold(
       appBar: careaAppBarWidget(
         context,

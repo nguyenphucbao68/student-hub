@@ -5,6 +5,23 @@ part 'authprovider.g.dart';
 
 class AuthProvider = _AuthProvider with _$AuthProvider;
 
+class UserInfo {
+  int? id;
+  String? fullName;
+  int? currentRole;
+  dynamic roles;
+  dynamic student;
+  dynamic company;
+  UserInfo({
+    this.id,
+    this.fullName,
+    this.currentRole,
+    this.roles,
+    this.student,
+    this.company,
+  });
+}
+
 enum UserRole {
   STUDENT,
   COMPANY,
@@ -22,10 +39,7 @@ abstract class _AuthProvider with Store {
   String? token = '';
 
   @observable
-  String? currentRole = '0';
-
-  @observable
-  String? fullName = '';
+  UserInfo? userInfo = new UserInfo();
 
   @observable
   UserRole authSignUp = UserRole.STUDENT;
@@ -63,12 +77,13 @@ abstract class _AuthProvider with Store {
   }
 
   @action
-  Future<void> setCurrentRole(String currentRole) async {
-    this.currentRole = currentRole;
+  Future<void> setUserInfo(dynamic us) async {
+    this.userInfo = us;
+    this.userInfo?.currentRole = us.roles[0];
   }
 
   @action
-  Future<void> setFullName(String fullName) async {
-    this.fullName = fullName;
+  Future<void> setUserInfoCompany(dynamic comp) async {
+    this.userInfo?.company = comp;
   }
 }

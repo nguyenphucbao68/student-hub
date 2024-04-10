@@ -22,7 +22,6 @@ class SwitchAccountScreen extends StatefulWidget {
 class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
   late AuthProvider authStore;
   late ProfileOb profi;
-  bool hasComp = true;
   bool showRow = false;
 
   @override
@@ -58,11 +57,15 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['result'] != null) {
-          authStore.setCurrentRole(data['result']['roles'][0].toString());
-          authStore.setFullName(data['result']['fullname'].toString());
-          setState(() {
-            hasComp = data['result']['company'] != null;
-          });
+          UserInfo userInfo = UserInfo(
+            id: data['result']['id'],
+            fullName: data['result']['fullName'],
+            currentRole: data['result']['currentRole'],
+            roles: data['result']['roles'],
+            student: data['result']['student'],
+            company: data['result']['company'],
+          );
+          authStore.setUserInfo(userInfo);
         }
       }
     });
@@ -73,7 +76,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
-        titleText: "Setting",
+        titleText: "Profile manage",
         actionWidget: IconButton(
             onPressed: () {},
             icon: Icon(Icons.search, color: context.iconColor)),
@@ -155,7 +158,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                var destinationScreen = authStore.currentRole == "1" && hasComp
+                var destinationScreen = authStore.userInfo?.company != null
                     ? ProfileInputAhaaScreen()
                     : ProfileInputNhapScreen();
                 Navigator.push(

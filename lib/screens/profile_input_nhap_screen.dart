@@ -92,11 +92,10 @@ class _ProfileInputNhapScreenState extends State<ProfileInputNhapScreen> {
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to login'),
+          content: Text(error.toString()),
         ),
       );
     });
-    // }
   }
 
   @override
