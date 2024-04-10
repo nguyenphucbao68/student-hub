@@ -1,12 +1,12 @@
-import 'package:carea/commons/colors.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/calling_model.dart';
+import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:carea/utils/Date.dart';
 
 class ProjectWidget extends StatefulWidget {
-  CallingModel? data = CallingModel();
+  Project? data = Project();
   String? btnText1;
   String? btnText2;
 
@@ -38,7 +38,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProjectDetailScreen()),
+            MaterialPageRoute(
+                builder: (context) => ProjectDetailScreen(
+                      data: widget.data,
+                    )),
           );
         },
         child: Container(
@@ -60,13 +63,17 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                   children: <Widget>[
                     Expanded(
                         flex: 1,
-                        child: Text("Senior frontend developer (Fintech)",
+                        child: Text(widget.data!.title!,
                             style: boldTextStyle(size: 16))),
                     IconButton(
-                        icon: Icon(Icons.favorite_border_rounded,
-                            size: 25, color: context.iconColor),
+                        icon: Icon(
+                            widget.data!.isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            size: 25,
+                            color: context.iconColor),
                         onPressed: () {},
-                        padding: EdgeInsets.only(left: 15)),
+                        padding: EdgeInsets.only(left: 5, right: 5)),
                   ],
                 ),
               ),
@@ -74,26 +81,22 @@ class _ProjectWidgetState extends State<ProjectWidget> {
               6.height,
               Row(
                 children: [
-                  // Container(
-                  //   decoration: boxDecorationWithRoundedCorners(
-                  //       boxShape: BoxShape.circle,
-                  //       backgroundColor: widget.data!.colorValue!),
-                  //   height: 10,
-                  //   width: 10,
-                  // ),
-                  // 8.width,
-                  // Text("6 students", style: secondaryTextStyle()),
                   Row(
                     children: [
-                      // Icon(icon)
-                      // Icon students
                       Icon(Icons.people, size: 15, color: context.iconColor),
                       4.width,
-                      Text("6 students", style: secondaryTextStyle()),
+                      Text(
+                          widget.data!.numberOfStudents.toString() +
+                              " students",
+                          style: secondaryTextStyle()),
                       12.width,
                       Icon(Icons.alarm, size: 15, color: context.iconColor),
                       4.width,
-                      Text("1-3 months", style: secondaryTextStyle()),
+                      Text(
+                          widget.data!.projectScopeFlag == 0
+                              ? "1-3 months"
+                              : "3-6 months",
+                          style: secondaryTextStyle()),
                     ],
                   ),
                   8.width,
@@ -104,8 +107,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                           ? scaffoldDarkColor
                           : gray.withOpacity(0.3),
                     ),
-                    child:
-                        Text("3 days ago", style: primaryTextStyle(size: 12)),
+                    child: Text(
+                        DateHandler.getDateTimeDifference(
+                            DateTime.parse(widget.data!.createdAt!)),
+                        style: primaryTextStyle(size: 12)),
                   ),
                 ],
               ),
@@ -115,10 +120,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                 width: MediaQuery.of(context).size.width * 0.8,
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      "Students are looking for\n"
-                      "  - Clear expectation about your project or deliverables",
+                      widget.data!.description!,
                       style: secondaryTextStyle(),
                     ),
                   ],
@@ -146,7 +151,9 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         children: [
                           Icon(Icons.file_present, size: 12, color: white),
                           3.width,
-                          Text("Proposals: 5",
+                          Text(
+                              "Proposals: " +
+                                  widget.data!.countProposals.toString(),
                               style: primaryTextStyle(size: 12, color: white))
                         ],
                       ),

@@ -24,8 +24,15 @@ abstract class _AuthProvider with Store {
   @observable
   UserRole authSignUp = UserRole.STUDENT;
 
-  @computed
-  bool get isLoggedIn => token != null;
+  // @computed
+  // bool get isLoggedIn => token != null;
+  @observable
+  bool isLoggedIn = false;
+
+  @action
+  void setLoggedIn(bool value) {
+    isLoggedIn = value;
+  }
 
   @action
   void setAuthSignUp(UserRole role) {

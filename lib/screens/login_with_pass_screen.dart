@@ -86,15 +86,13 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
       }),
     )
         .then((response) {
-      log("Res" + response.statusCode.toString());
       if (response.statusCode == 201) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
         log("Data" + data.toString());
         if (data['result'] != null) {
           // save token to local storage
-          // setStringAsync('token', data['token']);
-          // observer.token = data['result']['token'];
+
           observer.login(data['result']['token']);
           log('Login success' + data['result']['token']);
 
@@ -117,7 +115,13 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
       } else {
         // If the server returns an error response, then throw an exception.
         // throw Exception('Failed to login');
-        log('Failed to login 2');
+        // log('Failed to login 2');
+        //  show username and password incorrect
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Username or password incorrect!'),
+          ),
+        );
       }
     }).catchError((error) {
       log('Failed to login' + error.toString());
