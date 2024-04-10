@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:carea/model/user_info.dart';
 
 class SwitchAccountScreen extends StatefulWidget {
   @override
@@ -33,6 +34,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
     init();
   }
 
@@ -59,13 +61,13 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
         if (data['result'] != null) {
           UserInfo userInfo = UserInfo(
             id: data['result']['id'],
-            fullName: data['result']['fullName'],
+            fullName: data['result']['fullname'],
             currentRole: data['result']['currentRole'],
             roles: data['result']['roles'],
             student: data['result']['student'],
             company: data['result']['company'],
           );
-          authStore.setUserInfo(userInfo);
+          profi.setUserInfo(userInfo);
         }
       }
     });
@@ -158,7 +160,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                var destinationScreen = authStore.userInfo?.company != null
+                var destinationScreen = profi.userInfo?.company != null
                     ? ProfileInputAhaaScreen()
                     : ProfileInputNhapScreen();
                 Navigator.push(

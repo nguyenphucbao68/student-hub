@@ -27,6 +27,7 @@ class ProfileInputAhaaScreen extends StatefulWidget {
 
 class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
   late AuthProvider authStore;
+  late ProfileOb profi;
 
   final _formKey = GlobalKey<FormState>();
   XFile? pickedFile;
@@ -50,6 +51,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
     init();
   }
 
@@ -58,7 +60,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
   }
 
   Future<void> getCompanyInfo() async {
-    int companyID = authStore.userInfo?.company['id'];
+    int companyID = profi.userInfo?.company['id'];
     await http.get(
       Uri.parse(AppConstants.BASE_URL + '/profile/company/$companyID'),
       headers: <String, String>{
@@ -69,7 +71,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['result'] != null) {
-          print(authStore.userInfo?.company);
+          print(profi.userInfo?.company);
           setState(() {
             companyNameController.text = data['result']['companyName'];
             websiteController.text = data['result']['website'];
@@ -100,7 +102,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
     final size = int.parse(sizeController.text) | 1;
     final web = websiteController.text;
     final desc = descriptionController.text;
-    int companyID = authStore.userInfo?.company['id'];
+    int companyID = profi.userInfo?.company['id'];
     await http
         .put(
       Uri.parse(AppConstants.BASE_URL + '/profile/company/$companyID'),

@@ -1,5 +1,5 @@
 import 'package:carea/screens/dashboard_screen.dart';
-import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -13,7 +13,7 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  late AuthProvider authStore;
+  late ProfileOb profi;
 
   @override
   void initState() {
@@ -23,12 +23,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    String name = authStore.userInfo!.fullName.toString();
+    String name = profi.userInfo!.fullName.toString();
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
