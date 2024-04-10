@@ -32,6 +32,8 @@ class Project {
   String? description;
   int? numberOfStudents;
   int? typeFlag;
+  int countProposals = 0;
+  bool isFavorite = false;
 
   Project(
       {this.id,
@@ -43,5 +45,7 @@ class Project {
       this.title,
       this.description,
       this.numberOfStudents,
-      this.typeFlag});
+      this.typeFlag,
+      this.countProposals = 0,
+      this.isFavorite = false});
 }

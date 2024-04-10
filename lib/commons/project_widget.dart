@@ -66,8 +66,12 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         child: Text(widget.data!.title!,
                             style: boldTextStyle(size: 16))),
                     IconButton(
-                        icon: Icon(Icons.favorite_border_rounded,
-                            size: 25, color: context.iconColor),
+                        icon: Icon(
+                            widget.data!.isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            size: 25,
+                            color: context.iconColor),
                         onPressed: () {},
                         padding: EdgeInsets.only(left: 15)),
                   ],
@@ -79,8 +83,6 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                 children: [
                   Row(
                     children: [
-                      // Icon(icon)
-                      // Icon students
                       Icon(Icons.people, size: 15, color: context.iconColor),
                       4.width,
                       Text(
@@ -90,7 +92,11 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                       12.width,
                       Icon(Icons.alarm, size: 15, color: context.iconColor),
                       4.width,
-                      Text("1-3 months", style: secondaryTextStyle()),
+                      Text(
+                          widget.data!.projectScopeFlag == 0
+                              ? "1-3 months"
+                              : "3-6 months",
+                          style: secondaryTextStyle()),
                     ],
                   ),
                   8.width,
@@ -105,7 +111,6 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         DateHandler.getDateTimeDifference(
                             DateTime.parse(widget.data!.createdAt!)),
                         style: primaryTextStyle(size: 12)),
-                    // Text("3 days ago", style: primaryTextStyle(size: 12)),
                   ),
                 ],
               ),
@@ -146,7 +151,9 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         children: [
                           Icon(Icons.file_present, size: 12, color: white),
                           3.width,
-                          Text("Proposals: 5",
+                          Text(
+                              "Proposals: " +
+                                  widget.data!.countProposals.toString(),
                               style: primaryTextStyle(size: 12, color: white))
                         ],
                       ),
