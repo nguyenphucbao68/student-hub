@@ -49,7 +49,7 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
         "projectScopeFlag": profi.projectCreate?.projectScopeFlag,
         "title": profi.projectCreate?.title,
         "description": profi.projectCreate?.description,
-        "typeFlag": profi.projectCreate?.typeFlag,
+        // "typeFlag": profi.projectCreate?.typeFlag,
         "numberOfStudents": profi.projectCreate?.numberOfStudents,
       }),
     )

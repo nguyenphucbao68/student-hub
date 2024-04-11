@@ -32,8 +32,28 @@ class Project {
   String? description;
   int? numberOfStudents;
   int? typeFlag;
-  int countProposals = 0;
   bool isFavorite = false;
+  dynamic proposals;
+  int? countProposals;
+  int? countMessages;
+  int? countHired;
+
+  Project.clone({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.companyId,
+    this.projectScopeFlag,
+    this.title,
+    this.description,
+    this.numberOfStudents,
+    this.typeFlag,
+    this.proposals,
+    this.countProposals,
+    this.countMessages,
+    this.countHired,
+  });
 
   Project(
       {this.id,
@@ -46,7 +66,7 @@ class Project {
       this.description,
       this.numberOfStudents,
       this.typeFlag,
-      this.countProposals = 0,
+      this.countProposals,
       this.isFavorite = false});
 }
 

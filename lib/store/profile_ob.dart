@@ -34,7 +34,7 @@ abstract class _ProfileOb with Store {
   }
 
   @action
-  Future<void> setUserInfoCurrentRole(dynamic role) async {
+  Future<void> setUserInfoCurrentRole(int role) async {
     this.userInfo?.currentRole = role;
   }
 

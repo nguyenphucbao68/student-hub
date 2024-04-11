@@ -1,12 +1,11 @@
-import 'package:carea/commons/colors.dart';
-import 'package:carea/components/project_filter_component.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/calling_model.dart';
+import 'package:carea/model/project.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+// ignore: must_be_immutable
 class ProjectWidgetDashboard extends StatefulWidget {
-  CallingModel? data = CallingModel();
+  Project? data = Project();
   String? btnText1;
   String? btnText2;
 
@@ -32,6 +31,86 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
     if (mounted) super.setState(fn);
   }
 
+  Widget buildActionButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        OutlinedButton(
+          onPressed: () {},
+          child: Text(
+            "View proposals",
+            style: boldTextStyle(color: Colors.black, size: 16),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            minimumSize: Size(double.infinity, 0),
+          ),
+        ),
+        SizedBox(height: 10),
+        OutlinedButton(
+          onPressed: () {},
+          child: Text(
+            "View messages",
+            style: boldTextStyle(color: Colors.black, size: 16),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            minimumSize: Size(double.infinity, 0),
+          ),
+        ),
+        SizedBox(height: 10),
+        OutlinedButton(
+          onPressed: () {},
+          child: Text(
+            "View hired",
+            style: boldTextStyle(color: Colors.black, size: 16),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            minimumSize: Size(double.infinity, 0),
+          ),
+        ),
+        SizedBox(height: 10),
+        OutlinedButton(
+          onPressed: () {},
+          child: Text(
+            "View job posting",
+            style: boldTextStyle(color: Colors.black, size: 16),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            minimumSize: Size(double.infinity, 0),
+          ),
+        ),
+        SizedBox(height: 10),
+        OutlinedButton(
+          onPressed: () {},
+          child: Text(
+            "Edit posting",
+            style: boldTextStyle(color: Colors.black, size: 16),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            minimumSize: Size(double.infinity, 0),
+          ),
+        ),
+        SizedBox(height: 10),
+        OutlinedButton(
+          onPressed: () {},
+          child: Text(
+            "Remove posting",
+            style: boldTextStyle(color: Colors.black, size: 16),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            minimumSize: Size(double.infinity, 0),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -53,7 +132,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               children: <Widget>[
                 Expanded(
                     flex: 1,
-                    child: Text("Senior frontend developer (Fintech)",
+                    child: Text(widget.data!.title.toString(),
                         style: boldTextStyle(size: 16))),
                 IconButton(
                     icon: Icon(Icons.more_horiz,
@@ -86,96 +165,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                                     topLeft: Radius.circular(8),
                                     topRight: Radius.circular(8)),
                               ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View proposals",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View messages",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View hired",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View job posting",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Edit posting",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Remove posting",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: buildActionButtons(),
                             ),
                           );
                         },
@@ -192,14 +182,9 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
           new Container(
             width: MediaQuery.of(context).size.width * 0.8,
             padding: EdgeInsets.symmetric(vertical: 8),
-            child: new Column(
-              children: <Widget>[
-                new Text(
-                  "Students are looking for\n"
-                  "  - Clear expectation about your project or deliverables",
-                  style: secondaryTextStyle(),
-                ),
-              ],
+            child: new Text(
+              widget.data!.description.toString(),
+              style: secondaryTextStyle(),
             ),
           ),
           10.height,
@@ -216,7 +201,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 ),
                 child: Column(
                   children: [
-                    Text("6", style: primaryTextStyle()),
+                    Text(widget.data!.countProposals.toString(),
+                        style: primaryTextStyle()),
                     Text("Proposals", style: primaryTextStyle(size: 12)),
                   ],
                 ),
@@ -231,7 +217,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 ),
                 child: Column(
                   children: [
-                    Text("8", style: primaryTextStyle()),
+                    Text(widget.data!.countMessages.toString(),
+                        style: primaryTextStyle()),
                     Text("Messages", style: primaryTextStyle(size: 12)),
                   ],
                 ),
@@ -246,7 +233,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 ),
                 child: Column(
                   children: [
-                    Text("2", style: primaryTextStyle()),
+                    Text(widget.data!.countHired.toString(),
+                        style: primaryTextStyle()),
                     Text("Hired", style: primaryTextStyle(size: 12)),
                   ],
                 ),

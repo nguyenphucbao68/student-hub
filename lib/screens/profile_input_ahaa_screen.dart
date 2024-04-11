@@ -71,7 +71,6 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['result'] != null) {
-          print(profi.userInfo?.company);
           setState(() {
             companyNameController.text = data['result']['companyName'];
             websiteController.text = data['result']['website'];
