@@ -64,7 +64,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
           setState(() {
             projects = data['result']
                 .map<Project>((item) => Project(
-                    id: item['id'],
+                    id: item['projectId'],
                     createdAt: item['createdAt'],
                     updatedAt: item['updatedAt'],
                     deletedAt: item['deletedAt'],
@@ -124,7 +124,9 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
               icon: Icon(Icons.search, color: context.iconColor),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, 'save_projects_screen');
+              },
               icon: Icon(Icons.favorite, color: context.iconColor),
             ),
           ],

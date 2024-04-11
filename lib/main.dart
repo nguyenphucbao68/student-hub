@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/constants.dart';
 import 'package:carea/constants/app_constants.dart';
+import 'package:carea/model/student.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/store/AppStore.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -52,6 +54,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late AuthProvider authStore;
   int isAuthenticated = 0;
+  Student? student;
 
   @override
   initState() {
@@ -79,9 +82,19 @@ class _MyAppState extends State<MyApp> {
     ).then((response) {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        log("Data" + data.toString());
+
         setState(() {
           isAuthenticated = 1;
+
+          if (data["result"]["student"] != null) {
+            student = Student(
+              id: data["result"]["student"]["id"],
+              userId: data["result"]["student"]["userId"],
+              techStackId: data["result"]["student"]["techStackId"],
+              resume: data["result"]["student"]["resume"],
+              transcript: data["result"]["student"]["transcript"],
+            );
+          }
         });
       } else {
         setState(() {
@@ -98,6 +111,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   build(BuildContext context) {
+    if (student != null) {
+      authStore.switchAccountToStudent();
+      authStore.setStudent(student ?? Student());
+    }
     return Observer(
       builder: (_) => MaterialApp(
         scrollBehavior: SBehavior(),
@@ -106,6 +123,8 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
+        routes: Routes.routes,
+        initialRoute: "/",
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
         // home: LoginWithPassScreen(),
         home: Observer(

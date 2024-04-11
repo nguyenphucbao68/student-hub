@@ -85,7 +85,7 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
         'password': password,
       }),
     )
-        .then((response) {
+        .then((response) async {
       if (response.statusCode == 201) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
@@ -93,16 +93,34 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
         if (data['result'] != null) {
           // save token to local storage
 
-          observer.login(data['result']['token']);
-          log('Login success' + data['result']['token']);
+          await http.get(
+            Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + data['result']['token'],
+            },
+          ).then((response) {
+            if (response.statusCode == 200) {
+              var user = jsonDecode(response.body);
+              log("Data" + user.toString());
+              observer.login(data['result']['token']);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            } else {}
+          });
+
+          // observer.login(data['result']['token']);
+          // log('Login success' + data['result']['token']);
 
           // console.log
           // print('Login success' + data['result']['tojen']);
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => HomeScreen()),
+          // );
         } else {
           log('error');
           // show error message

@@ -63,7 +63,7 @@ class CustomSearchDelegate extends SearchDelegate {
       if (data['result'] != null) {
         projects = data['result']
             .map<Project>((item) => Project(
-                id: item['id'],
+                id: item['projectId'],
                 createdAt: item['createdAt'],
                 updatedAt: item['updatedAt'],
                 deletedAt: item['deletedAt'],
