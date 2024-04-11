@@ -4,6 +4,7 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/edit_project_detail_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +132,11 @@ class _ManageProjectDetailComponentState
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        hadleDeleteProject();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProjectDetailScreen()),
+                        );
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12),
