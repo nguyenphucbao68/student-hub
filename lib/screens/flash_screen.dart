@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:carea/screens/input_profile_experience_screen.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
+import 'package:carea/screens/send_hire_offer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 

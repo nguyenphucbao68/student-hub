@@ -44,3 +44,7 @@ const student_gif = 'assets/comp-1.gif';
 const company_gif = 'assets/company.gif';
 const students_gif = 'assets/students.gif';
 const wrongkeyword = 'assets/wrongkeyword.png';
+const student_info = 'assets/student-information.png';
+const student_asset = 'assets/student-bold-svgrepo-com.png';
+const user_role = 'assets/user_role.png';
+const rank = 'assets/rank.png';
