@@ -17,18 +17,18 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
   final MultiSelectController _multiSelectController = MultiSelectController();
 
   List<Project> projectList = [
-    Project(
-        id: '1',
-        projectName: 'Intelligent Taxi Dispatching system',
-        period: '9/2020 - 12/2020, 4 months',
-        description:
-            'It is the developer of a super-app for ride-hailing, food delivery, and digital payments services on mobile devices that operates in Singapore, Malaysia, ..'),
-    Project(
-        id: '2',
-        projectName: 'Intelligent Taxi Dispatching system',
-        period: '9/2020 - 12/2020, 4 months',
-        description:
-            'It is the developer of a super-app for ride-hailing, food delivery, and digital payments services on mobile devices that operates in Singapore, Malaysia, ..'),
+    // Project(
+    //     id: '1',
+    //     projectName: 'Intelligent Taxi Dispatching system',
+    //     period: '9/2020 - 12/2020, 4 months',
+    //     description:
+    //         'It is the developer of a super-app for ride-hailing, food delivery, and digital payments services on mobile devices that operates in Singapore, Malaysia, ..'),
+    // Project(
+    //     id: '2',
+    //     projectName: 'Intelligent Taxi Dispatching system',
+    //     period: '9/2020 - 12/2020, 4 months',
+    //     description:
+    //         'It is the developer of a super-app for ride-hailing, food delivery, and digital payments services on mobile devices that operates in Singapore, Malaysia, ..'),
   ];
 
   final List<String> skillSetList = [
@@ -89,74 +89,74 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
                         padding: const EdgeInsets.all(8),
                         children: projectList.map((value) {
                           return Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        value.projectName,
-                                        style: boldTextStyle(size: 14),
-                                      ),
-                                      Text(
-                                        value.period,
-                                        style: secondaryTextStyle(size: 13),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.edit_outlined)),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.delete_outlined))
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Text(
-                                value.description,
-                                style: primaryTextStyle(size: 15),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              MultiSelectDropDown(
-                                controller: _multiSelectController,
-                                onOptionSelected:
-                                    (List<ValueItem> selectedOptions) {},
-                                options: skillSetList
-                                    .map((e) => ValueItem(label: e, value: e))
-                                    .toList(),
-                                selectionType: SelectionType.multi,
-                                chipConfig: ChipConfig(
-                                    wrapType: WrapType.wrap,
-                                    backgroundColor: appStore.isDarkModeOn
-                                        ? cardDarkColor
-                                        : Colors.black),
-                                dropdownHeight: 250,
-                                optionTextStyle: TextStyle(fontSize: 14),
-                                selectedOptionIcon: Icon(Icons.check_circle),
-                                selectedOptionTextColor: Colors.black,
-                                dropdownMargin: 20.5,
-                                searchEnabled: true,
-                                borderWidth: 1,
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Divider(
-                                thickness: 0.4,
-                              )
-                            ],
-                          );
+                              // children: [
+                              //   Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceBetween,
+                              //     children: [
+                              //       Column(
+                              //         mainAxisAlignment: MainAxisAlignment.start,
+                              //         crossAxisAlignment:
+                              //             CrossAxisAlignment.start,
+                              //         children: [
+                              //           Text(
+                              //             value.projectName,
+                              //             style: boldTextStyle(size: 14),
+                              //           ),
+                              //           Text(
+                              //             value.period,
+                              //             style: secondaryTextStyle(size: 13),
+                              //           )
+                              //         ],
+                              //       ),
+                              //       Row(
+                              //         children: [
+                              //           IconButton(
+                              //               onPressed: () {},
+                              //               icon: Icon(Icons.edit_outlined)),
+                              //           IconButton(
+                              //               onPressed: () {},
+                              //               icon: Icon(Icons.delete_outlined))
+                              //         ],
+                              //       )
+                              //     ],
+                              //   ),
+                              //   Text(
+                              //     value.description,
+                              //     style: primaryTextStyle(size: 15),
+                              //   ),
+                              //   SizedBox(
+                              //     height: 15,
+                              //   ),
+                              //   MultiSelectDropDown(
+                              //     controller: _multiSelectController,
+                              //     onOptionSelected:
+                              //         (List<ValueItem> selectedOptions) {},
+                              //     options: skillSetList
+                              //         .map((e) => ValueItem(label: e, value: e))
+                              //         .toList(),
+                              //     selectionType: SelectionType.multi,
+                              //     chipConfig: ChipConfig(
+                              //         wrapType: WrapType.wrap,
+                              //         backgroundColor: appStore.isDarkModeOn
+                              //             ? cardDarkColor
+                              //             : Colors.black),
+                              //     dropdownHeight: 250,
+                              //     optionTextStyle: TextStyle(fontSize: 14),
+                              //     selectedOptionIcon: Icon(Icons.check_circle),
+                              //     selectedOptionTextColor: Colors.black,
+                              //     dropdownMargin: 20.5,
+                              //     searchEnabled: true,
+                              //     borderWidth: 1,
+                              //   ),
+                              //   SizedBox(
+                              //     height: 20,
+                              //   ),
+                              //   Divider(
+                              //     thickness: 0.4,
+                              //   )
+                              // ],
+                              );
                         }).toList(),
                       ),
                     )

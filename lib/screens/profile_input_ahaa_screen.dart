@@ -1,19 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:carea/commons/AppTheme.dart';
-import 'package:carea/commons/colors.dart';
-import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/user_info.dart';
+import 'package:carea/screens/welcome_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
-import 'create_pin_screen.dart';
-
+// ignore: must_be_immutable
 class ProfileInputAhaaScreen extends StatefulWidget {
   ProfileInputAhaaScreen({Key? key, this.isAppbarNeeded, this.appBar})
       : super(key: key);
@@ -25,30 +26,123 @@ class ProfileInputAhaaScreen extends StatefulWidget {
 }
 
 class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
+  late AuthProvider authStore;
+  late ProfileOb profi;
+
   final _formKey = GlobalKey<FormState>();
   XFile? pickedFile;
   ProfileOb pr_ob = ProfileOb();
-  UserInfo? _userInfo;
   String? imagePath;
   String? UserImage;
-  String dropdownValue = 'Male';
 
   TextEditingController companyNameController = TextEditingController();
   TextEditingController websiteController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController sizeController = TextEditingController();
 
   FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  FocusNode f3 = FocusNode();
-  FocusNode f4 = FocusNode();
-  FocusNode f5 = FocusNode();
-  FocusNode f6 = FocusNode();
-
-  String? selectedOption;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
+    init();
+  }
+
+  void init() async {
+    await getCompanyInfo();
+  }
+
+  Future<void> getCompanyInfo() async {
+    int companyID = profi.userInfo?.company['id'];
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + '/profile/company/$companyID'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    ).then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          print(profi.userInfo?.company);
+          setState(() {
+            companyNameController.text = data['result']['companyName'];
+            websiteController.text = data['result']['website'];
+            descriptionController.text = data['result']['description'];
+            sizeController.text = data['result']['size'].toString();
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['message']),
+            ),
+          );
+        }
+      } else {
+        Navigator.pop(context);
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+        ),
+      );
+    });
+  }
+
+  void hadleUpdateCompany() async {
+    final name = companyNameController.text;
+    final size = int.tryParse(sizeController.text) ?? 1;
+    final web = websiteController.text;
+    final desc = descriptionController.text;
+    int companyID = profi.userInfo?.company['id'];
+    await http
+        .put(
+      Uri.parse(AppConstants.BASE_URL + '/profile/company/$companyID'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "companyName": name,
+        "size": size,
+        "website": web,
+        "description": desc
+      }),
+    )
+        .then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['message']),
+            ),
+          );
+        }
+      } else {
+        print(response.statusCode);
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+        ),
+      );
+    });
+    // }
   }
 
   @override
@@ -166,7 +260,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                     },
                     onFieldSubmitted: (v) {
                       f1.unfocus();
-                      FocusScope.of(context).requestFocus(f2);
+                      FocusScope.of(context).requestFocus(f1);
                     },
                     decoration:
                         inputDecoration(context, hintText: "Company name"),
@@ -181,11 +275,6 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: websiteController,
-                    focusNode: f2,
-                    onFieldSubmitted: (v) {
-                      f2.unfocus();
-                      FocusScope.of(context).requestFocus(f3);
-                    },
                     decoration: inputDecoration(context, hintText: "Website"),
                   ),
                   SizedBox(height: 15),
@@ -198,13 +287,8 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: descriptionController,
-                    focusNode: f3,
                     minLines: 3,
                     maxLines: 3,
-                    onFieldSubmitted: (v) {
-                      f3.unfocus();
-                      FocusScope.of(context).requestFocus(f3);
-                    },
                     decoration:
                         inputDecoration(context, hintText: "Description"),
                   ),
@@ -216,28 +300,16 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                             fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
                   SizedBox(height: 10),
-                  RadioListTile<String>(
-                    title: Text(
-                      "It's just me",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    value: "It's just me",
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value;
-                      });
-                    },
+                  TextFormField(
+                    controller: sizeController,
+                    decoration: inputDecoration(context,
+                        hintText: "Your company member"),
                   ),
                   SizedBox(height: 30),
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreatePinScreen()),
-                        );
+                        hadleUpdateCompany();
                       }
                     },
                     child: Container(

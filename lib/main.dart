@@ -9,6 +9,7 @@ import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/store/AppStore.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/routes.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,8 +35,15 @@ void main() async {
     await authStore.checkLoggedIn();
 
     return runApp(
-      Provider<AuthProvider>(
-        create: (_) => authStore,
+      // Provider<AuthProvider>(
+      //   create: (_) => authStore,
+      MultiProvider(
+        providers: [
+          Provider(create: (_) => authStore),
+          Provider(
+              create: (_) =>
+                  ProfileOb()), // Thêm MyProvider vào danh sách các providers
+        ],
         child: MyApp(),
       ),
     );
@@ -53,6 +61,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AuthProvider authStore;
+  late ProfileOb profile;
   int isAuthenticated = 0;
   Student? student;
 
@@ -66,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profile = Provider.of<ProfileOb>(context);
   }
 
   Future<void> checkAuth() async {

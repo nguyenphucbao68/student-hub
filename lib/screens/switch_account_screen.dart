@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
+import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
-import 'package:carea/screens/notification_screen.dart';
+import 'package:carea/screens/profile_input_ahaa_screen.dart';
+import 'package:carea/screens/profile_input_nhap_screen.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -14,22 +21,25 @@ class SwitchAccountScreen extends StatefulWidget {
 
 class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
   late AuthProvider auth;
+  late AuthProvider authStore;
+  late ProfileOb profi;
+  bool showRow = false;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
     init();
   }
 
   void init() async {
-    //
-  }
-
-  // declare userSignupStore
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    auth = Provider.of<AuthProvider>(context);
+    await getMe();
   }
 
   @override
@@ -37,16 +47,40 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
     if (mounted) super.setState(fn);
   }
 
-  bool showRow = false;
+  Future<void> getMe() async {
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    ).then((response) {
+      log(response.body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          UserInfo userInfo = UserInfo(
+            id: data['result']['id'],
+            fullName: data['result']['fullname'],
+            roles: data['result']['roles'],
+            student: data['result']['student'],
+            company: data['result']['company'],
+          );
+          profi.setUserInfo(userInfo);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
-        titleText: "StudentHub",
-        // actionWidget: IconButton(
-        //     onPressed: () {},
-        //     icon: Icon(Icons.search, color: context.iconColor)),
+        titleText: "Profile Management",
+        actionWidget: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.search, color: context.iconColor)),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: 16),
@@ -108,7 +142,13 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                //
+                var destinationScreen = profi.userInfo?.company != null
+                    ? ProfileInputAhaaScreen()
+                    : ProfileInputNhapScreen();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => destinationScreen),
+                );
               },
               trailing: Icon(Icons.arrow_forward_ios_rounded,
                   size: 18, color: context.iconColor),
@@ -154,7 +194,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 showConfirmDialogCustom(context, onAccept: (c) {
-                  auth.logout();
+                  authStore.logout();
 
                   LoginWithPassScreen().launch(context, isNewTask: true);
                 }, dialogType: DialogType.CONFIRMATION);

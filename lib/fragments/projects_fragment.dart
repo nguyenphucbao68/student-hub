@@ -6,6 +6,7 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/search_delageate.dart';
+import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -128,6 +129,16 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
                 Navigator.pushNamed(context, 'save_projects_screen');
               },
               icon: Icon(Icons.favorite, color: context.iconColor),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SwitchAccountScreen()),
+                );
+              },
+              icon: Icon(Icons.person, color: context.iconColor),
             ),
           ],
           title: Text("StudentHub", style: boldTextStyle(size: 18)),
