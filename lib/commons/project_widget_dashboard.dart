@@ -1,7 +1,10 @@
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
+import 'package:carea/screens/manage_project.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class ProjectWidgetDashboard extends StatefulWidget {
@@ -16,30 +19,23 @@ class ProjectWidgetDashboard extends StatefulWidget {
 }
 
 class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  void init() async {
-    //
-  }
-
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
-  }
-
+  late ProfileOb profi;
   Widget buildActionButtons() {
+    profi = Provider.of<ProfileOb>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         OutlinedButton(
-          onPressed: () {},
+          onPressed: () {
+            profi.setProjectInfo(widget.data);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ManageProjectScreen()),
+            );
+          },
           child: Text(
-            "View proposals",
+            "Manage project",
             style: boldTextStyle(color: Colors.black, size: 16),
           ),
           style: OutlinedButton.styleFrom(
@@ -59,54 +55,54 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
             minimumSize: Size(double.infinity, 0),
           ),
         ),
-        SizedBox(height: 10),
-        OutlinedButton(
-          onPressed: () {},
-          child: Text(
-            "View hired",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
-        SizedBox(height: 10),
-        OutlinedButton(
-          onPressed: () {},
-          child: Text(
-            "View job posting",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
-        SizedBox(height: 10),
-        OutlinedButton(
-          onPressed: () {},
-          child: Text(
-            "Edit posting",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
-        SizedBox(height: 10),
-        OutlinedButton(
-          onPressed: () {},
-          child: Text(
-            "Remove posting",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
+        // SizedBox(height: 10),
+        // OutlinedButton(
+        //   onPressed: () {},
+        //   child: Text(
+        //     "View hired",
+        //     style: boldTextStyle(color: Colors.black, size: 16),
+        //   ),
+        //   style: OutlinedButton.styleFrom(
+        //     padding: EdgeInsets.symmetric(vertical: 12),
+        //     minimumSize: Size(double.infinity, 0),
+        //   ),
+        // ),
+        // SizedBox(height: 10),
+        // OutlinedButton(
+        //   onPressed: () {},
+        //   child: Text(
+        //     "View job posting",
+        //     style: boldTextStyle(color: Colors.black, size: 16),
+        //   ),
+        //   style: OutlinedButton.styleFrom(
+        //     padding: EdgeInsets.symmetric(vertical: 12),
+        //     minimumSize: Size(double.infinity, 0),
+        //   ),
+        // ),
+        // SizedBox(height: 10),
+        // OutlinedButton(
+        //   onPressed: () {},
+        //   child: Text(
+        //     "Edit posting",
+        //     style: boldTextStyle(color: Colors.black, size: 16),
+        //   ),
+        //   style: OutlinedButton.styleFrom(
+        //     padding: EdgeInsets.symmetric(vertical: 12),
+        //     minimumSize: Size(double.infinity, 0),
+        //   ),
+        // ),
+        // SizedBox(height: 10),
+        // OutlinedButton(
+        //   onPressed: () {},
+        //   child: Text(
+        //     "Remove posting",
+        //     style: boldTextStyle(color: Colors.black, size: 16),
+        //   ),
+        //   style: OutlinedButton.styleFrom(
+        //     padding: EdgeInsets.symmetric(vertical: 12),
+        //     minimumSize: Size(double.infinity, 0),
+        //   ),
+        // ),
       ],
     );
   }
@@ -115,6 +111,9 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    int ytd = DateTime.now()
+        .difference(DateTime.parse(widget.data!.createdAt.toString()))
+        .inDays;
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
@@ -176,7 +175,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
             ),
           ),
           5.height,
-          Text("Created 3 days ago",
+          Text(ytd > 0 ? "Created $ytd days ago" : "Created today",
               style: primaryTextStyle(size: 14, color: Colors.black38)),
           SizedBox(height: 5),
           new Container(

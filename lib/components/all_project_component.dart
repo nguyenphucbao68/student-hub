@@ -49,8 +49,6 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
   }
 
   Future<void> getProjects() async {
-    print('cc');
-    print(profi.userInfo?.company);
     if (profi.userInfo?.company == null) return;
     int companyID = profi.userInfo?.company['id'];
     await http.get(
@@ -84,7 +82,6 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
                     countHired: item['countHired']))
                 .toList();
           });
-          print(projectData);
         } else {
           log('error');
           // show error message

@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:carea/commons/colors.dart';
-import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_project_component.dart';
 import 'package:carea/constants/app_constants.dart';
@@ -29,7 +27,6 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   List<Project> projects = [];
 
   TabController? tabController;
-  // late TabController _tabController;
 
   final tabs = const [
     Tab(text: 'All projects'),
@@ -37,20 +34,9 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
     Tab(text: 'Archieved'),
   ];
 
-  List textColor = List.generate(
-    listOfCarName.length,
-    (index) => primaryBlackColor,
-  ).toList();
-
-  List bgColor = List.generate(
-    listOfCarName.length,
-    (index) => primaryWhiteColor,
-  ).toList();
-
   @override
   void initState() {
     super.initState();
-    tabController?.addListener(() {});
   }
 
   @override
@@ -71,15 +57,6 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   void dispose() {
     tabController?.dispose();
     super.dispose();
-  }
-
-  void changeColor(Color bgColor, Color textColor, int index) {
-    for (int i = 0; i < this.bgColor.length; i++) {
-      this.bgColor[i] = primaryWhiteColor;
-      this.textColor[i] = primaryBlackColor;
-    }
-    this.bgColor[index] = primaryBlackColor;
-    this.textColor[index] = primaryWhiteColor;
   }
 
   @override
