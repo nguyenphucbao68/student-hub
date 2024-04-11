@@ -1,11 +1,8 @@
 class Education {
-  String id;
-  String schoolName;
-  String period;
+  int? studentId;
+  String? schoolName;
+  int? startYear;
+  int? endYear;
 
-  Education({
-    required this.id,
-    required this.schoolName,
-    required this.period,
-  });
+  Education({this.studentId, this.schoolName, this.startYear, this.endYear});
 }

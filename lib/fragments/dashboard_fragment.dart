@@ -78,13 +78,14 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: careaAppBarWidget(
-          context,
-          titleText: "Student Hub",
-          actionWidget: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.person, color: context.iconColor)),
-        ),
+        appBar: careaAppBarWidget(context,
+            titleText: "Student Hub",
+            actionWidget: IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'profile_screen');
+                },
+                icon: Icon(Icons.person, color: context.iconColor)),
+            leadingIcon: false),
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.all(16),

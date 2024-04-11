@@ -3,17 +3,16 @@ import 'dart:convert';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
+import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
-import 'package:carea/screens/notification_screen.dart';
 import 'package:carea/screens/profile_input_ahaa_screen.dart';
 import 'package:carea/screens/profile_input_nhap_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:carea/model/user_info.dart';
 
 class SwitchAccountScreen extends StatefulWidget {
   @override
@@ -21,6 +20,7 @@ class SwitchAccountScreen extends StatefulWidget {
 }
 
 class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
+  late AuthProvider auth;
   late AuthProvider authStore;
   late ProfileOb profi;
   bool showRow = false;
@@ -77,7 +77,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
-        titleText: "Profile manage",
+        titleText: "Profile Management",
         actionWidget: IconButton(
             onPressed: () {},
             icon: Icon(Icons.search, color: context.iconColor)),
@@ -92,23 +92,6 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                 Image.asset("assets/userImage.jpg",
                         height: 100, width: 100, fit: BoxFit.cover)
                     .cornerRadiusWithClipRRect(60),
-                // Positioned(
-                //   right: 0,
-                //   bottom: 0,
-                //   // child:
-                //   // Container(
-                //   //   alignment: Alignment.center,
-                //   //   padding: EdgeInsets.all(6),
-                //   //   decoration: BoxDecoration(
-                //   //     color: Colors.black,
-                //   //     // border: Border.all(color: Colors.black.withOpacity(0.3)),
-                //   //     // borderRadius: BorderRadius.circular(8),
-                //   //   ),
-                //   //   child: Icon(Icons.edit, color: white, size: 16),
-                //   // ).onTap(() {
-                //   //   ProfileScreen().launch(context);
-                //   // }),
-                // ),
               ],
             ),
             SizedBox(height: 8),
@@ -172,10 +155,11 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
             ),
             SettingItemWidget(
               leading: Icon(Icons.settings, color: context.iconColor),
-              title: "Setting",
+              title: "Change Password",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                NotificationScreen().launch(context);
+                // NotificationScreen().launch(context);
+                Navigator.pushNamed(context, "create_new_pass_screen");
               },
               trailing: Icon(Icons.arrow_forward_ios_rounded,
                   size: 18, color: context.iconColor),
@@ -210,6 +194,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 showConfirmDialogCustom(context, onAccept: (c) {
+                  authStore.logout();
+
                   LoginWithPassScreen().launch(context, isNewTask: true);
                 }, dialogType: DialogType.CONFIRMATION);
               },

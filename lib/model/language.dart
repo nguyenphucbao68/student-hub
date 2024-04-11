@@ -1,9 +1,7 @@
 class Language {
-  String id;
-  String text;
+  int? studentId;
+  String? languageName;
+  String? level;
 
-  Language({
-    required this.id,
-    required this.text,
-  });
+  Language({this.studentId, this.languageName, this.level});
 }
