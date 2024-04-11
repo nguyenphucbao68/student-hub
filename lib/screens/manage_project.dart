@@ -40,6 +40,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
   @override
   void initState() {
     super.initState();
+    tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -52,13 +53,12 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
   }
 
   void init() async {
-    tabController = TabController(length: 4, vsync: this);
     // await checkRole();
   }
 
   @override
   void dispose() {
-    tabController?.dispose();
+    tabController!.dispose();
     super.dispose();
   }
 

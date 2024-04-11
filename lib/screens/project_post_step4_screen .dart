@@ -119,8 +119,7 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
                   padding: EdgeInsets.only(left: 16),
                   child: Align(
                       alignment: Alignment.topLeft,
-                      child: Text("Students are looking for",
-                          style: boldTextStyle())),
+                      child: Text("Description", style: boldTextStyle())),
                 ),
                 SizedBox(height: 10),
                 Text.rich(

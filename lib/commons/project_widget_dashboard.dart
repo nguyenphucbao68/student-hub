@@ -21,7 +21,6 @@ class ProjectWidgetDashboard extends StatefulWidget {
 class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
   late ProfileOb profi;
   Widget buildActionButtons() {
-    profi = Provider.of<ProfileOb>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,6 +110,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    profi = Provider.of<ProfileOb>(context);
     int ytd = DateTime.now()
         .difference(DateTime.parse(widget.data!.createdAt.toString()))
         .inDays;
