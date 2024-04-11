@@ -50,3 +50,4 @@ class MeetingModel {
     isCancel = false;
   }
 }
+

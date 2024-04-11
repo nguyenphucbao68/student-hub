@@ -2,6 +2,7 @@ import 'package:carea/commons/colors.dart';
 import 'package:carea/components/project_filter_component.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
+import 'package:carea/screens/send_hire_offer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -43,217 +44,237 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
         borderRadius: BorderRadius.all(Radius.circular(8)),
         backgroundColor: context.cardColor,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            child: Row(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SendHireOffer()));
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // space between
+                children: <Widget>[
+                  Expanded(
+                      flex: 1,
+                      child: Text("Senior frontend developer (Fintech)",
+                          style: boldTextStyle(size: 16))),
+                  IconButton(
+                      icon: Icon(Icons.more_horiz,
+                          size: 25, color: context.iconColor),
+                      // onPressed: () {},
+                      onPressed: () {
+                        // query = '';
+                        showModalBottomSheet(
+                          enableDrag: true,
+                          isDismissible: true,
+                          isScrollControlled: true,
+                          constraints: BoxConstraints(
+                              maxHeight: height * 0.45,
+                              maxWidth: width,
+                              minHeight: height * 0.45,
+                              minWidth: width),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(60),
+                                topRight: Radius.circular(60)),
+                          ),
+                          context: context,
+                          builder: (context) {
+                            return SingleChildScrollView(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: context.scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(8),
+                                      topRight: Radius.circular(8)),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "View proposals",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "View messages",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "View hired",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "View job posting",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "Edit posting",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "Remove posting",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    OutlinedButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        "Start working this project",
+                                        style: boldTextStyle(
+                                            color: Colors.black, size: 16),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        minimumSize: Size(double.infinity, 0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      padding: EdgeInsets.only(left: 15)),
+                ],
+              ),
+            ),
+            5.height,
+            Text("Created 3 days ago",
+                style: primaryTextStyle(size: 14, color: Colors.black38)),
+            SizedBox(height: 5),
+            new Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: new Column(
+                children: <Widget>[
+                  new Text(
+                    "Students are looking for\n"
+                    "  - Clear expectation about your project or deliverables",
+                    style: secondaryTextStyle(),
+                  ),
+                ],
+              ),
+            ),
+            10.height,
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // space between
-              children: <Widget>[
-                Expanded(
-                    flex: 1,
-                    child: Text("Senior frontend developer (Fintech)",
-                        style: boldTextStyle(size: 16))),
-                IconButton(
-                    icon: Icon(Icons.more_horiz,
-                        size: 25, color: context.iconColor),
-                    // onPressed: () {},
-                    onPressed: () {
-                      // query = '';
-                      showModalBottomSheet(
-                        enableDrag: true,
-                        isDismissible: true,
-                        isScrollControlled: true,
-                        constraints: BoxConstraints(
-                            maxHeight: height * 0.45,
-                            maxWidth: width,
-                            minHeight: height * 0.45,
-                            minWidth: width),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(60),
-                              topRight: Radius.circular(60)),
-                        ),
-                        context: context,
-                        builder: (context) {
-                          return SingleChildScrollView(
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: context.scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8)),
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View proposals",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View messages",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View hired",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View job posting",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Edit posting",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Remove posting",
-                                      style: boldTextStyle(
-                                          color: Colors.black, size: 16),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12),
-                                      minimumSize: Size(double.infinity, 0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    padding: EdgeInsets.only(left: 15)),
-              ],
-            ),
-          ),
-          5.height,
-          Text("Created 3 days ago",
-              style: primaryTextStyle(size: 14, color: Colors.black38)),
-          SizedBox(height: 5),
-          new Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: new Column(
-              children: <Widget>[
-                new Text(
-                  "Students are looking for\n"
-                  "  - Clear expectation about your project or deliverables",
-                  style: secondaryTextStyle(),
+              children: [
+                Container(
+                  width: 90,
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: boxDecorationWithRoundedCorners(
+                    backgroundColor: appStore.isDarkModeOn
+                        ? scaffoldDarkColor
+                        : gray.withOpacity(0.3),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("6", style: primaryTextStyle()),
+                      Text("Proposals", style: primaryTextStyle(size: 12)),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 90,
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: boxDecorationWithRoundedCorners(
+                    backgroundColor: appStore.isDarkModeOn
+                        ? scaffoldDarkColor
+                        : gray.withOpacity(0.3),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("8", style: primaryTextStyle()),
+                      Text("Messages", style: primaryTextStyle(size: 12)),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 90,
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: boxDecorationWithRoundedCorners(
+                    backgroundColor: appStore.isDarkModeOn
+                        ? scaffoldDarkColor
+                        : gray.withOpacity(0.3),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("2", style: primaryTextStyle()),
+                      Text("Hired", style: primaryTextStyle(size: 12)),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-          10.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text("6", style: primaryTextStyle()),
-                    Text("Proposals", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text("8", style: primaryTextStyle()),
-                    Text("Messages", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text("2", style: primaryTextStyle()),
-                    Text("Hired", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
