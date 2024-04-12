@@ -28,19 +28,27 @@ abstract class _ProfileOb with Store {
   @observable
   ProjectCreate? projectCreate = new ProjectCreate();
 
+  @observable
+  Project? projectInfo = new Project();
+
   @action
   Future<void> setUserInfo(dynamic us) async {
     this.userInfo = us;
   }
 
   @action
-  Future<void> setUserInfoCurrentRole(dynamic role) async {
+  Future<void> setUserInfoCurrentRole(int role) async {
     this.userInfo?.currentRole = role;
   }
 
   @action
   Future<void> setUserInfoCompany(dynamic comp) async {
     this.userInfo?.company = comp;
+  }
+
+  @action
+  Future<void> setProjectInfo(Project? prj) async {
+    this.projectInfo = prj;
   }
 
   @action

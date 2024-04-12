@@ -56,7 +56,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
         'Authorization': 'Bearer ' + authStore.token.toString(),
       },
     ).then((response) {
-      log(response.body);
+      // log(response.body);
       if (response.statusCode == 200) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);

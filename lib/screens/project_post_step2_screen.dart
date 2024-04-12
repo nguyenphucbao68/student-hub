@@ -156,7 +156,7 @@ class _ProjectPostStep2ScreenState extends State<ProjectPostStep2Screen> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         profi.setProjectTimeSize(timeList.indexOf(time),
-                            int.tryParse(numbStdController.text) ?? 0);
+                            int.tryParse(numbStdController.text) ?? 1);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -55,7 +55,6 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
         'Authorization': 'Bearer ' + authStore.token.toString(),
       },
     ).then((response) {
-      log(response.body);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['result'] != null) {

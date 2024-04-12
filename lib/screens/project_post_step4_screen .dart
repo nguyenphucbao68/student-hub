@@ -49,7 +49,7 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
         "projectScopeFlag": profi.projectCreate?.projectScopeFlag,
         "title": profi.projectCreate?.title,
         "description": profi.projectCreate?.description,
-        "typeFlag": profi.projectCreate?.typeFlag,
+        // "typeFlag": profi.projectCreate?.typeFlag,
         "numberOfStudents": profi.projectCreate?.numberOfStudents,
       }),
     )
@@ -119,8 +119,7 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
                   padding: EdgeInsets.only(left: 16),
                   child: Align(
                       alignment: Alignment.topLeft,
-                      child: Text("Students are looking for",
-                          style: boldTextStyle())),
+                      child: Text("Description", style: boldTextStyle())),
                 ),
                 SizedBox(height: 10),
                 Text.rich(
