@@ -13,14 +13,14 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class AllProposalScreen extends StatefulWidget {
+class AllProposalComponent extends StatefulWidget {
   Proposal? data = Proposal();
-  AllProposalScreen({this.data});
+  AllProposalComponent({this.data});
   @override
-  _AllProposalScreenState createState() => _AllProposalScreenState();
+  _AllProposalComponentState createState() => _AllProposalComponentState();
 }
 
-class _AllProposalScreenState extends State<AllProposalScreen> {
+class _AllProposalComponentState extends State<AllProposalComponent> {
   late AuthProvider authStore;
   late ProfileOb profi;
 
@@ -124,6 +124,7 @@ class _AllProposalScreenState extends State<AllProposalScreen> {
               padding: EdgeInsets.only(bottom: 16),
               child: ListView.builder(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: proposalData.length,
                 padding: EdgeInsets.only(top: 10),
                 itemBuilder: (context, index) {

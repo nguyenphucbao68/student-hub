@@ -113,8 +113,9 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
       getProjects();
       return ListView.builder(
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: projectData.length,
-        padding: EdgeInsets.only(left: 16, bottom: 16, right: 16, top: 24),
+        padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
         itemBuilder: (context, index) {
           Project data = projectData[index];
 

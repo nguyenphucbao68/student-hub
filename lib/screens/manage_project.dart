@@ -7,7 +7,7 @@ import 'package:carea/components/all_project_component.dart';
 import 'package:carea/components/manage_project_detail_component.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/model/project.dart';
-import 'package:carea/screens/all_proposal_screen.dart';
+import 'package:carea/components/all_proposal_component.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
@@ -155,7 +155,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                   child: TabBarView(
                     controller: tabController,
                     children: [
-                      AllProposalScreen(),
+                      AllProposalComponent(),
                       ManageProjectDetailComponent(),
                       SizedBox(),
                       SizedBox(),

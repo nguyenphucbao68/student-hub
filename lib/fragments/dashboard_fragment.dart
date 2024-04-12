@@ -108,7 +108,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
           ),
           body: SingleChildScrollView(
               child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(12),
                   alignment: Alignment.center,
                   child: Column(children: [
                     Row(

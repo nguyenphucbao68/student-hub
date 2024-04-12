@@ -46,7 +46,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
         OutlinedButton(
           onPressed: () {},
           child: Text(
-            "View messages",
+            "Start working this project",
             style: boldTextStyle(color: Colors.black, size: 16),
           ),
           style: OutlinedButton.styleFrom(
@@ -108,8 +108,6 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     profi = Provider.of<ProfileOb>(context);
     int ytd = DateTime.now()
         .difference(DateTime.parse(widget.data!.createdAt.toString()))
@@ -134,43 +132,42 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                     child: Text(widget.data!.title.toString(),
                         style: boldTextStyle(size: 16))),
                 IconButton(
-                    icon: Icon(Icons.more_horiz,
-                        size: 25, color: context.iconColor),
-                    // onPressed: () {},
-                    onPressed: () {
-                      // query = '';
-                      showModalBottomSheet(
-                        enableDrag: true,
-                        isDismissible: true,
-                        isScrollControlled: true,
-                        constraints: BoxConstraints(
-                            maxHeight: height * 0.45,
-                            maxWidth: width,
-                            minHeight: height * 0.45,
-                            minWidth: width),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(60),
-                              topRight: Radius.circular(60)),
-                        ),
-                        context: context,
-                        builder: (context) {
-                          return SingleChildScrollView(
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: context.scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8)),
-                              ),
-                              child: buildActionButtons(),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    padding: EdgeInsets.only(left: 15)),
+                  icon: Icon(Icons.more_horiz,
+                      size: 25, color: context.iconColor),
+                  // onPressed: () {},
+                  onPressed: () {
+                    // query = '';
+                    showModalBottomSheet(
+                      enableDrag: true,
+                      isDismissible: true,
+                      isScrollControlled: true,
+                      // constraints: BoxConstraints(
+                      //     maxHeight: height * 0.45,
+                      //     maxWidth: width,
+                      //     minHeight: height * 0.45,
+                      //     minWidth: width),
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.vertical(),
+                      // ),
+                      context: context,
+                      builder: (context) {
+                        return SingleChildScrollView(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            // decoration: BoxDecoration(
+                            //   color: context.scaffoldBackgroundColor,
+                            //   borderRadius: BorderRadius.only(
+                            //       topLeft: Radius.circular(8),
+                            //       topRight: Radius.circular(8)),
+                            // ),
+                            child: buildActionButtons(),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  // padding: EdgeInsets.only(left: 15)
+                ),
               ],
             ),
           ),
