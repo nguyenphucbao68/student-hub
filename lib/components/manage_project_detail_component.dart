@@ -73,12 +73,7 @@ class _ManageProjectDetailComponentState
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 32),
-            Align(
-                alignment: Alignment.center,
-                child: Text(profi.projectInfo!.title.toString(),
-                    style: boldTextStyle(size: 22))),
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.only(left: 16),
               child: Align(

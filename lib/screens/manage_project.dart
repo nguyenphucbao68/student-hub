@@ -7,6 +7,7 @@ import 'package:carea/components/all_project_component.dart';
 import 'package:carea/components/manage_project_detail_component.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/model/project.dart';
+import 'package:carea/screens/all_proposal_screen.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
@@ -110,8 +111,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                 icon: Icon(Icons.person, color: context.iconColor),
               ),
             ],
-            title:
-                Text(profi.projectInfo!.title!, style: boldTextStyle(size: 18)),
+            title: Text("Project information", style: boldTextStyle(size: 18)),
             elevation: 0.0,
           ),
           body: SingleChildScrollView(
@@ -121,30 +121,41 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
               height: MediaQuery.of(context).size.height -
                   MediaQuery.of(context).padding.top,
               // height: 500,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+              // decoration: BoxDecoration(
+              //   color: Colors.white,
+              //   borderRadius: BorderRadius.circular(8.0),
+              // ),
               child: Column(children: [
-                TabBar(
-                  controller: tabController,
-                  indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      color: Colors.black),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.black,
-                  tabs: tabs,
-                  labelStyle:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  isScrollable: true,
-                  padding: EdgeInsets.only(right: 50),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("  " + profi.projectInfo!.title.toString(),
+                        style: boldTextStyle(size: 18))),
+                SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: TabBar(
+                    controller: tabController,
+                    indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.black),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.black,
+                    tabs: tabs,
+                    labelStyle:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    // isScrollable: true,
+                    // padding: EdgeInsets.only(right: -50),
+                  ),
                 ),
                 Expanded(
                   child: TabBarView(
                     controller: tabController,
                     children: [
-                      SizedBox(),
+                      AllProposalScreen(),
                       ManageProjectDetailComponent(),
                       SizedBox(),
                       SizedBox(),
