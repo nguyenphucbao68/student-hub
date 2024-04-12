@@ -1,3 +1,4 @@
+import 'package:carea/model/student.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -20,6 +21,27 @@ abstract class _AuthProvider with Store {
 
   @observable
   String? token = '';
+
+  @observable
+  bool isCompany = false;
+
+  @observable
+  Student student = Student();
+
+  @action
+  void setStudent(Student student) {
+    this.student = student;
+  }
+
+  @action
+  void switchAccountToCompany() {
+    isCompany = true;
+  }
+
+  @action
+  void switchAccountToStudent() {
+    isCompany = false;
+  }
 
   @observable
   UserRole authSignUp = UserRole.STUDENT;

@@ -6,6 +6,7 @@ import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/switch_account_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -172,15 +173,20 @@ Future customDialoge(
 }
 
 PreferredSizeWidget careaAppBarWidget(BuildContext context,
-    {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
+    {String? titleText,
+    Widget? actionWidget,
+    Widget? actionWidget2,
+    bool leadingIcon = true}) {
   return AppBar(
     backgroundColor: context.scaffoldBackgroundColor,
-    leading: IconButton(
-      icon: Icon(Icons.arrow_back, color: context.iconColor),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
+    leading: leadingIcon
+        ? IconButton(
+            icon: Icon(Icons.arrow_back, color: context.iconColor),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        : null,
     actions: [actionWidget ?? SizedBox(), actionWidget2 ?? SizedBox()],
     title: Text(titleText ?? "", style: boldTextStyle(size: 18)),
     elevation: 0.0,
