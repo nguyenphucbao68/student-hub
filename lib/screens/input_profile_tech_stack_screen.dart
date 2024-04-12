@@ -8,6 +8,11 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:carea/model/language.dart';
 import 'package:carea/model/education.dart';
 
+enum Operation {
+  Add,
+  Edit,
+}
+
 class InputProfileTechStackScreen extends StatefulWidget {
   const InputProfileTechStackScreen({super.key});
 
@@ -47,22 +52,21 @@ class _InputProfileTechStackScreenState
   ];
 
   List<Language> languageList = [];
-  List<Education> educationList = [
-    Education(
-        id: '1', schoolName: 'Le Hong Phong High School', period: '2008-2010'),
-    Education(
-        id: '2',
-        schoolName: 'Ho Chi Minh University of Sciences',
-        period: '2010-2014'),
-  ];
+  List<Education> educationList = [];
 
   String? selectedValue;
   final TextEditingController textEditingController = TextEditingController();
   final MultiSelectController _multiSelectController = MultiSelectController();
-  final TextEditingController languagesTextEdittingController =
+  final TextEditingController _languagesTextEdittingController =
       TextEditingController();
 
-  FocusNode focusLanguage = FocusNode();
+  final TextEditingController _educationTextEditingController =
+      TextEditingController();
+  final TextEditingController _periodTextEdittingController =
+      TextEditingController();
+
+  final FocusNode _focusLanguage = FocusNode();
+  final FocusNode _focusEducation = FocusNode();
 
   @override
   void dispose() {
@@ -211,41 +215,16 @@ class _InputProfileTechStackScreenState
                 SizedBox(
                   height: 15,
                 ),
-                dialogWithTitle(
-                  context,
-                  title: "Languages",
-                  childrenWidget: [
-                    Text(
-                      "Add language",
-                      style: boldTextStyle(),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      controller: languagesTextEdittingController,
-                      focusNode: focusLanguage,
-                      decoration: inputDecoration(context,
-                          hintText: "English: Native or Bilingual"),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            languageList.add(Language(
-                                id: DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString(),
-                                text: languagesTextEdittingController.text));
-                          });
-                          Navigator.pop(context);
-                          languagesTextEdittingController.text = "";
-                        },
-                        child: Text(
-                          "Add",
-                          style: primaryTextStyle(),
-                        ))
-                  ],
-                ),
+                dialogWithTitle(context, title: "Languages",
+                    beforeDialogOpen: () {
+                  _languagesTextEdittingController.text = "";
+                },
+                    childrenWidget: _languagueDialogBody(context,
+                        operation: Operation.Add, onHandleLanguageSkill: () {
+                      _onAddEnglighSkill(_languagesTextEdittingController.text);
+                      Navigator.pop(context);
+                      _languagesTextEdittingController.text = "";
+                    })),
                 languageList.length > 0
                     ? Container(
                         margin: EdgeInsets.only(bottom: 16),
@@ -275,7 +254,7 @@ class _InputProfileTechStackScreenState
                                         IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                languagesTextEdittingController
+                                                _languagesTextEdittingController
                                                     .text = value.text;
                                               });
                                               showDialog(
@@ -296,55 +275,22 @@ class _InputProfileTechStackScreenState
                                                             mainAxisSize:
                                                                 MainAxisSize
                                                                     .min,
-                                                            children: [
-                                                              Text(
-                                                                "Edit language",
-                                                                style:
-                                                                    boldTextStyle(),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 15,
-                                                              ),
-                                                              TextFormField(
-                                                                // controller:
-                                                                //     languagesTextEdittingController,
-                                                                initialValue:
-                                                                    value.text,
-                                                                focusNode:
-                                                                    focusLanguage,
-                                                                decoration:
-                                                                    inputDecoration(
-                                                                        context,
-                                                                        hintText:
-                                                                            "English: Native or Bilingual"),
-                                                              ),
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      languageList =
-                                                                          languageList
-                                                                              .map((e) {
-                                                                        if (e.id ==
-                                                                            value.id) {
-                                                                          e.text =
-                                                                              languagesTextEdittingController.text;
-                                                                        }
-                                                                        return e;
-                                                                      }).toList();
-                                                                    });
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    languagesTextEdittingController
-                                                                        .text = "";
-                                                                  },
-                                                                  child: Text(
-                                                                    "Edit",
-                                                                    style:
-                                                                        primaryTextStyle(),
-                                                                  ))
-                                                            ],
+                                                            children: _languagueDialogBody(
+                                                                context,
+                                                                operation:
+                                                                    Operation
+                                                                        .Edit,
+                                                                onHandleLanguageSkill:
+                                                                    () {
+                                                              _onEditEnglishSkill(
+                                                                  _languagesTextEdittingController
+                                                                      .text,
+                                                                  value.id);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              _languagesTextEdittingController
+                                                                  .text = "";
+                                                            }),
                                                           )),
                                                     );
                                                   });
@@ -377,31 +323,19 @@ class _InputProfileTechStackScreenState
                 SizedBox(
                   height: 15,
                 ),
-                dialogWithTitle(
-                  title: "Education",
-                  context,
-                  childrenWidget: [
-                    Text(
-                      "Add education",
-                      style: boldTextStyle(),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      controller: languagesTextEdittingController,
-                      focusNode: focusLanguage,
-                      decoration: inputDecoration(context,
-                          hintText: "English: Native or Bilingual"),
-                    ),
-                    TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Add",
-                          style: primaryTextStyle(),
-                        ))
-                  ],
-                ),
+                dialogWithTitle(title: "Education", context,
+                    beforeDialogOpen: () {
+                  _educationTextEditingController.text = "";
+                  _periodTextEdittingController.text = "";
+                },
+                    childrenWidget: _educationDialogBody(context,
+                        operation: Operation.Add, onHandleEducation: () {
+                      _onAddEducation(_educationTextEditingController.text,
+                          _periodTextEdittingController.text);
+                      Navigator.pop(context);
+                      _educationTextEditingController.text = "";
+                      _periodTextEdittingController.text = "";
+                    })),
                 educationList.length > 0
                     ? Container(
                         margin: EdgeInsets.only(bottom: 16),
@@ -436,10 +370,61 @@ class _InputProfileTechStackScreenState
                                 Row(
                                   children: [
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            _educationTextEditingController
+                                                .text = value.schoolName;
+                                            _periodTextEdittingController.text =
+                                                value.period;
+                                          });
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Dialog(
+                                                  backgroundColor: Colors.white,
+                                                  child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 10.0,
+                                                          left: 20.0,
+                                                          right: 20.0,
+                                                          bottom: 15.0),
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children:
+                                                            _educationDialogBody(
+                                                                context,
+                                                                operation:
+                                                                    Operation
+                                                                        .Edit,
+                                                                onHandleEducation:
+                                                                    () {
+                                                          _onEditEducation(
+                                                              value.id,
+                                                              _educationTextEditingController
+                                                                  .text,
+                                                              _periodTextEdittingController
+                                                                  .text);
+                                                          Navigator.pop(
+                                                              context);
+                                                          _educationTextEditingController
+                                                              .text = "";
+                                                          _periodTextEdittingController
+                                                              .text = "";
+                                                        }),
+                                                      )),
+                                                );
+                                              });
+                                        },
                                         icon: Icon(Icons.edit_outlined)),
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            educationList.removeWhere(
+                                                (element) =>
+                                                    element.id == value.id);
+                                          });
+                                        },
                                         icon: Icon(Icons.delete_outlined))
                                   ],
                                 )
@@ -477,5 +462,102 @@ class _InputProfileTechStackScreenState
             ),
           ),
         ));
+  }
+
+  void _onAddEnglighSkill(String value) {
+    setState(() {
+      languageList.add(Language(
+          id: DateTime.now().millisecondsSinceEpoch.toString(), text: value));
+    });
+  }
+
+  void _onEditEnglishSkill(String value, String id) {
+    setState(() {
+      languageList = languageList.map((e) {
+        if (e.id == id) {
+          e.text = value;
+        }
+        return e;
+      }).toList();
+    });
+  }
+
+  void _onAddEducation(String schoolName, String period) {
+    setState(() {
+      educationList.add(Education(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          schoolName: schoolName,
+          period: period));
+    });
+  }
+
+  void _onEditEducation(String id, String schoolName, String period) {
+    setState(() {
+      educationList = educationList.map((e) {
+        if (e.id == id) {
+          e.period = period;
+          e.schoolName = schoolName;
+        }
+        return e;
+      }).toList();
+    });
+  }
+
+  List<Widget> _languagueDialogBody(BuildContext context,
+      {required Operation operation,
+      required VoidCallback onHandleLanguageSkill}) {
+    return [
+      Text(
+        "${operation.name} language",
+        style: boldTextStyle(),
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      TextFormField(
+        controller: _languagesTextEdittingController,
+        focusNode: _focusLanguage,
+        decoration:
+            inputDecoration(context, hintText: "English: Native or Bilingual"),
+      ),
+      TextButton(
+          onPressed: onHandleLanguageSkill,
+          child: Text(
+            operation.name,
+            style: primaryTextStyle(),
+          ))
+    ];
+  }
+
+  List<Widget> _educationDialogBody(BuildContext context,
+      {required Operation operation, required VoidCallback onHandleEducation}) {
+    return [
+      Text(
+        "${operation.name} education",
+        style: boldTextStyle(),
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      TextFormField(
+        controller: _educationTextEditingController,
+        focusNode: _focusEducation,
+        decoration: inputDecoration(context,
+            hintText: "School name: Le Hong Phong High School"),
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      TextFormField(
+        controller: _periodTextEdittingController,
+        decoration: inputDecoration(context, hintText: "Period: 2014-2016"),
+      ),
+      TextButton(
+          onPressed: onHandleEducation,
+          child: Text(
+            "Add",
+            style: primaryTextStyle(),
+          ))
+    ];
   }
 }
