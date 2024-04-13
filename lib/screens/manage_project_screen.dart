@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/components/all_hired_commponent.dart';
 import 'package:carea/components/all_project_component.dart';
 import 'package:carea/components/manage_project_detail_component.dart';
 import 'package:carea/constants/app_constants.dart';
@@ -158,7 +159,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                       AllProposalComponent(),
                       ManageProjectDetailComponent(),
                       SizedBox(),
-                      SizedBox(),
+                      AllHiredComponent(),
                       // AllProjectComponents(titleProject: "all"),
                       // AllProjectComponents(titleProject: "working"),
                       // AllProjectComponents(titleProject: "archieved"),

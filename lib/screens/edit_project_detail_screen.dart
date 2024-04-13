@@ -6,7 +6,7 @@ import 'package:carea/components/manage_project_detail_component.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
-import 'package:carea/screens/manage_project.dart';
+import 'package:carea/screens/manage_project_screen.dart';
 import 'package:carea/screens/welcome_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
