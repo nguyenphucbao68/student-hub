@@ -101,6 +101,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
                                 right: 20.0,
                                 bottom: 15.0),
                             child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
@@ -117,7 +118,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
                                     Navigator.pop(context);
                                   },
                                   child: Text("Next",
-                                      style: boldTextStyle(color: white)),
+                                      style: boldTextStyle(color: black)),
                                 ),
                               ],
                             ),
