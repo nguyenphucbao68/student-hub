@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/constants.dart';
 import 'package:carea/constants/app_constants.dart';
+import 'package:carea/model/company.dart';
 import 'package:carea/model/student.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
   late ProfileOb profile;
   int isAuthenticated = 0;
   Student? student;
+  Company? company;
 
   @override
   initState() {
@@ -105,6 +107,18 @@ class _MyAppState extends State<MyApp> {
               transcript: data["result"]["student"]["transcript"],
             );
           }
+
+          if (data["result"]["company"] != null) {
+            company = Company(
+              id: data["result"]["company"]["id"],
+              companyName: data["result"]["company"]["companyName"],
+              website: data["result"]["company"]["website"],
+              size: data["result"]["company"]["size"],
+              description: data["result"]["company"]["description"],
+            );
+
+            log("company" + company!.companyName!);
+          }
         });
       } else {
         setState(() {
@@ -113,6 +127,7 @@ class _MyAppState extends State<MyApp> {
       }
     }).catchError((error) {
       // authStore.setLoggedIn(false);
+      log('error' + error.toString());
       setState(() {
         isAuthenticated = 2;
       });
@@ -122,8 +137,14 @@ class _MyAppState extends State<MyApp> {
   @override
   build(BuildContext context) {
     if (student != null) {
-      authStore.switchAccountToStudent();
-      authStore.setStudent(student ?? Student());
+      // authStore.switchAccountToStudent();
+      if (student != null) {
+        authStore.setStudent(student ?? Student());
+      }
+
+      if (company != null) {
+        authStore.setCompany(company ?? Company());
+      }
     }
     return Observer(
       builder: (_) => MaterialApp(

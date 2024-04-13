@@ -66,13 +66,29 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
             company: data['result']['company'],
           );
           profi.setUserInfo(userInfo);
+
+          // trigger rerender
+          setState(() {});
         }
       }
     });
   }
 
+  void changeProfile() {
+    if (authStore.authSignUp == UserRole.STUDENT) {
+      authStore.setAuthSignUp(UserRole.COMPANY);
+    } else {
+      authStore.setAuthSignUp(UserRole.STUDENT);
+    }
+
+    setState(() {});
+
+    Navigator.pushNamed(context, "home");
+  }
+
   @override
   Widget build(BuildContext context) {
+    log("authStore.company" + authStore.company.toString());
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
@@ -100,8 +116,15 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
             SizedBox(height: 16),
             SettingItemWidget(
               leading: Icon(Icons.person_outline, color: context.iconColor),
-              title: "Hai Pham",
-              subTitle: "Company",
+              title: authStore.authSignUp == UserRole.STUDENT &&
+                      profi.userInfo != null
+                  ? (profi.userInfo!.fullName ?? "Unknown")
+                  : (authStore.company != null
+                      ? authStore.company!.companyName!
+                      : ""),
+              subTitle: authStore.authSignUp == UserRole.STUDENT
+                  ? "Student"
+                  : "Company",
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 setState(() {
@@ -116,26 +139,40 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                   : Icon(Icons.arrow_forward_ios_rounded,
                       size: 18, color: context.iconColor),
             ),
-            SizedBox(
-              width: 340,
-              child: showRow
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SettingItemWidget(
-                          leading: Icon(Icons.person_outline,
-                              color: context.iconColor),
-                          title: "Hai Pham",
-                          subTitle: "Student",
-                          titleTextStyle: boldTextStyle(),
-                          onTap: () {},
-                          trailing: Icon(Icons.arrow_forward_ios_rounded,
-                              size: 18, color: context.iconColor),
-                        ),
-                      ],
-                    )
-                  : null,
-            ),
+            ((authStore.authSignUp == UserRole.STUDENT &&
+                        authStore.company != null) ||
+                    (authStore.authSignUp == UserRole.COMPANY &&
+                        authStore.student != null &&
+                        profi.userInfo != null))
+                ? SizedBox(
+                    width: 340,
+                    child: showRow
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SettingItemWidget(
+                                leading: Icon(Icons.person_outline,
+                                    color: context.iconColor),
+                                title: authStore.authSignUp == UserRole.COMPANY
+                                    ? profi.userInfo!.fullName!
+                                    : (authStore.company!.companyName ??
+                                        "Unknown"),
+                                subTitle:
+                                    authStore.authSignUp != UserRole.STUDENT
+                                        ? "Student"
+                                        : "Company",
+                                titleTextStyle: boldTextStyle(),
+                                onTap: () {
+                                  changeProfile();
+                                },
+                                trailing: Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 18, color: context.iconColor),
+                              ),
+                            ],
+                          )
+                        : null,
+                  )
+                : SizedBox(),
             SettingItemWidget(
               leading: Icon(Icons.person_2, color: context.iconColor),
               title: "Profile",
