@@ -47,7 +47,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
         .patch(
       Uri.parse(AppConstants.BASE_URL +
           '/favoriteProject/' +
-          authStore.student.id.toString()),
+          authStore.student!.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -124,7 +124,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         flex: 1,
                         child: Text(widget.data!.title!,
                             style: boldTextStyle(size: 16))),
-                    !authStore.isCompany
+                    authStore.authSignUp == UserRole.STUDENT
                         ? IconButton(
                             icon: Icon(
                                 widget.data!.isFavorite

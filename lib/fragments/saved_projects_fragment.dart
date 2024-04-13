@@ -45,10 +45,12 @@ class _SavedProjectsFragmentState extends State<SavedProjectsFragment> {
   }
 
   Future<void> getFavoriteProjects() async {
+    if (authStore.student == null) return;
+
     await http.get(
       Uri.parse(AppConstants.BASE_URL +
           '/favoriteProject/' +
-          authStore.student.id.toString()),
+          authStore.student!.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),

@@ -1,4 +1,5 @@
 import 'package:carea/fragments/saved_projects_fragment.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ import '../screens/walkthrough_screen.dart';
 
 class Routes {
   static Map<String, Widget Function(BuildContext)> routes = {
-    // '/': (context) => HomeScreen(),
+    'home': (context) => HomeScreen(),
     'flash_screen_0': (context) => const FlashScreen(),
     'loading_screen': (context) => const WalkThroughScreen(),
     'login_screen': (context) => const RegistrationScreen(),
