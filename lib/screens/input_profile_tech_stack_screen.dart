@@ -52,6 +52,7 @@ class _InputProfileTechStackScreenState
 
   final FocusNode _focusLanguage = FocusNode();
   final FocusNode _focusEducation = FocusNode();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -491,12 +492,19 @@ class _InputProfileTechStackScreenState
                       ),
                 GestureDetector(
                   onTap: () {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    _handleSubmitForm();
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
                     //       builder: (context) => RegistrationScreen()),
                     // );
+<<<<<<< Updated upstream
                     InputProfileExperience().launch(context, isNewTask: true);
+=======
+>>>>>>> Stashed changes
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12),
@@ -508,7 +516,9 @@ class _InputProfileTechStackScreenState
                           appStore.isDarkModeOn ? cardDarkColor : Colors.black,
                       borderRadius: BorderRadius.circular(35),
                     ),
-                    child: Text('Next', style: boldTextStyle(color: white)),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Text('Next', style: boldTextStyle(color: white)),
                   ),
                 ),
               ],
@@ -544,6 +554,7 @@ class _InputProfileTechStackScreenState
   void _onEditEducation(int id, String schoolName, String period) {
     setState(() {
       educationList[id].schoolName = schoolName;
+<<<<<<< Updated upstream
       // educationList[id].schoolName = schoolName;
       // educationList = educationList.map((e) {
       //   if (e.id == id) {
@@ -552,6 +563,10 @@ class _InputProfileTechStackScreenState
       //   }
       //   return e;
       // }).toList();
+=======
+      educationList[id].startYear = startYear;
+      educationList[id].endYear = endYear;
+>>>>>>> Stashed changes
     });
   }
 
@@ -653,7 +668,32 @@ class _InputProfileTechStackScreenState
         allowViewNavigation: false,
       ),
       TextButton(
+<<<<<<< Updated upstream
           onPressed: onHandleEducation,
+=======
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              if (_datePickerController.selectedRange?.startDate == null ||
+                  _datePickerController.selectedRange?.endDate == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Please select the valid range"),
+                  ),
+                );
+              } else if (_datePickerController.selectedRange!.endDate!.year >
+                  DateTime.now().year) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        "End year should be less than or equal to current year"),
+                  ),
+                );
+              } else {
+                onHandleEducation();
+              }
+            }
+          },
+>>>>>>> Stashed changes
           child: Text(
             "Add",
             style: primaryTextStyle(),
@@ -661,7 +701,138 @@ class _InputProfileTechStackScreenState
     ];
   }
 
+<<<<<<< Updated upstream
   int getStudentId() {
     return authStore.student.id!;
+=======
+  Future<void> _handleSubmitForm() async {
+    log(_multiSelectController.selectedOptions);
+    log({"techStackId": selectedValue?.id});
+    log({
+      "skillSets": _multiSelectController.selectedOptions
+          .map((item) => item.value)
+          .toList()
+    });
+
+    log({
+      "languages": languageList
+          .map((item) =>
+              {"languageName": item.languageName, "level": item.level})
+          .toList()
+    });
+    log({
+      "education": educationList
+          .map((item) => {
+                "schoolName": item.schoolName,
+                "startYear": item.startYear,
+                "endYear": item.endYear
+              })
+          .toList()
+    });
+    await http
+        .post(Uri.parse(AppConstants.BASE_URL + "/profile/student"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + authStore.token.toString(),
+            },
+            body: jsonEncode({
+              "techStackId": selectedValue?.id,
+              "skillSets": _multiSelectController.selectedOptions
+                  .map((item) => item.value)
+                  .toList()
+            }))
+        .then((response) {
+      if (response.statusCode == 422) {
+        // Role  student existed
+        log({"studentId": authStore.student?.id});
+        http
+            .put(
+                Uri.parse(AppConstants.BASE_URL +
+                    "/profile/student/${authStore.student?.id}"),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'Authorization': 'Bearer ' + authStore.token.toString(),
+                },
+                body: jsonEncode({
+                  "techStackId": selectedValue?.id,
+                  "skillSets": _multiSelectController.selectedOptions
+                      .map((item) => item.value)
+                      .toList()
+                }))
+            .then((response) {
+          if (response.statusCode != 200) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Can't update profile. Something went wrong"),
+              ),
+            );
+          }
+        });
+      }
+    });
+
+    await http
+        .put(
+            Uri.parse(AppConstants.BASE_URL +
+                "/language/updateByStudentId/${authStore.student?.id}"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + authStore.token.toString(),
+            },
+            body: jsonEncode({
+              "languages": languageList
+                  .map((item) =>
+                      {"languageName": item.languageName, "level": item.level})
+                  .toList(),
+            }))
+        .then((response) {
+      if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("Can't update profile of languague. Something went wrong"),
+          ),
+        );
+      }
+    });
+
+    await http
+        .put(
+            Uri.parse(AppConstants.BASE_URL +
+                "/education/updateByStudentId/${authStore.student?.id}"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + authStore.token.toString(),
+            },
+            body: jsonEncode({
+              "education": educationList
+                  .map((item) => {
+                        "schoolName": item.schoolName,
+                        "startYear": item.startYear,
+                        "endYear": item.endYear
+                      })
+                  .toList(),
+            }))
+        .then((response) {
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Profile techstack updated successfully"),
+          ),
+        );
+        InputProfileExperience().launch(context, isNewTask: true);
+      } else if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("Can't update profile of education. Something went wrong"),
+          ),
+        );
+      }
+    });
+    setState(() {
+      _isLoading = false;
+    });
+>>>>>>> Stashed changes
   }
 }

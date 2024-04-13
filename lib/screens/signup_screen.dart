@@ -155,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 TextFormField(
                   autofocus: false,
                   validator: (value) {
-                    if (!value!.contains('@') || !value.endsWith(".com")) {
+                    if (!value!.contains('@')) {
                       return 'Please enter the correct email';
                     }
                     return null;
