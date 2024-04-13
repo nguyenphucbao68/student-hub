@@ -1,4 +1,6 @@
 import 'package:carea/model/student.dart';
+import 'package:carea/model/company.dart';
+
 import 'package:mobx/mobx.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -23,10 +25,10 @@ abstract class _AuthProvider with Store {
   String? token = '';
 
   @observable
-  bool isCompany = false;
+  Student? student;
 
   @observable
-  Student student = Student();
+  Company? company;
 
   @action
   void setStudent(Student student) {
@@ -34,13 +36,8 @@ abstract class _AuthProvider with Store {
   }
 
   @action
-  void switchAccountToCompany() {
-    isCompany = true;
-  }
-
-  @action
-  void switchAccountToStudent() {
-    isCompany = false;
+  void setCompany(Company company) {
+    this.company = company;
   }
 
   @observable
