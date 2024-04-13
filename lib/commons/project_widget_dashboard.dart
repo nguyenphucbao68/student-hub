@@ -2,11 +2,12 @@ import 'package:carea/commons/colors.dart';
 import 'package:carea/components/project_filter_component.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
+import 'package:carea/model/project.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ProjectWidgetDashboard extends StatefulWidget {
-  CallingModel? data = CallingModel();
+  Project? data = Project();
   String? btnText1;
   String? btnText2;
 

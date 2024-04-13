@@ -6,6 +6,7 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/forgot_pass_screen.dart';
+import 'package:carea/screens/input_profile_tech_stack_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/logicprovider.dart';
@@ -106,7 +107,8 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
               observer.login(data['result']['token']);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                // MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => InputProfileTechStackScreen()),
               );
             } else {}
           });
