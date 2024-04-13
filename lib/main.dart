@@ -110,12 +110,14 @@ class _MyAppState extends State<MyApp> {
 
           if (data["result"]["company"] != null) {
             company = Company(
-              userId: data["result"]["company"]["userId"],
+              id: data["result"]["company"]["id"],
               companyName: data["result"]["company"]["companyName"],
               website: data["result"]["company"]["website"],
               size: data["result"]["company"]["size"],
               description: data["result"]["company"]["description"],
             );
+
+            log("company" + company!.companyName!);
           }
         });
       } else {
@@ -125,6 +127,7 @@ class _MyAppState extends State<MyApp> {
       }
     }).catchError((error) {
       // authStore.setLoggedIn(false);
+      log('error' + error.toString());
       setState(() {
         isAuthenticated = 2;
       });

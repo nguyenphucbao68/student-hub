@@ -88,6 +88,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log("authStore.company" + authStore.company.toString());
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
