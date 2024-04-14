@@ -67,8 +67,12 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
     return Scaffold(
-      appBar: commonAppBarWidget(context),
+      appBar: commonAppBarWidget(context,
+          automaticallyImplyLeading:
+              arguments["automaticallyImplyLeading"] ?? false),
       body: Container(
         padding: EdgeInsets.all(12),
         height: context.height(),
@@ -139,7 +143,7 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
                                         style: boldTextStyle(size: 14),
                                       ),
                                       Text(
-                                        "${entry.value.startMonth} - ${entry.value.endMonth}",
+                                        "${entry.value.startMonth!.replaceFirst('-', '/')} - ${entry.value.endMonth!.replaceFirst('-', '/')}",
                                         style: secondaryTextStyle(size: 13),
                                       )
                                     ],
@@ -233,10 +237,12 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
                                   )
                                 ],
                               ),
-                              Text(
-                                entry.value.description!,
-                                style: primaryTextStyle(size: 15),
-                              ),
+                              Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    entry.value.description!,
+                                    style: primaryTextStyle(size: 15),
+                                  )),
                               SizedBox(
                                 height: 15,
                               ),
@@ -421,11 +427,16 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
             children: [
               TextFormField(
                 controller: _startMonthFieldController,
-                decoration: inputDecoration(context, hintText: "06/2023"),
+                decoration: inputDecoration(context, hintText: "MM-YYYY"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
                   }
+
+                  if (!RegExp(r'^\d{2}-\d{4}$').hasMatch(value)) {
+                    return 'Invalid format. Please use MM-YYYY format';
+                  }
+
                   return null;
                 },
               )
@@ -451,10 +462,14 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
             children: [
               TextFormField(
                 controller: _endMonthFieldController,
-                decoration: inputDecoration(context, hintText: "08/2023"),
+                decoration: inputDecoration(context, hintText: "MM-YYYY"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
+                  }
+
+                  if (!RegExp(r'^\d{2}-\d{4}$').hasMatch(value)) {
+                    return 'Invalid format. Please use MM-YYYY format';
                   }
                   return null;
                 },

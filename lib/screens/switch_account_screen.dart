@@ -24,6 +24,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
   late AuthProvider authStore;
   late ProfileOb profi;
   bool showRow = false;
+  bool showInfoStudentRow = false;
 
   @override
   void initState() {
@@ -178,17 +179,86 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                var destinationScreen = profi.userInfo?.company != null
-                    ? ProfileInputAhaaScreen()
-                    : ProfileInputNhapScreen();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => destinationScreen),
-                );
+                if (authStore.authSignUp == UserRole.COMPANY) {
+                  var destinationScreen = profi.userInfo?.company != null
+                      ? ProfileInputAhaaScreen()
+                      : ProfileInputNhapScreen();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => destinationScreen),
+                  );
+                }
+
+                setState(() {
+                  showInfoStudentRow = !showInfoStudentRow;
+                });
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded,
-                  size: 18, color: context.iconColor),
+              trailing: showInfoStudentRow
+                  ? Transform.rotate(
+                      angle: 3.14 / 2, // Độ xoay 90 độ
+                      child: Icon(Icons.arrow_forward_ios_rounded,
+                          size: 18, color: context.iconColor))
+                  : Icon(Icons.arrow_forward_ios_rounded,
+                      size: 18, color: context.iconColor),
             ),
+            (authStore.authSignUp == UserRole.STUDENT &&
+                    authStore.student != null)
+                ? SizedBox(
+                    width: 340,
+                    child: showInfoStudentRow
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SettingItemWidget(
+                                leading: Icon(Icons.school,
+                                    color: context.iconColor),
+                                title: "Techstack and Education",
+                                titleTextStyle: boldTextStyle(),
+                                onTap: () {
+                                  // NotificationScreen().launch(context);
+                                  Navigator.pushNamed(
+                                      context, "techstack_education_screen", arguments: {
+                                        "automaticallyImplyLeading": true,
+                                      });
+                                },
+                                trailing: Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 18, color: context.iconColor),
+                              ),
+                              SettingItemWidget(
+                                leading:
+                                    Icon(Icons.work, color: context.iconColor),
+                                title: "Experience",
+                                titleTextStyle: boldTextStyle(),
+                                onTap: () {
+                                  // NotificationScreen().launch(context);
+                                  Navigator.pushNamed(
+                                      context, "experience_screen", arguments: {
+                                        "automaticallyImplyLeading": true,
+                                      });
+                                },
+                                trailing: Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 18, color: context.iconColor),
+                              ),
+                              SettingItemWidget(
+                                leading: Icon(Icons.description,
+                                    color: context.iconColor),
+                                title: "CV/Transcript",
+                                titleTextStyle: boldTextStyle(),
+                                onTap: () {
+                                  // NotificationScreen().launch(context);
+                                  Navigator.pushNamed(
+                                      context, "cv_transcript_screen", arguments: {
+                                        "automaticallyImplyLeading": true,
+                                      });
+                                },
+                                trailing: Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 18, color: context.iconColor),
+                              ),
+                            ],
+                          )
+                        : null,
+                  )
+                : SizedBox(),
             SettingItemWidget(
               leading: Icon(Icons.settings, color: context.iconColor),
               title: "Change Password",

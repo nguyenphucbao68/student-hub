@@ -27,17 +27,22 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
 
   @override
   Future<void> didChangeDependencies() async {
-    log("Hello taaaa");
     authStore = Provider.of<AuthProvider>(context);
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
+
+    log('arg');
+    log(arguments["automaticallyImplyLeading"]);
+
     return Scaffold(
-      appBar: commonAppBarWidget(
-        context,
-      ),
+      appBar: commonAppBarWidget(context,
+          automaticallyImplyLeading:
+              arguments["automaticallyImplyLeading"] ?? false),
       body: Container(
           padding: EdgeInsets.all(20),
           height: context.height(),
@@ -201,30 +206,39 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
   }
 
   Future<void> _onSubmitAttachments() async {
-    var requestCV = await http.MultipartRequest(
-      'PUT',
-      Uri.parse(AppConstants.BASE_URL +
-          "/profile/student/${authStore.student?.id}/resume"),
-    );
-    requestCV.files
-        .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));
-    requestCV.headers['Authorization'] = 'Bearer ' + authStore.token.toString();
+    var resCV = null;
+    if (_fileCV != null) {
+      var requestCV = await http.MultipartRequest(
+        'PUT',
+        Uri.parse(AppConstants.BASE_URL +
+            "/profile/student/${authStore.student?.id}/resume"),
+      );
+      requestCV.files
+          .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));
+      requestCV.headers['Authorization'] =
+          'Bearer ' + authStore.token.toString();
 
-    var resCV = await requestCV.send();
+      resCV = (await requestCV.send()).statusCode == 200;
+    }
 
-    var requestTranscript = await http.MultipartRequest(
-      'PUT',
-      Uri.parse(AppConstants.BASE_URL +
-          "/profile/student/${authStore.student?.id}/resume"),
-    );
-    requestTranscript.files
-        .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));
-    requestTranscript.headers['Authorization'] =
-        'Bearer ' + authStore.token.toString();
+    var resTranscript = null;
+    if (_fileTranscript != null) {
+      var requestTranscript = await http.MultipartRequest(
+        'PUT',
+        Uri.parse(AppConstants.BASE_URL +
+            "/profile/student/${authStore.student?.id}/resume"),
+      );
+      requestTranscript.files
+          .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));
+      requestTranscript.headers['Authorization'] =
+          'Bearer ' + authStore.token.toString();
 
-    var resTranscript = await requestTranscript.send();
+      resTranscript = (await requestTranscript.send()).statusCode == 200;
+    }
 
-    if (resCV.statusCode == 200 && resTranscript.statusCode == 200) {
+    if ((resCV == null && resTranscript == null) ||
+        (resCV != null && resCV) ||
+        (resTranscript != null && resTranscript)) {
       _handleShowDialog();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

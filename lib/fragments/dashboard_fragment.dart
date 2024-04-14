@@ -43,14 +43,17 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   void didChangeDependencies() {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
-    profi = Provider.of<ProfileOb>(context);
+    log('current Role' + authStore.authSignUp.name);
+    log(authStore.authSignUp.name);
+    log(UserRole.COMPANY.name);
+    // profi = Provider.of<ProfileOb>(context);
     width = MediaQuery.of(context).size.width;
     init();
   }
 
   void init() async {
     tabController = TabController(length: 3, vsync: this);
-    await checkRole();
+    // await checkRole();
   }
 
   @override
@@ -64,25 +67,26 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
     if (mounted) super.setState(fn);
   }
 
-  Future<void> checkRole() async {
-    await http.get(
-      Uri.parse(AppConstants.BASE_URL + '/auth/me'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ' + authStore.token.toString(),
-      },
-    ).then((response) {
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        if (data['result'] != null) {
-          profi.setUserInfoCompany(data['result']['company']);
-          if (profi.userInfo?.currentRole == null)
-            profi.setUserInfoCurrentRole(data['result']['roles'][0]);
-          setState(() {});
-        }
-      }
-    });
-  }
+  // Future<void> checkRole() async {
+  //   await http.get(
+  //     Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //       'Authorization': 'Bearer ' + authStore.token.toString(),
+  //     },
+  //   ).then((response) {
+  //     if (response.statusCode == 200) {
+  //       var data = jsonDecode(response.body);
+  //       if (data['result'] != null) {
+  //         authStore.setCompany(data['result']['company']);
+  //         // profi.setUserInfoCompany(data['result']['company']);
+  //         // if (profi.userInfo?.currentRole == null)
+  //           profi.setUserInfoCurrentRole(data['result']['roles'][0]);
+  //         setState(() {});
+  //       }
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +119,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Your projects', style: boldTextStyle()),
-                        profi.userInfo!.currentRole == 1
+                        authStore.authSignUp == UserRole.COMPANY
                             ? customButton(
                                 txt: 'Post a project',
                                 wid: 120,

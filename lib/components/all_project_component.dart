@@ -49,8 +49,11 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
   }
 
   Future<void> getProjects() async {
-    if (profi.userInfo?.company == null) return;
-    int companyID = profi.userInfo?.company['id'];
+    if (authStore.company == null) return;
+    // int companyID = profi.userInfo?.company['id'];
+
+    int companyID = authStore.company!.id!;
+
     await http.get(
       Uri.parse(AppConstants.BASE_URL + '/project/company/$companyID'),
       headers: <String, String>{
