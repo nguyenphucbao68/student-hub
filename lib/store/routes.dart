@@ -1,5 +1,8 @@
 import 'package:carea/fragments/saved_projects_fragment.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/input_profile_cv_screen.dart';
+import 'package:carea/screens/input_profile_experience_screen.dart';
+import 'package:carea/screens/input_profile_tech_stack_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,5 +30,8 @@ class Routes {
     'forgot_pass_screen': (context) => const ForgotPassScreen(),
     'create_new_pass_screen': (context) => const CreateNewPassScreen(),
     'notification_screen': (context) => NotificationScreen(),
+    'techstack_education_screen': (context) => InputProfileTechStackScreen(),
+    'experience_screen': (context) => InputProfileExperience(),
+    'cv_transcript_screen': (context) => InputProfileCVScreen()
   };
 }

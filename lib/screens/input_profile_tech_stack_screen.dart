@@ -53,6 +53,8 @@ class _InputProfileTechStackScreenState
   final FocusNode _focusLanguage = FocusNode();
   final FocusNode _focusEducation = FocusNode();
   bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -91,6 +93,13 @@ class _InputProfileTechStackScreenState
             return TechStack(name: item["name"], id: item["id"]);
           }).toList();
           _techStackItems.addAll(mappedData);
+
+          if (authStore.student != null) {
+            setState(() {
+              selectedValue = _techStackItems.firstWhere(
+                  (element) => element.id == authStore.student!.techStackId);
+            });
+          }
         });
       }
     });
@@ -98,15 +107,13 @@ class _InputProfileTechStackScreenState
 
   @override
   Widget build(BuildContext context) {
-    authStore = Provider.of<AuthProvider>(context);
-    // _skillSetItems.forEach((element) {
-    //   log(element.name);
-    // });
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
 
     return Scaffold(
-        appBar: commonAppBarWidget(
-          context,
-        ),
+        appBar: commonAppBarWidget(context,
+            automaticallyImplyLeading:
+                arguments["automaticallyImplyLeading"] ?? false),
         body: Container(
           padding: EdgeInsets.all(12),
           height: context.height(),
@@ -452,12 +459,21 @@ class _InputProfileTechStackScreenState
                                                                         .Edit,
                                                                 onHandleEducation:
                                                                     () {
-                                                          // _onEditEducation(
-                                                          //     value.id,
-                                                          //     _educationTextEditingController
-                                                          //         .text,
-                                                          //     _periodTextEdittingController
-                                                          //         .text);
+                                                          _onEditEducation(
+                                                              id: entry.key,
+                                                              schoolName:
+                                                                  _firstFieldController
+                                                                      .text,
+                                                              startYear:
+                                                                  _datePickerController
+                                                                      .selectedRange!
+                                                                      .startDate!
+                                                                      .year,
+                                                              endYear:
+                                                                  _datePickerController
+                                                                      .selectedRange!
+                                                                      .endDate!
+                                                                      .year);
                                                           Navigator.pop(
                                                               context);
                                                           _educationTextEditingController
@@ -501,10 +517,6 @@ class _InputProfileTechStackScreenState
                     //   MaterialPageRoute(
                     //       builder: (context) => RegistrationScreen()),
                     // );
-<<<<<<< Updated upstream
-                    InputProfileExperience().launch(context, isNewTask: true);
-=======
->>>>>>> Stashed changes
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12),
@@ -530,7 +542,7 @@ class _InputProfileTechStackScreenState
   void _onAddEnglighSkill(String name, String level) {
     setState(() {
       languageList.add(Language(
-          studentId: authStore.student.id, languageName: name, level: level));
+          studentId: authStore.student?.id, languageName: name, level: level));
     });
   }
 
@@ -551,22 +563,15 @@ class _InputProfileTechStackScreenState
     });
   }
 
-  void _onEditEducation(int id, String schoolName, String period) {
+  void _onEditEducation(
+      {required int id,
+      required String schoolName,
+      required int startYear,
+      required int endYear}) {
     setState(() {
       educationList[id].schoolName = schoolName;
-<<<<<<< Updated upstream
-      // educationList[id].schoolName = schoolName;
-      // educationList = educationList.map((e) {
-      //   if (e.id == id) {
-      //     e.period = period;
-      //     e.schoolName = schoolName;
-      //   }
-      //   return e;
-      // }).toList();
-=======
       educationList[id].startYear = startYear;
       educationList[id].endYear = endYear;
->>>>>>> Stashed changes
     });
   }
 
@@ -591,11 +596,20 @@ class _InputProfileTechStackScreenState
       SizedBox(
         height: 10,
       ),
-      TextFormField(
-        controller: _firstFieldController,
-        focusNode: _focusLanguage,
-        decoration: inputDecoration(context, hintText: "English, Germany, etc"),
-      ),
+      Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: _firstFieldController,
+            focusNode: _focusLanguage,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration:
+                inputDecoration(context, hintText: "English, Germany, etc"),
+          )),
       SizedBox(
         height: 15,
       ),
@@ -609,12 +623,26 @@ class _InputProfileTechStackScreenState
       SizedBox(
         height: 10,
       ),
-      TextFormField(
-        controller: _secondFieldController,
-        decoration: inputDecoration(context, hintText: "Beginner, Medium, etc"),
-      ),
+      Form(
+          key: _formKey1,
+          child: TextFormField(
+            controller: _secondFieldController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration:
+                inputDecoration(context, hintText: "Beginner, Medium, etc"),
+          )),
       TextButton(
-          onPressed: onHandleLanguageSkill,
+          onPressed: () {
+            if (_formKey.currentState!.validate() &&
+                _formKey1.currentState!.validate()) {
+              onHandleLanguageSkill();
+            }
+          },
           child: Text(
             operation.name,
             style: primaryTextStyle(),
@@ -642,12 +670,20 @@ class _InputProfileTechStackScreenState
       SizedBox(
         height: 10,
       ),
-      TextFormField(
-        controller: _educationTextEditingController,
-        focusNode: _focusEducation,
-        decoration: inputDecoration(context,
-            hintText: "Le Hong Phong, Bui Thi Xuan, etc"),
-      ),
+      Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: _educationTextEditingController,
+            focusNode: _focusEducation,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration: inputDecoration(context,
+                hintText: "Le Hong Phong, Bui Thi Xuan, etc"),
+          )),
       SizedBox(
         height: 15,
       ),
@@ -668,9 +704,6 @@ class _InputProfileTechStackScreenState
         allowViewNavigation: false,
       ),
       TextButton(
-<<<<<<< Updated upstream
-          onPressed: onHandleEducation,
-=======
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               if (_datePickerController.selectedRange?.startDate == null ||
@@ -693,7 +726,6 @@ class _InputProfileTechStackScreenState
               }
             }
           },
->>>>>>> Stashed changes
           child: Text(
             "Add",
             style: primaryTextStyle(),
@@ -701,10 +733,6 @@ class _InputProfileTechStackScreenState
     ];
   }
 
-<<<<<<< Updated upstream
-  int getStudentId() {
-    return authStore.student.id!;
-=======
   Future<void> _handleSubmitForm() async {
     log(_multiSelectController.selectedOptions);
     log({"techStackId": selectedValue?.id});
@@ -833,6 +861,5 @@ class _InputProfileTechStackScreenState
     setState(() {
       _isLoading = false;
     });
->>>>>>> Stashed changes
   }
 }

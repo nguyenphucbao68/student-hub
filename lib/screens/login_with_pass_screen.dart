@@ -102,14 +102,23 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
             },
           ).then((response) {
             if (response.statusCode == 200) {
-              var user = jsonDecode(response.body);
+              var user = jsonDecode(response.body)["result"];
               log("Data" + user.toString());
               observer.login(data['result']['token']);
-              Navigator.push(
-                context,
-                // MaterialPageRoute(builder: (context) => HomeScreen()),
-                MaterialPageRoute(builder: (context) => InputProfileTechStackScreen()),
-              );
+
+              if (user['roles'].contains(0) && user['student'] == null) {
+                Navigator.push(
+                  context,
+                  // MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => InputProfileTechStackScreen()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              }
             } else {}
           });
 
