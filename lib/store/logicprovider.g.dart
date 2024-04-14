@@ -25,6 +25,22 @@ mixin _$LogicProvider on _LogicProvider, Store {
     });
   }
 
+  late final _$projectsAtom =
+      Atom(name: '_LogicProvider.projects', context: context);
+
+  @override
+  List<Project> get projects {
+    _$projectsAtom.reportRead();
+    return super.projects;
+  }
+
+  @override
+  set projects(List<Project> value) {
+    _$projectsAtom.reportWrite(value, super.projects, () {
+      super.projects = value;
+    });
+  }
+
   late final _$conterAtom =
       Atom(name: '_LogicProvider.conter', context: context);
 
@@ -271,9 +287,21 @@ mixin _$LogicProvider on _LogicProvider, Store {
   }
 
   @override
+  void setProjects(List<Project> projects) {
+    final _$actionInfo = _$_LogicProviderActionController.startAction(
+        name: '_LogicProvider.setProjects');
+    try {
+      return super.setProjects(projects);
+    } finally {
+      _$_LogicProviderActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLogined: ${isLogined},
+projects: ${projects},
 conter: ${conter},
 x: ${x},
 bottombarindex: ${bottombarindex},

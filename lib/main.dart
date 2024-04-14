@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/constants.dart';
 import 'package:carea/constants/app_constants.dart';
+import 'package:carea/model/company.dart';
+import 'package:carea/model/student.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/store/AppStore.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/routes.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,8 +36,15 @@ void main() async {
     await authStore.checkLoggedIn();
 
     return runApp(
-      Provider<AuthProvider>(
-        create: (_) => authStore,
+      // Provider<AuthProvider>(
+      //   create: (_) => authStore,
+      MultiProvider(
+        providers: [
+          Provider(create: (_) => authStore),
+          Provider(
+              create: (_) =>
+                  ProfileOb()), // Thêm MyProvider vào danh sách các providers
+        ],
         child: MyApp(),
       ),
     );
@@ -51,7 +62,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AuthProvider authStore;
+  late ProfileOb profile;
   int isAuthenticated = 0;
+  Student? student;
+  Company? company;
 
   @override
   initState() {
@@ -63,6 +77,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profile = Provider.of<ProfileOb>(context);
   }
 
   Future<void> checkAuth() async {
@@ -79,9 +94,31 @@ class _MyAppState extends State<MyApp> {
     ).then((response) {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        log("Data" + data.toString());
+
         setState(() {
           isAuthenticated = 1;
+
+          if (data["result"]["student"] != null) {
+            student = Student(
+              id: data["result"]["student"]["id"],
+              userId: data["result"]["student"]["userId"],
+              techStackId: data["result"]["student"]["techStackId"],
+              resume: data["result"]["student"]["resume"],
+              transcript: data["result"]["student"]["transcript"],
+            );
+          }
+
+          if (data["result"]["company"] != null) {
+            company = Company(
+              id: data["result"]["company"]["id"],
+              companyName: data["result"]["company"]["companyName"],
+              website: data["result"]["company"]["website"],
+              size: data["result"]["company"]["size"],
+              description: data["result"]["company"]["description"],
+            );
+
+            log("company" + company!.companyName!);
+          }
         });
       } else {
         setState(() {
@@ -90,6 +127,7 @@ class _MyAppState extends State<MyApp> {
       }
     }).catchError((error) {
       // authStore.setLoggedIn(false);
+      log('error' + error.toString());
       setState(() {
         isAuthenticated = 2;
       });
@@ -98,6 +136,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   build(BuildContext context) {
+    if (student != null) {
+      // authStore.switchAccountToStudent();
+      if (student != null) {
+        authStore.setStudent(student ?? Student());
+      }
+
+      if (company != null) {
+        authStore.setCompany(company ?? Company());
+      }
+    }
     return Observer(
       builder: (_) => MaterialApp(
         scrollBehavior: SBehavior(),
@@ -106,6 +154,8 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
+        routes: Routes.routes,
+        initialRoute: "/",
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
         // home: LoginWithPassScreen(),
         home: Observer(

@@ -64,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: jsonEncode({
         'email': email,
         'password': password,
-        'fullName': name,
+        'fullname': name,
         'role': auth.authSignUp == UserRole.STUDENT ? 0 : 1,
       }),
     )
@@ -137,9 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fit: BoxFit.fitWidth,
                     image: AssetImage(student_hub)),
                 SizedBox(height: 16),
-                Text(
-                    'Sign up as a ' +
-                        userRoleToText[auth.authSignUp as UserRole]!,
+                Text('Sign up as a ' + userRoleToText[auth.authSignUp]!,
                     style: boldTextStyle(size: 24)),
                 SizedBox(height: 20),
                 TextFormField(
@@ -157,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 TextFormField(
                   autofocus: false,
                   validator: (value) {
-                    if (!value!.contains('@') || !value.endsWith(".com")) {
+                    if (!value!.contains('@')) {
                       return 'Please enter the correct email';
                     }
                     return null;

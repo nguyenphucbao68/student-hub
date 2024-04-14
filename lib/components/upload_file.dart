@@ -3,9 +3,10 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/main.dart';
 
 class UploadFile extends StatelessWidget {
-  const UploadFile({super.key, required this.onTapOverride});
+  const UploadFile({super.key, required this.onTapOverride, required this.isUploaded});
 
   final Function onTapOverride;
+  final bool isUploaded;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class UploadFile extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    "Select File",
+                    this.isUploaded ? "Update other file" : "Select File",
                     style: boldTextStyle(size: 16),
                   )
                 ],

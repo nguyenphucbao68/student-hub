@@ -1,20 +1,12 @@
-import 'dart:io';
-
-import 'package:carea/commons/AppTheme.dart';
-import 'package:carea/commons/colors.dart';
-import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/project_post_step4_screen%20.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
-import 'package:carea/screens/project_post_step2_screen.dart';
-
+// ignore: must_be_immutable
 class ProjectPostStep3Screen extends StatefulWidget {
   ProjectPostStep3Screen({Key? key, this.isAppbarNeeded, this.appBar})
       : super(key: key);
@@ -26,30 +18,20 @@ class ProjectPostStep3Screen extends StatefulWidget {
 }
 
 class _ProjectPostStep3ScreenState extends State<ProjectPostStep3Screen> {
+  late ProfileOb profi;
   final _formKey = GlobalKey<FormState>();
-  XFile? pickedFile;
-  ProfileOb pr_ob = ProfileOb();
-  UserInfo? _userInfo;
-  String? imagePath;
-  String? UserImage;
-  String dropdownValue = 'Male';
-
-  TextEditingController companyNameController = TextEditingController();
-  TextEditingController websiteController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-
   FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  FocusNode f3 = FocusNode();
-  FocusNode f4 = FocusNode();
-  FocusNode f5 = FocusNode();
-  FocusNode f6 = FocusNode();
-
-  String? selectedOption;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    profi = Provider.of<ProfileOb>(context);
   }
 
   @override
@@ -150,12 +132,18 @@ class _ProjectPostStep3ScreenState extends State<ProjectPostStep3Screen> {
                   SizedBox(height: 15),
                   TextFormField(
                     controller: descriptionController,
-                    focusNode: f3,
+                    focusNode: f1,
                     minLines: 5,
                     maxLines: 5,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter project description';
+                      }
+                      return null;
+                    },
                     onFieldSubmitted: (v) {
-                      f3.unfocus();
-                      FocusScope.of(context).requestFocus(f3);
+                      f1.unfocus();
+                      FocusScope.of(context).requestFocus(f1);
                     },
                     decoration:
                         inputDecoration(context, hintText: "Description"),
@@ -164,6 +152,7 @@ class _ProjectPostStep3ScreenState extends State<ProjectPostStep3Screen> {
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
+                        profi.setProjectDecsription(descriptionController.text);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

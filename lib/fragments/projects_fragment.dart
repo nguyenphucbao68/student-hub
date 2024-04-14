@@ -6,6 +6,7 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/search_delageate.dart';
+import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -55,7 +56,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
         'Authorization': 'Bearer ' + authStore.token.toString(),
       },
     ).then((response) {
-      log(response.body);
+      // log(response.body);
       if (response.statusCode == 200) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
@@ -64,7 +65,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
           setState(() {
             projects = data['result']
                 .map<Project>((item) => Project(
-                    id: item['id'],
+                    id: item['projectId'],
                     createdAt: item['createdAt'],
                     updatedAt: item['updatedAt'],
                     deletedAt: item['deletedAt'],
@@ -124,8 +125,20 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
               icon: Icon(Icons.search, color: context.iconColor),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, 'save_projects_screen');
+              },
               icon: Icon(Icons.favorite, color: context.iconColor),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SwitchAccountScreen()),
+                );
+              },
+              icon: Icon(Icons.person, color: context.iconColor),
             ),
           ],
           title: Text("StudentHub", style: boldTextStyle(size: 18)),

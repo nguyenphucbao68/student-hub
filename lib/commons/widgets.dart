@@ -6,6 +6,7 @@ import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/switch_account_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -106,7 +107,7 @@ Future customDialoge(
       Timer(
         Duration(seconds: 1),
         () {
-          Navigator.pop(context);
+          // Navigator.pop(context);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomeScreen()));
         },
@@ -172,15 +173,20 @@ Future customDialoge(
 }
 
 PreferredSizeWidget careaAppBarWidget(BuildContext context,
-    {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
+    {String? titleText,
+    Widget? actionWidget,
+    Widget? actionWidget2,
+    bool leadingIcon = true}) {
   return AppBar(
     backgroundColor: context.scaffoldBackgroundColor,
-    leading: IconButton(
-      icon: Icon(Icons.arrow_back, color: context.iconColor),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
+    leading: leadingIcon
+        ? IconButton(
+            icon: Icon(Icons.arrow_back, color: context.iconColor),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        : null,
     actions: [actionWidget ?? SizedBox(), actionWidget2 ?? SizedBox()],
     title: Text(titleText ?? "", style: boldTextStyle(size: 18)),
     elevation: 0.0,
@@ -188,14 +194,18 @@ PreferredSizeWidget careaAppBarWidget(BuildContext context,
 }
 
 PreferredSizeWidget commonAppBarWidget(BuildContext context,
-    {String? titleText, Widget? actionWidget, Widget? actionWidget2}) {
+    {String? titleText,
+    Widget? actionWidget,
+    Widget? actionWidget2,
+    bool? automaticallyImplyLeading}) {
   return AppBar(
     elevation: 0,
     toolbarHeight: 50,
     // backgroundColor: appStore.isDarkModeOn ? scaffoldDarkColor : white,
     backgroundColor: Color.fromARGB(255, 228, 227, 227),
     title: Text("Student Hub", style: boldTextStyle()),
-    automaticallyImplyLeading: false,
+    automaticallyImplyLeading:
+        automaticallyImplyLeading != null ? automaticallyImplyLeading : false,
     // leading: GestureDetector(
     //   child: Padding(
     //     padding: EdgeInsets.only(top: 8, right: 8, bottom: 8, left: 16),
@@ -386,6 +396,7 @@ Row dialogWithTitle(
   BuildContext context, {
   required String title,
   required List<Widget> childrenWidget,
+  VoidCallback? beforeDialogOpen,
 }) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -399,6 +410,7 @@ Row dialogWithTitle(
         children: [
           IconButton(
               onPressed: () {
+                beforeDialogOpen != null ? beforeDialogOpen() : {};
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {

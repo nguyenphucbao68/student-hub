@@ -1,9 +1,15 @@
+import 'dart:convert';
+
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_details_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/utils/Date.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProjectWidget extends StatefulWidget {
   Project? data = Project();
@@ -17,14 +23,17 @@ class ProjectWidget extends StatefulWidget {
 }
 
 class _ProjectWidgetState extends State<ProjectWidget> {
+  late AuthProvider authStore;
+
   @override
   void initState() {
     super.initState();
-    init();
   }
 
-  void init() async {
-    //
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
   }
 
   @override
@@ -32,8 +41,58 @@ class _ProjectWidgetState extends State<ProjectWidget> {
     if (mounted) super.setState(fn);
   }
 
+  Future<void> addToFavorites() async {
+    log("widget" + widget.data!.id.toString());
+    await http
+        .patch(
+      Uri.parse(AppConstants.BASE_URL +
+          '/favoriteProject/' +
+          authStore.student!.id.toString()),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode(<String, dynamic>{
+        'projectId': widget.data!.id!,
+        "disableFlag": widget.data!.isFavorite ? 1 : 0,
+      }),
+    )
+        .then((response) {
+      log(response.body);
+      if (response.statusCode == 200) {
+        // If the server returns an OK response, then parse the JSON.
+
+        setState(() {
+          widget.data!.isFavorite = !widget.data!.isFavorite;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Added to favorites"),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to add to favorites"),
+          ),
+        );
+      }
+    }).catchError((error) {
+      log('Failed to login' + error.toString());
+      // show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to login'),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    authStore = Provider.of<AuthProvider>(context);
+
     return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -65,15 +124,19 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         flex: 1,
                         child: Text(widget.data!.title!,
                             style: boldTextStyle(size: 16))),
-                    IconButton(
-                        icon: Icon(
-                            widget.data!.isFavorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            size: 25,
-                            color: context.iconColor),
-                        onPressed: () {},
-                        padding: EdgeInsets.only(left: 5, right: 5)),
+                    authStore.authSignUp == UserRole.STUDENT
+                        ? IconButton(
+                            icon: Icon(
+                                widget.data!.isFavorite
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_border_rounded,
+                                size: 25,
+                                color: context.iconColor),
+                            onPressed: () {
+                              addToFavorites();
+                            },
+                            padding: EdgeInsets.only(left: 5, right: 5))
+                        : Text(""),
                   ],
                 ),
               ),

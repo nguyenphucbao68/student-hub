@@ -6,6 +6,7 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/forgot_pass_screen.dart';
+import 'package:carea/screens/input_profile_tech_stack_screen.dart';
 import 'package:carea/screens/sign_up_choose_options_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/logicprovider.dart';
@@ -85,7 +86,7 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
         'password': password,
       }),
     )
-        .then((response) {
+        .then((response) async {
       if (response.statusCode == 201) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
@@ -93,16 +94,44 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
         if (data['result'] != null) {
           // save token to local storage
 
-          observer.login(data['result']['token']);
-          log('Login success' + data['result']['token']);
+          await http.get(
+            Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + data['result']['token'],
+            },
+          ).then((response) {
+            if (response.statusCode == 200) {
+              var user = jsonDecode(response.body)["result"];
+              log("Data" + user.toString());
+              observer.login(data['result']['token']);
+
+              if (user['roles'].contains(0) && user['student'] == null) {
+                Navigator.push(
+                  context,
+                  // MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => InputProfileTechStackScreen()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              }
+            } else {}
+          });
+
+          // observer.login(data['result']['token']);
+          // log('Login success' + data['result']['token']);
 
           // console.log
           // print('Login success' + data['result']['tojen']);
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => HomeScreen()),
+          // );
         } else {
           log('error');
           // show error message

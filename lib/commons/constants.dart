@@ -242,3 +242,9 @@ const List listOfCarBrandName = [
 
 const DATE_FORMAT_2 = 'd MMM, yyyy';
 const DATE_FORMAT_3 = 'dd/MM/yyyy';
+
+enum HIRE_STATUS {
+  ready_to_hire,
+  sent_hire_status,
+  hired
+}
