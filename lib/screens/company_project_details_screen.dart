@@ -16,15 +16,9 @@ class _CompanyViewProjectDetailScreenState
     with SingleTickerProviderStateMixin {
   final tabs = [
     Tab(text: "Proposals"),
-    Tab(
-      text: "Detail",
-    ),
-    Tab(
-      text: "Message",
-    ),
-    Tab(
-      text: "Hired",
-    )
+    Tab(text: "Detail"),
+    Tab(text: "Message"),
+    Tab(text: "Hired")
   ];
 
   late final TabController? _tabController;

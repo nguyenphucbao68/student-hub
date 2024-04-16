@@ -64,19 +64,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
         if (data['result'] != null) {
           setState(() {
             projects = data['result']
-                .map<Project>((item) => Project(
-                    id: item['projectId'],
-                    createdAt: item['createdAt'],
-                    updatedAt: item['updatedAt'],
-                    deletedAt: item['deletedAt'],
-                    companyId: item['companyId'],
-                    projectScopeFlag: item['projectScopeFlag'],
-                    title: item['title'],
-                    description: item['description'],
-                    numberOfStudents: item['numberOfStudents'],
-                    typeFlag: item['typeFlag'],
-                    countProposals: item['countProposals'],
-                    isFavorite: item['isFavorite']))
+                .map<Project>((item) => Project().parse(item))
                 .toList();
           });
         } else {

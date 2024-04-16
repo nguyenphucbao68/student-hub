@@ -83,21 +83,7 @@ class _EditProjectDetailScreenState extends State<EditProjectDetailScreen> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['result'] != null) {
-          profi.setProjectInfo(Project.clone(
-              id: data['result']['id'],
-              createdAt: data['result']['createdAt'],
-              updatedAt: data['result']['updatedAt'],
-              deletedAt: data['result']['deletedAt'],
-              companyId: data['result']['companyId'],
-              projectScopeFlag: data['result']['projectScopeFlag'],
-              title: data['result']['title'],
-              description: data['result']['description'],
-              numberOfStudents: data['result']['numberOfStudents'],
-              typeFlag: data['result']['typeFlag'],
-              proposals: data['result']['proposals'],
-              countProposals: data['result']['countProposals'],
-              countMessages: data['result']['countMessages'],
-              countHired: data['result']['countHired']));
+          profi.setProjectInfo(Project().parseWithProposal(data['result']));
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

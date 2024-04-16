@@ -4,6 +4,7 @@ import 'package:carea/commons/widgets.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/model/experience.dart';
 import 'package:carea/screens/input_profile_cv_screen.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/main.dart';
@@ -27,6 +28,7 @@ class InputProfileExperience extends StatefulWidget {
 class _InputProfileExperienceState extends State<InputProfileExperience> {
   final List<MultiSelectController> _multiSelectControllerList = [];
   late AuthProvider authStore;
+  late ProfileOb profi;
   List<Experience> projectList = [
     // Project(
     //     id: '1',
@@ -62,6 +64,7 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
   @override
   void didChangeDependencies() {
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
     super.didChangeDependencies();
   }
 
@@ -527,7 +530,7 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
     await http
         .put(
             Uri.parse(AppConstants.BASE_URL +
-                "/experience/updateByStudentId/${authStore.student?.id}"),
+                "/experience/updateByStudentId/${profi.user?.student?.id}"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': 'Bearer ' + authStore.token.toString(),

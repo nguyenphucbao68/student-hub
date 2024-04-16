@@ -49,13 +49,16 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
   }
 
   Future<void> getProjects() async {
-    if (authStore.company == null) return;
+    if (profi.user!.company == null) return;
     // int companyID = profi.userInfo?.company['id'];
 
-    int companyID = authStore.company!.id!;
-
+    int companyID = profi.user!.company!.id!;
+    String urlLink = AppConstants.BASE_URL + '/project/company/$companyID';
+    if (widget.titleProject == "working")
+      urlLink += "?typeFlag=0";
+    else if (widget.titleProject == "archieved") urlLink += "?typeFlag=1";
     await http.get(
-      Uri.parse(AppConstants.BASE_URL + '/project/company/$companyID'),
+      Uri.parse(urlLink),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -68,21 +71,7 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
         if (data['result'] != null) {
           setState(() {
             projectData = data['result']
-                .map<Project>((item) => Project.clone(
-                    id: item['id'],
-                    createdAt: item['createdAt'],
-                    updatedAt: item['updatedAt'],
-                    deletedAt: item['deletedAt'],
-                    companyId: item['companyId'],
-                    projectScopeFlag: item['projectScopeFlag'],
-                    title: item['title'],
-                    description: item['description'],
-                    numberOfStudents: item['numberOfStudents'],
-                    typeFlag: item['typeFlag'],
-                    proposals: item['proposals'],
-                    countProposals: item['countProposals'],
-                    countMessages: item['countMessages'],
-                    countHired: item['countHired']))
+                .map<Project>((item) => Project().parseWithProposal(item))
                 .toList();
           });
         } else {

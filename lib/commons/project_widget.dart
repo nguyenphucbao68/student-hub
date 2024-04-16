@@ -5,6 +5,7 @@ import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_details_screen.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/utils/Date.dart';
@@ -24,6 +25,7 @@ class ProjectWidget extends StatefulWidget {
 
 class _ProjectWidgetState extends State<ProjectWidget> {
   late AuthProvider authStore;
+  late ProfileOb profi;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
   }
 
   @override
@@ -47,7 +50,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
         .patch(
       Uri.parse(AppConstants.BASE_URL +
           '/favoriteProject/' +
-          authStore.student!.id.toString()),
+          profi.user!.student!.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -124,7 +127,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         flex: 1,
                         child: Text(widget.data!.title!,
                             style: boldTextStyle(size: 16))),
-                    authStore.authSignUp == UserRole.STUDENT
+                    profi.currentRole == UserRole.STUDENT
                         ? IconButton(
                             icon: Icon(
                                 widget.data!.isFavorite

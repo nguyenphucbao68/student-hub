@@ -155,7 +155,7 @@ class _ProjectPostStep2ScreenState extends State<ProjectPostStep2Screen> {
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        profi.setProjectTimeSize(timeList.indexOf(time),
+                        profi.setProjectCreateTimeSize(timeList.indexOf(time),
                             int.tryParse(numbStdController.text) ?? 1);
                         Navigator.push(
                           context,

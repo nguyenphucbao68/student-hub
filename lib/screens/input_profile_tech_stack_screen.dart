@@ -6,6 +6,7 @@ import 'package:carea/main.dart';
 import 'package:carea/model/skill_set.dart';
 import 'package:carea/screens/input_profile_experience_screen.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -33,6 +34,7 @@ class InputProfileTechStackScreen extends StatefulWidget {
 class _InputProfileTechStackScreenState
     extends State<InputProfileTechStackScreen> {
   late AuthProvider authStore;
+  late ProfileOb profi;
   final List<TechStack> _techStackItems = [];
 
   List<Language> languageList = [];
@@ -66,6 +68,7 @@ class _InputProfileTechStackScreenState
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
   }
 
   @override
@@ -94,10 +97,10 @@ class _InputProfileTechStackScreenState
           }).toList();
           _techStackItems.addAll(mappedData);
 
-          if (authStore.student != null) {
+          if (profi.user!.student != null) {
             setState(() {
               selectedValue = _techStackItems.firstWhere(
-                  (element) => element.id == authStore.student!.techStackId);
+                  (element) => element.id == profi.user!.student!.techStackId);
             });
           }
         });
@@ -542,7 +545,9 @@ class _InputProfileTechStackScreenState
   void _onAddEnglighSkill(String name, String level) {
     setState(() {
       languageList.add(Language(
-          studentId: authStore.student?.id, languageName: name, level: level));
+          studentId: profi.user!.student?.id,
+          languageName: name,
+          level: level));
     });
   }
 
@@ -772,11 +777,11 @@ class _InputProfileTechStackScreenState
         .then((response) {
       if (response.statusCode == 422) {
         // Role  student existed
-        log({"studentId": authStore.student?.id});
+        log({"studentId": profi.user!.student?.id});
         http
             .put(
                 Uri.parse(AppConstants.BASE_URL +
-                    "/profile/student/${authStore.student?.id}"),
+                    "/profile/student/${profi.user!.student?.id}"),
                 headers: <String, String>{
                   'Content-Type': 'application/json; charset=UTF-8',
                   'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -802,7 +807,7 @@ class _InputProfileTechStackScreenState
     await http
         .put(
             Uri.parse(AppConstants.BASE_URL +
-                "/language/updateByStudentId/${authStore.student?.id}"),
+                "/language/updateByStudentId/${profi.user!.student?.id}"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -827,7 +832,7 @@ class _InputProfileTechStackScreenState
     await http
         .put(
             Uri.parse(AppConstants.BASE_URL +
-                "/education/updateByStudentId/${authStore.student?.id}"),
+                "/education/updateByStudentId/${profi.user!.student?.id}"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': 'Bearer ' + authStore.token.toString(),

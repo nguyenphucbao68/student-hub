@@ -1,12 +1,43 @@
 class Company {
   int? id;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+  int? userId;
   String? companyName;
   String? website;
   int? size;
   String? description;
 
   Company(
-      {this.id, this.companyName, this.website, this.size, this.description});
+      {this.id,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt,
+      this.userId,
+      this.companyName,
+      this.website,
+      this.size,
+      this.description});
+
+  Company parse(dynamic data) {
+    return Company(
+      id: data['id'],
+      createdAt: data['createdAt'],
+      updatedAt: data['updatedAt'],
+      deletedAt: data['deletedAt'],
+      userId: data['userId'],
+      companyName: data['companyName'],
+      website: data['website'],
+      size: data['size'],
+      description: data['description'],
+    );
+  }
+
+  Company? tryParse(dynamic data) {
+    if (data == null) return null;
+    return Company().parse(data);
+  }
 }
 
 // enum CompanySize {

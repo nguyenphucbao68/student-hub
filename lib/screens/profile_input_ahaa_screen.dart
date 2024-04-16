@@ -60,7 +60,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
   }
 
   Future<void> getCompanyInfo() async {
-    int companyID = profi.userInfo?.company['id'];
+    int companyID = profi.user?.company.id;
     await http.get(
       Uri.parse(AppConstants.BASE_URL + '/profile/company/$companyID'),
       headers: <String, String>{
@@ -101,7 +101,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
     final size = int.tryParse(sizeController.text) ?? 1;
     final web = websiteController.text;
     final desc = descriptionController.text;
-    int companyID = profi.userInfo?.company['id'];
+    int companyID = profi.user?.company.id;
     await http
         .put(
       Uri.parse(AppConstants.BASE_URL + '/profile/company/$companyID'),

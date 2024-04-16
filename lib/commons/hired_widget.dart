@@ -1,6 +1,7 @@
 import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
+import 'package:carea/model/proposal.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -39,7 +40,7 @@ class _HiredWidgetState extends State<HiredWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.data.student!.user!.fullname.toString(),
+                    widget.data.student!.fullname.toString(),
                     style: boldTextStyle(size: 16),
                   ),
                   SizedBox(

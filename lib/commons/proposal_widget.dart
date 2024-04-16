@@ -1,10 +1,7 @@
 import 'dart:convert';
 
-import 'package:carea/commons/constants.dart';
-import 'package:carea/commons/images.dart';
 import 'package:carea/constants/app_constants.dart';
-import 'package:carea/main.dart';
-import 'package:carea/model/user_info.dart';
+import 'package:carea/model/proposal.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -127,7 +124,7 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.data.student!.user!.fullname.toString(),
+                    widget.data.student!.fullname.toString(),
                     style: boldTextStyle(size: 16),
                   ),
                   SizedBox(
@@ -187,29 +184,17 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                         child: Text('Hire', style: boldTextStyle(color: white)),
                       ),
                     )
-                  : widget.data.statusFlag == 1
-                      ? Container(
-                          alignment: Alignment.center,
-                          width: width * 0.45,
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text('Waiting',
-                              style: boldTextStyle(color: white)),
-                        )
-                      : Container(
-                          alignment: Alignment.center,
-                          width: width * 0.45,
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child:
-                              Text('Hired', style: boldTextStyle(color: white)),
-                        ),
+                  : Container(
+                      alignment: Alignment.center,
+                      width: width * 0.45,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child:
+                          Text('Waiting', style: boldTextStyle(color: white)),
+                    ),
             ],
           ),
         ],
