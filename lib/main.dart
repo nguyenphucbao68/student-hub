@@ -98,6 +98,7 @@ class _MyAppState extends State<MyApp> {
         if (data["result"] != null) {
           profile.setUser(User().parse(data["result"]));
           profile.setUserCurrentRole(data["result"]["roles"][0]);
+          print('da vao cc');
         }
         setState(() {
           isAuthenticated = 1;

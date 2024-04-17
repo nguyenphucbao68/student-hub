@@ -17,10 +17,10 @@ class Student {
   String? fullname;
   TechStack? techStack;
   List<Proposal>? proposals;
-  dynamic educations;
-  dynamic languages;
-  dynamic experiences;
-  dynamic skillSets;
+  List<Education>? educations;
+  List<Language>? languages;
+  List<Experience>? experiences;
+  List<SkillSet>? skillSets;
 
   Student(
       {this.id,
@@ -51,10 +51,10 @@ class Student {
       transcript: data['transcript'],
       techStack: TechStack().tryParse(data['techStack']),
       proposals: Proposal().parseToList(data['proposals']),
-      educations: data['educations'],
-      languages: data['languages'],
-      experiences: data['experiences'],
-      skillSets: data['skillSets'],
+      educations: Education().parseToList(data['educations']),
+      languages: Language().parseToList(data['languages']),
+      experiences: Experience().parseToList(data['experiences']),
+      skillSets: SkillSet().parseToList(data['skillSets']),
     );
   }
 
@@ -67,10 +67,10 @@ class Student {
       transcript: data['transcript'],
       fullname: data['user']['fullname'],
       techStack: TechStack().tryParse(data['techStack']),
-      educations: data['educations'],
-      languages: data['languages'],
-      experiences: data['experiences'],
-      skillSets: data['skillSets'],
+      educations: Education().parseToList(data['educations']),
+      languages: Language().parseToList(data['languages']),
+      experiences: Experience().parseToList(data['experiences']),
+      skillSets: SkillSet().parseToList(data['skillSets']),
     );
   }
 

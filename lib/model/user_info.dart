@@ -25,8 +25,8 @@ class User {
   int? id;
   String? fullName;
   dynamic roles;
-  dynamic student;
-  dynamic company;
+  Student? student;
+  Company? company;
   User({
     this.id,
     this.fullName,

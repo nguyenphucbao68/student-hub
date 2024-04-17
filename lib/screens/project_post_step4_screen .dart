@@ -45,7 +45,7 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
         'Authorization': 'Bearer ' + authStore.token.toString(),
       },
       body: jsonEncode({
-        "companyId": profi.user?.company.id,
+        "companyId": profi.user!.company?.id,
         "projectScopeFlag": profi.projectCreate?.projectScopeFlag,
         "title": profi.projectCreate?.title,
         "description": profi.projectCreate?.description,

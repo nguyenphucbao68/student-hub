@@ -11,4 +11,16 @@ class Experience {
       this.startMonth,
       this.endMonth,
       this.description});
+
+  List<Experience>? parseToList(dynamic item) {
+    if (item == null) return null;
+    return item
+        .map<Experience>((item) => Experience(
+            studentId: item['studentId'],
+            title: item['title'],
+            startMonth: item['startMonth'],
+            endMonth: item['endMonth'],
+            description: item['description']))
+        .toList();
+  }
 }
