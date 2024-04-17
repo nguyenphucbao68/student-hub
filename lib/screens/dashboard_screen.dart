@@ -1,9 +1,17 @@
+import 'dart:convert';
+
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/fragments/alert_fragment.dart';
 import 'package:carea/fragments/dashboard_fragment.dart';
 import 'package:carea/fragments/inbox_fragment2.dart';
 import 'package:carea/fragments/projects_fragment.dart';
+import 'package:carea/model/user_info.dart';
+import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,6 +31,47 @@ class _HomeScreenState extends State<HomeScreen> {
     AlertFragment(),
     // SettingFragment(),
   ];
+  late AuthProvider authStore;
+  late ProfileOb profi;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
+    init();
+  }
+
+  void init() async {
+    await initData();
+  }
+
+  Future<void> initData() async {
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    ).then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          profi.setUser(User().parse(data['result']));
+          if (profi.currentRole == null ||
+              !data['result']['roles']
+                  .contains(profi.currentRole == UserRole.STUDENT ? 1 : 0))
+            profi.setUserCurrentRole(data['result']['roles'][0]);
+          setState(() {});
+        }
+      }
+    });
+  }
 
   Widget _bottomTab() {
     return BottomNavigationBar(
