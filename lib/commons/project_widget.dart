@@ -1,12 +1,19 @@
-import 'package:carea/commons/colors.dart';
+import 'dart:convert';
+
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/calling_model.dart';
+import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_details_screen.dart';
+import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:carea/utils/Date.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProjectWidget extends StatefulWidget {
-  CallingModel? data = CallingModel();
+  Project? data = Project();
   String? btnText1;
   String? btnText2;
 
@@ -17,14 +24,19 @@ class ProjectWidget extends StatefulWidget {
 }
 
 class _ProjectWidgetState extends State<ProjectWidget> {
+  late AuthProvider authStore;
+  late ProfileOb profi;
+
   @override
   void initState() {
     super.initState();
-    init();
   }
 
-  void init() async {
-    //
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
   }
 
   @override
@@ -32,13 +44,66 @@ class _ProjectWidgetState extends State<ProjectWidget> {
     if (mounted) super.setState(fn);
   }
 
+  Future<void> addToFavorites() async {
+    log("widget" + widget.data!.id.toString());
+    await http
+        .patch(
+      Uri.parse(AppConstants.BASE_URL +
+          '/favoriteProject/' +
+          profi.user!.student!.id.toString()),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode(<String, dynamic>{
+        'projectId': widget.data!.id!,
+        "disableFlag": widget.data!.isFavorite ? 1 : 0,
+      }),
+    )
+        .then((response) {
+      log(response.body);
+      if (response.statusCode == 200) {
+        // If the server returns an OK response, then parse the JSON.
+
+        setState(() {
+          widget.data!.isFavorite = !widget.data!.isFavorite;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Added to favorites"),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to add to favorites"),
+          ),
+        );
+      }
+    }).catchError((error) {
+      log('Failed to login' + error.toString());
+      // show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to login'),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    authStore = Provider.of<AuthProvider>(context);
+
     return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProjectDetailScreen()),
+            MaterialPageRoute(
+                builder: (context) => ProjectDetailScreen(
+                      data: widget.data,
+                    )),
           );
         },
         child: Container(
@@ -60,13 +125,21 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                   children: <Widget>[
                     Expanded(
                         flex: 1,
-                        child: Text("Senior frontend developer (Fintech)",
+                        child: Text(widget.data!.title!,
                             style: boldTextStyle(size: 16))),
-                    IconButton(
-                        icon: Icon(Icons.favorite_border_rounded,
-                            size: 25, color: context.iconColor),
-                        onPressed: () {},
-                        padding: EdgeInsets.only(left: 15)),
+                    profi.currentRole == UserRole.STUDENT
+                        ? IconButton(
+                            icon: Icon(
+                                widget.data!.isFavorite
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_border_rounded,
+                                size: 25,
+                                color: context.iconColor),
+                            onPressed: () {
+                              addToFavorites();
+                            },
+                            padding: EdgeInsets.only(left: 5, right: 5))
+                        : Text(""),
                   ],
                 ),
               ),
@@ -74,26 +147,22 @@ class _ProjectWidgetState extends State<ProjectWidget> {
               6.height,
               Row(
                 children: [
-                  // Container(
-                  //   decoration: boxDecorationWithRoundedCorners(
-                  //       boxShape: BoxShape.circle,
-                  //       backgroundColor: widget.data!.colorValue!),
-                  //   height: 10,
-                  //   width: 10,
-                  // ),
-                  // 8.width,
-                  // Text("6 students", style: secondaryTextStyle()),
                   Row(
                     children: [
-                      // Icon(icon)
-                      // Icon students
                       Icon(Icons.people, size: 15, color: context.iconColor),
                       4.width,
-                      Text("6 students", style: secondaryTextStyle()),
+                      Text(
+                          widget.data!.numberOfStudents.toString() +
+                              " students",
+                          style: secondaryTextStyle()),
                       12.width,
                       Icon(Icons.alarm, size: 15, color: context.iconColor),
                       4.width,
-                      Text("1-3 months", style: secondaryTextStyle()),
+                      Text(
+                          widget.data!.projectScopeFlag == 0
+                              ? "1-3 months"
+                              : "3-6 months",
+                          style: secondaryTextStyle()),
                     ],
                   ),
                   8.width,
@@ -104,8 +173,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                           ? scaffoldDarkColor
                           : gray.withOpacity(0.3),
                     ),
-                    child:
-                        Text("3 days ago", style: primaryTextStyle(size: 12)),
+                    child: Text(
+                        DateHandler.getDateTimeDifference(
+                            DateTime.parse(widget.data!.createdAt!)),
+                        style: primaryTextStyle(size: 12)),
                   ),
                 ],
               ),
@@ -115,10 +186,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                 width: MediaQuery.of(context).size.width * 0.8,
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      "Students are looking for\n"
-                      "  - Clear expectation about your project or deliverables",
+                      widget.data!.description!,
                       style: secondaryTextStyle(),
                     ),
                   ],
@@ -146,7 +217,9 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                         children: [
                           Icon(Icons.file_present, size: 12, color: white),
                           3.width,
-                          Text("Proposals: 5",
+                          Text(
+                              "Proposals: " +
+                                  widget.data!.countProposals.toString(),
                               style: primaryTextStyle(size: 12, color: white))
                         ],
                       ),

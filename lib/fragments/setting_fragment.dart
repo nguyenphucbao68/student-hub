@@ -4,8 +4,10 @@ import 'package:carea/screens/login_with_pass_screen.dart';
 import 'package:carea/screens/notification_screen.dart';
 import 'package:carea/screens/payment_screen.dart';
 import 'package:carea/screens/profile_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 class SettingFragment extends StatefulWidget {
   @override
@@ -13,6 +15,8 @@ class SettingFragment extends StatefulWidget {
 }
 
 class _SettingFragmentState extends State<SettingFragment> {
+  late AuthProvider auth;
+
   @override
   void initState() {
     super.initState();
@@ -28,13 +32,21 @@ class _SettingFragmentState extends State<SettingFragment> {
     if (mounted) super.setState(fn);
   }
 
+  // declare userSignupStore
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    auth = Provider.of<AuthProvider>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
         titleText: "Profile",
-        actionWidget: IconButton(onPressed: () {}, icon: Icon(Icons.chat, color: context.iconColor)),
+        actionWidget: IconButton(
+            onPressed: () {}, icon: Icon(Icons.chat, color: context.iconColor)),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: 16),
@@ -43,7 +55,9 @@ class _SettingFragmentState extends State<SettingFragment> {
             SizedBox(height: 16),
             Stack(
               children: [
-                Image.asset("assets/userImage.jpg", height: 100, width: 100, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                Image.asset("assets/userImage.jpg",
+                        height: 100, width: 100, fit: BoxFit.cover)
+                    .cornerRadiusWithClipRRect(60),
                 Positioned(
                   right: 0,
                   bottom: 0,
@@ -76,25 +90,30 @@ class _SettingFragmentState extends State<SettingFragment> {
               onTap: () {
                 ProfileScreen().launch(context);
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
-              leading: Icon(Icons.location_on_outlined, color: context.iconColor),
+              leading:
+                  Icon(Icons.location_on_outlined, color: context.iconColor),
               title: "Address",
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 //
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
-              leading: Icon(Icons.notifications_active_outlined, color: context.iconColor),
+              leading: Icon(Icons.notifications_active_outlined,
+                  color: context.iconColor),
               title: "Notification",
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 NotificationScreen().launch(context);
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
               leading: Icon(Icons.payment_rounded, color: context.iconColor),
@@ -103,7 +122,8 @@ class _SettingFragmentState extends State<SettingFragment> {
               onTap: () {
                 PaymentScreen().launch(context);
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
               leading: Icon(Icons.security, color: context.iconColor),
@@ -112,7 +132,8 @@ class _SettingFragmentState extends State<SettingFragment> {
               onTap: () {
                 //
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
               leading: Icon(Icons.wb_sunny_outlined, color: context.iconColor),
@@ -145,16 +166,19 @@ class _SettingFragmentState extends State<SettingFragment> {
               onTap: () {
                 //
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
-              leading: Icon(Icons.help_center_outlined, color: context.iconColor),
+              leading:
+                  Icon(Icons.help_center_outlined, color: context.iconColor),
               title: "Help Support",
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 //
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
               leading: Icon(Icons.group_outlined, color: context.iconColor),
@@ -163,7 +187,8 @@ class _SettingFragmentState extends State<SettingFragment> {
               onTap: () {
                 //
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
             SettingItemWidget(
               leading: Icon(Icons.login, color: context.iconColor),
@@ -171,10 +196,13 @@ class _SettingFragmentState extends State<SettingFragment> {
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 showConfirmDialogCustom(context, onAccept: (c) {
+                  auth.logout();
+
                   LoginWithPassScreen().launch(context, isNewTask: true);
                 }, dialogType: DialogType.CONFIRMATION);
               },
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 18, color: context.iconColor),
+              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18, color: context.iconColor),
             ),
           ],
         ),

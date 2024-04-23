@@ -9,6 +9,38 @@ part of 'logicprovider.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$LogicProvider on _LogicProvider, Store {
+  late final _$isLoginedAtom =
+      Atom(name: '_LogicProvider.isLogined', context: context);
+
+  @override
+  bool get isLogined {
+    _$isLoginedAtom.reportRead();
+    return super.isLogined;
+  }
+
+  @override
+  set isLogined(bool value) {
+    _$isLoginedAtom.reportWrite(value, super.isLogined, () {
+      super.isLogined = value;
+    });
+  }
+
+  late final _$projectsAtom =
+      Atom(name: '_LogicProvider.projects', context: context);
+
+  @override
+  List<Project> get projects {
+    _$projectsAtom.reportRead();
+    return super.projects;
+  }
+
+  @override
+  set projects(List<Project> value) {
+    _$projectsAtom.reportWrite(value, super.projects, () {
+      super.projects = value;
+    });
+  }
+
   late final _$conterAtom =
       Atom(name: '_LogicProvider.conter', context: context);
 
@@ -255,8 +287,21 @@ mixin _$LogicProvider on _LogicProvider, Store {
   }
 
   @override
+  void setProjects(List<Project> projects) {
+    final _$actionInfo = _$_LogicProviderActionController.startAction(
+        name: '_LogicProvider.setProjects');
+    try {
+      return super.setProjects(projects);
+    } finally {
+      _$_LogicProviderActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+isLogined: ${isLogined},
+projects: ${projects},
 conter: ${conter},
 x: ${x},
 bottombarindex: ${bottombarindex},

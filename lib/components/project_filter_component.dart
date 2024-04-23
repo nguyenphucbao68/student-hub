@@ -1,23 +1,25 @@
 import 'package:carea/commons/colors.dart';
-import 'package:carea/commons/constants.dart';
-import 'package:carea/commons/data_provider.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/calling_model.dart';
 import 'package:carea/store/logicprovider.dart';
 import 'package:carea/store/search_delagete_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ProjectFilterComponent extends StatefulWidget {
+  final Function(Map<String, Object>) updateSearchResults;
+  Map<String, Object> defaultFilters = {};
+  ProjectFilterComponent(
+      {this.defaultFilters = const {}, required this.updateSearchResults});
+
   @override
   _ProjectFilterComponentState createState() => _ProjectFilterComponentState();
 }
 
 class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
   LogicProvider logi = LogicProvider();
-  TextEditingController? _studentsNeededController;
+  TextEditingController _studentsNeededController = TextEditingController();
+  TextEditingController _proposalsLessThanController = TextEditingController();
 
   List searchlist = [];
 
@@ -25,10 +27,6 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
   SearchDelegateOb ob1 = SearchDelegateOb();
   SearchDelegateOb ob2 = SearchDelegateOb();
   SearchDelegateOb ob3 = SearchDelegateOb();
-
-  List<CallingModel> carBrandData = carBrandList();
-  List<CallingModel> carConditionData = carConditionList();
-  List<CallingModel> carRattingData = carRattingList();
 
   String? selectedIndex;
 
@@ -39,7 +37,20 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
   }
 
   void init() async {
-    //
+    if (widget.defaultFilters['numberOfStudents'] != null) {
+      _studentsNeededController.text =
+          widget.defaultFilters['numberOfStudents'] as String;
+    }
+
+    if (widget.defaultFilters['proposalsLessThan'] != null) {
+      _proposalsLessThanController.text =
+          widget.defaultFilters['proposalsLessThan'] as String;
+    }
+
+    if (widget.defaultFilters['projectScopeFlag'] != null) {
+      selectedOption =
+          int.parse(widget.defaultFilters['projectScopeFlag'] as String);
+    }
   }
 
   @override
@@ -49,6 +60,8 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
 
   int selectedOption = 1;
   bool isIconTrue = false;
+  FocusNode f1 = FocusNode();
+
   FocusNode f2 = FocusNode();
 
   @override
@@ -88,20 +101,20 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                RadioListTile(
-                  title: Text('Less than one month'),
-                  value: 1,
-                  groupValue: selectedOption,
-                  onChanged: (val) {
-                    setState(() {
-                      selectedOption = val as int;
-                    });
-                  },
-                  tileColor: appStore.isDarkModeOn ? white : cardDarkColor,
-                ),
+                // RadioListTile(
+                //   title: Text('Less than one month'),
+                //   value: 1,
+                //   groupValue: selectedOption,
+                //   onChanged: (val) {
+                //     setState(() {
+                //       selectedOption = val as int;
+                //     });
+                //   },
+                //   tileColor: appStore.isDarkModeOn ? white : cardDarkColor,
+                // ),
                 RadioListTile(
                   title: Text('1-3 months'),
-                  value: 2,
+                  value: 0,
                   groupValue: selectedOption,
                   onChanged: (val) {
                     setState(() {
@@ -112,7 +125,7 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
                 ),
                 RadioListTile(
                   title: Text('3-6 months'),
-                  value: 3,
+                  value: 1,
                   groupValue: selectedOption,
                   onChanged: (val) {
                     setState(() {
@@ -121,17 +134,17 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
                   },
                   tileColor: appStore.isDarkModeOn ? white : cardDarkColor,
                 ),
-                RadioListTile(
-                  title: Text('More than 6 months'),
-                  value: 4,
-                  groupValue: selectedOption,
-                  onChanged: (val) {
-                    setState(() {
-                      selectedOption = val as int;
-                    });
-                  },
-                  tileColor: appStore.isDarkModeOn ? white : cardDarkColor,
-                ),
+                // RadioListTile(
+                //   title: Text('More than 6 months'),
+                //   value: 4,
+                //   groupValue: selectedOption,
+                //   onChanged: (val) {
+                //     setState(() {
+                //       selectedOption = val as int;
+                //     });
+                //   },
+                //   tileColor: appStore.isDarkModeOn ? white : cardDarkColor,
+                // ),
               ],
             ),
             SizedBox(height: 16),
@@ -141,7 +154,7 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
                 child: Text('Students needed', style: boldTextStyle())),
             SizedBox(height: 16),
             TextFormField(
-              focusNode: f2,
+              focusNode: f1,
               controller: _studentsNeededController,
               decoration: inputDecoration(context,
                   prefixIcon: Icons.people, hintText: ""),
@@ -154,7 +167,7 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
             SizedBox(height: 8),
             TextFormField(
               focusNode: f2,
-              controller: _studentsNeededController,
+              controller: _proposalsLessThanController,
               decoration: inputDecoration(context,
                   prefixIcon: Icons.send, hintText: ""),
             ),
@@ -188,6 +201,28 @@ class _ProjectFilterComponentState extends State<ProjectFilterComponent> {
                 SizedBox(width: 16),
                 GestureDetector(
                   onTap: () {
+                    Map<String, Object> filters = {
+                      // Add your filter parameters here
+                      // For example:
+                      // 'projectLength': selectedOption,
+                      // 'numberOfStudents': _studentsNeededController?.text ?? 0,
+                    };
+
+                    if (_studentsNeededController.text != "") {
+                      filters['numberOfStudents'] =
+                          _studentsNeededController.text;
+                    }
+
+                    if (_proposalsLessThanController.text != "") {
+                      filters['proposalsLessThan'] =
+                          _proposalsLessThanController.text;
+                    }
+
+                    if (selectedOption == 0 || selectedOption == 1) {
+                      filters['projectScopeFlag'] = selectedOption.toString();
+                    }
+
+                    widget.updateSearchResults(filters);
                     finish(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

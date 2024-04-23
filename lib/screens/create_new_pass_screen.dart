@@ -1,13 +1,19 @@
+import 'dart:convert';
+
 import 'package:carea/commons/app_component.dart';
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/user_signup.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../commons/images.dart';
 
@@ -19,6 +25,8 @@ class CreateNewPassScreen extends StatefulWidget {
 }
 
 class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
+  late AuthProvider authStore;
+
   TextEditingController t1 = TextEditingController();
   TextEditingController t2 = TextEditingController();
 
@@ -37,8 +45,47 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+  }
+
+  Future<void> changePassword() async {
+    await http
+        .put(
+      Uri.parse(AppConstants.BASE_URL + '/user/changePassword'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode(<String, String>{
+        'oldPassword': t1.text,
+        'newPassword': t2.text,
+      }),
+    )
+        .then((response) {
+      log(response.body);
+      if (response.statusCode == 200) {
+        customDialoge(context);
+      } else {
+        // If the server returns an error response, then throw an exception.
+        // throw Exception('Failed to login');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Invalid password"),
+          ),
+        );
+      }
+    }).catchError((error) {
+      log('Failed to login' + error.toString());
+      // show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to login'),
+        ),
+      );
+    });
   }
 
   @override
@@ -63,11 +110,17 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(createpassimg, color: context.iconColor, fit: BoxFit.cover, width: 170, height: 170).center(),
+                  Image.asset(createpassimg,
+                          color: context.iconColor,
+                          fit: BoxFit.cover,
+                          width: 170,
+                          height: 170)
+                      .center(),
                   SizedBox(height: 40),
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text("Create Your New Password", style: primaryTextStyle()),
+                    child: Text("Create Your New Password",
+                        style: primaryTextStyle()),
                   ),
                   SizedBox(height: 25),
                   Observer(
@@ -83,13 +136,16 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                         FocusScope.of(context).requestFocus(f2);
                       },
                       decoration: InputDecoration(
-                        hintText: 'Enter new password',
+                        hintText: 'Enter old password',
                         filled: true,
-                        fillColor: appStore.isDarkModeOn ? cardDarkColor : editTextBgColor,
+                        fillColor: appStore.isDarkModeOn
+                            ? cardDarkColor
+                            : editTextBgColor,
                         border: InputBorder.none,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: radius(defaultRadius),
-                          borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                          borderSide:
+                              BorderSide(color: Colors.transparent, width: 0.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: radius(defaultRadius),
@@ -100,12 +156,15 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                           borderSide: BorderSide(color: Colors.red, width: 1.0),
                         ),
                         errorMaxLines: 2,
-                        errorStyle: primaryTextStyle(color: Colors.red, size: 12),
+                        errorStyle:
+                            primaryTextStyle(color: Colors.red, size: 12),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: radius(defaultRadius),
-                          borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                          borderSide:
+                              BorderSide(color: Colors.transparent, width: 0.0),
                         ),
-                        prefixIcon: Icon(Icons.lock, color: context.iconColor, size: 22),
+                        prefixIcon: Icon(Icons.lock,
+                            color: context.iconColor, size: 22),
                         suffixIcon: Theme(
                           data: ThemeData(
                             splashColor: Colors.transparent,
@@ -119,7 +178,11 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                                 isIconCheck2 = !isIconCheck2;
                               });
                             },
-                            icon: Icon(size: 18, (isIconCheck2) ? Icons.visibility_rounded : Icons.visibility_off),
+                            icon: Icon(
+                                size: 18,
+                                (isIconCheck2)
+                                    ? Icons.visibility_rounded
+                                    : Icons.visibility_off),
                           ),
                         ),
                       ),
@@ -137,29 +200,31 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                           return 'password must be less than 16 digit';
                         } else if (value.length < 8) {
                           return 'password must more than 8 digit';
-                        } else if (value != t1.text) {
-                          return 'password must match';
                         }
                         return null;
                       },
                       onFieldSubmitted: (v) {
                         f2.unfocus();
                         if (_form_state_key.currentState!.validate()) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => HomeScreen()),
+                          // );
                         }
                       },
                       obscureText: !isIconCheck1,
                       decoration: InputDecoration(
-                        hintText: 'Confirm Password',
+                        hintText: 'Enter new Password',
                         filled: true,
-                        fillColor: appStore.isDarkModeOn ? cardDarkColor : editTextBgColor,
+                        fillColor: appStore.isDarkModeOn
+                            ? cardDarkColor
+                            : editTextBgColor,
                         border: InputBorder.none,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: radius(defaultRadius),
-                          borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                          borderSide:
+                              BorderSide(color: Colors.transparent, width: 0.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: radius(defaultRadius),
@@ -170,12 +235,15 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                           borderSide: BorderSide(color: Colors.red, width: 1.0),
                         ),
                         errorMaxLines: 2,
-                        errorStyle: primaryTextStyle(color: Colors.red, size: 12),
+                        errorStyle:
+                            primaryTextStyle(color: Colors.red, size: 12),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: radius(defaultRadius),
-                          borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                          borderSide:
+                              BorderSide(color: Colors.transparent, width: 0.0),
                         ),
-                        prefixIcon: Icon(Icons.lock, color: context.iconColor, size: 22),
+                        prefixIcon: Icon(Icons.lock,
+                            color: context.iconColor, size: 22),
                         suffixIcon: Theme(
                           data: ThemeData(
                             splashColor: Colors.transparent,
@@ -191,7 +259,11 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                                 },
                               );
                             },
-                            icon: Icon((isIconCheck1) ? Icons.visibility_rounded : Icons.visibility_off, size: 18),
+                            icon: Icon(
+                                (isIconCheck1)
+                                    ? Icons.visibility_rounded
+                                    : Icons.visibility_off,
+                                size: 18),
                           ),
                         ),
                       ),
@@ -205,11 +277,13 @@ class _CreateNewPassScreenState extends State<CreateNewPassScreen> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       alignment: Alignment.center,
                       decoration: CircularBlackDecoration,
-                      child: Text("Continue", style: boldTextStyle(color: primaryWhiteColor)),
+                      child: Text("Continue",
+                          style: boldTextStyle(color: primaryWhiteColor)),
                     ),
                     onTap: () async {
                       if (_form_state_key.currentState!.validate()) {
-                        await customDialoge(context);
+                        // await customDialoge(context);
+                        changePassword();
                       }
                     },
                   ),

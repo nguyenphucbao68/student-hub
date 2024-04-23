@@ -1,15 +1,15 @@
-import 'package:carea/commons/constants.dart';
-import 'package:carea/commons/images.dart';
+import 'dart:convert';
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
-import 'package:carea/screens/registration_screen.dart';
-import 'package:carea/screens/wish_list_screen.dart';
-import 'package:carea/screens/zoom_image_screen.dart';
+import 'package:carea/model/project.dart';
+import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import '../commons/colors.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ProjectPostStep4Screen extends StatefulWidget {
   // ProjectPostStep4Screen({Key? key, required this.image}) : super(key: key);
@@ -21,42 +21,64 @@ class ProjectPostStep4Screen extends StatefulWidget {
 }
 
 class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
-  TabController? tabController;
-  PageController pageController = PageController(viewportFraction: 1);
+  late AuthProvider authStore;
+  late ProfileOb profi;
 
-  List carname = [
-    "Mercedes",
-    "Tesla",
-    "BMW",
-    "Honda",
-    "Toyata",
-    "Volvo",
-    "Bugatti",
-    "More"
-  ];
-
-  List<String> carList = [
-    car1,
-    car2,
-    car3,
-    car4,
-    car5,
-    car6,
-    car7,
-    car8,
-    car9,
-    car10,
-    car11,
-    car12,
-    car13
-  ];
-
-  String? imageaddr;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
-    tabController;
+    authStore = Provider.of<AuthProvider>(context);
     super.didChangeDependencies();
+    profi = Provider.of<ProfileOb>(context);
+  }
+
+  void hadleCreateProject() async {
+    await http
+        .post(
+      Uri.parse(AppConstants.BASE_URL + '/project'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "companyId": profi.user!.company?.id,
+        "projectScopeFlag": profi.projectCreate?.projectScopeFlag,
+        "title": profi.projectCreate?.title,
+        "description": profi.projectCreate?.description,
+        // "typeFlag": profi.projectCreate?.typeFlag,
+        "numberOfStudents": profi.projectCreate?.numberOfStudents,
+      }),
+    )
+        .then((response) {
+      if (response.statusCode == 201) {
+        var data = jsonDecode(response.body);
+        print(data);
+        if (data['result'] != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['message']),
+            ),
+          );
+        }
+      } else {
+        print(response.statusCode);
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+        ),
+      );
+    });
   }
 
   @override
@@ -82,97 +104,28 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   height: MediaQuery.of(context).size.width * 0.65,
-                //   child: PageView.builder(
-                //     controller: pageController,
-                //     itemCount: carname.length,
-                //     itemBuilder: (context, index) => Container(
-                //       width: MediaQuery.of(context).size.width,
-                //       height: MediaQuery.of(context).size.width * 0.55,
-                //       padding: EdgeInsets.all(20),
-                //       margin: EdgeInsets.all(5),
-                //       alignment: Alignment.center,
-                //       child: Image.asset(
-                //           (widget.image.isNotEmpty)
-                //               ? widget.image
-                //               : ListOfCarImg[0],
-                //           alignment: Alignment.topCenter),
-                //     ),
-                //   ),
-                // ),
-
-                // Align(
-                //   alignment: Alignment.bottomCenter,
-                //   child: SmoothPageIndicator(
-                //     controller: pageController,
-                //     count: 3,
-                //     effect: CustomizableEffect(
-                //       activeDotDecoration: DotDecoration(
-                //         height: 8,
-                //         width: 8,
-                //         color:
-                //             appStore.isDarkModeOn ? white : primaryBlackColor,
-                //         borderRadius: BorderRadius.circular(40),
-                //       ),
-                //       dotDecoration: DotDecoration(
-                //         height: 8,
-                //         width: 8,
-                //         color: Colors.grey,
-                //         borderRadius: BorderRadius.circular(40),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 15),
-                Padding(
-                    padding: EdgeInsets.only(left: 16),
-                    child:
-                        Text("ItViec Project", style: boldTextStyle(size: 20))),
-                SizedBox(height: 15),
                 Padding(
                   padding: EdgeInsets.only(left: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(6)),
-                        child: Text("3 days ago",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12)),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.star_half_rounded, color: context.iconColor),
-                      SizedBox(width: 8),
-                      Text('4.9 (86 reviews)', style: secondaryTextStyle()),
-                      SizedBox(width: 8),
-                    ],
-                  ),
+                  child: Text("4/4  Project detail",
+                      style: boldTextStyle(size: 18)),
                 ),
+                SizedBox(height: 10),
+                Align(
+                    alignment: Alignment.center,
+                    child: Text(profi.projectCreate!.title!,
+                        style: boldTextStyle(size: 22))),
                 SizedBox(height: 16),
                 Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Align(
                       alignment: Alignment.topLeft,
-                      child: Text("Students are looking for",
-                          style: boldTextStyle())),
+                      child: Text("Description", style: boldTextStyle())),
                 ),
                 SizedBox(height: 10),
                 Text.rich(
                   TextSpan(
                     style: secondaryTextStyle(),
-                    text:
-                        "  - Clear expectation about your project and deliverables\n"
-                        "  - The skills required for your project\n"
-                        "  - Detail about your project",
-                    // children: [
-                    //   TextSpan(
-                    //       text: ' view more ...', style: primaryTextStyle()),
-                    // ],
+                    text: profi.projectCreate!.description!,
                   ),
                 ).paddingOnly(right: 16, left: 16),
                 SizedBox(height: 25),
@@ -183,13 +136,16 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
                       child: Text("Extra Information", style: boldTextStyle())),
                 ),
                 SizedBox(height: 5),
-
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 16),
                   leading: Icon(Icons.alarm_rounded, size: 30),
                   title: Text("Project Scope", style: boldTextStyle()),
                   subtitle: Text(
-                    "3 to 6 months",
+                    profi.projectCreate!.projectScopeFlag ==
+                            ProjectScopeFlagToNum[
+                                ProjectScopeFlag.OneToThreeMonth]
+                        ? "1 to 3 months"
+                        : "3 to 6 months",
                     style: secondaryTextStyle(),
                   ),
                 ),
@@ -198,12 +154,12 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
                   leading: Icon(Icons.people, size: 30),
                   title: Text("Student required", style: boldTextStyle()),
                   subtitle: Text(
-                    "6 students",
+                    profi.projectCreate!.numberOfStudents.toString() +
+                        " students",
                     style: secondaryTextStyle(),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width * 0.015),
-
                 Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -214,16 +170,10 @@ class _ProjectPostStep4ScreenState extends State<ProjectPostStep4Screen> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegistrationScreen()),
-                            );
+                            hadleCreateProject();
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12),
-                            // width: MediaQuery.of(context).size.width * 0.4,
-                            // margin: EdgeInsets.all(8),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: appStore.isDarkModeOn

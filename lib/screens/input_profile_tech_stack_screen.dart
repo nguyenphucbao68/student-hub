@@ -1,12 +1,27 @@
+import 'dart:convert';
+
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
+import 'package:carea/model/skill_set.dart';
 import 'package:carea/screens/input_profile_experience_screen.dart';
+import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:carea/model/language.dart';
 import 'package:carea/model/education.dart';
+import 'package:carea/model/tech_stack.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+enum Operation {
+  Add,
+  Edit,
+}
 
 class InputProfileTechStackScreen extends StatefulWidget {
   const InputProfileTechStackScreen({super.key});
@@ -18,51 +33,43 @@ class InputProfileTechStackScreen extends StatefulWidget {
 
 class _InputProfileTechStackScreenState
     extends State<InputProfileTechStackScreen> {
-  final List<String> items = [
-    'Front-end Engineer',
-    'Back-end Engineer',
-    'Fullstack Engineer',
-    'Java Engineer',
-    'Quality Engineer',
-    'Business Analyst',
-    'Scrum Master',
-    'Principal Engineer',
-  ];
-
-  final List<String> skillSetList = [
-    'iOS Developer',
-    'C',
-    'C++',
-    'Java',
-    'Kubernetes',
-    'PostgreSQL',
-    'Redis',
-    'Android',
-    'NodeJS',
-    'Objective-C',
-    'React Native',
-    'React',
-    'Video',
-    'Microservices',
-  ];
+  late AuthProvider authStore;
+  late ProfileOb profi;
+  final List<TechStack> _techStackItems = [];
 
   List<Language> languageList = [];
-  List<Education> educationList = [
-    Education(
-        id: '1', schoolName: 'Le Hong Phong High School', period: '2008-2010'),
-    Education(
-        id: '2',
-        schoolName: 'Ho Chi Minh University of Sciences',
-        period: '2010-2014'),
-  ];
+  List<Education> educationList = [];
 
-  String? selectedValue;
+  TechStack? selectedValue;
   final TextEditingController textEditingController = TextEditingController();
   final MultiSelectController _multiSelectController = MultiSelectController();
-  final TextEditingController languagesTextEdittingController =
+  final TextEditingController _firstFieldController = TextEditingController();
+  final TextEditingController _secondFieldController = TextEditingController();
+  DateRangePickerController _datePickerController = DateRangePickerController();
+
+  final TextEditingController _educationTextEditingController =
+      TextEditingController();
+  final TextEditingController _periodTextEdittingController =
       TextEditingController();
 
-  FocusNode focusLanguage = FocusNode();
+  final FocusNode _focusLanguage = FocusNode();
+  final FocusNode _focusEducation = FocusNode();
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    getTechStackItems();
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
+  }
 
   @override
   void dispose() {
@@ -71,11 +78,45 @@ class _InputProfileTechStackScreenState
   }
 
   @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  Future<void> getTechStackItems() async {
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + "/techstack/getAllTechStack"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).then((response) {
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+          List<TechStack> mappedData = data["result"].map<TechStack>((item) {
+            return TechStack(name: item["name"], id: item["id"]);
+          }).toList();
+          _techStackItems.addAll(mappedData);
+
+          if (profi.user!.student != null) {
+            setState(() {
+              selectedValue = _techStackItems.firstWhere(
+                  (element) => element.id == profi.user!.student!.techStackId);
+            });
+          }
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
+
     return Scaffold(
-        appBar: commonAppBarWidget(
-          context,
-        ),
+        appBar: commonAppBarWidget(context,
+            automaticallyImplyLeading:
+                arguments["automaticallyImplyLeading"] ?? false),
         body: Container(
           padding: EdgeInsets.all(12),
           height: context.height(),
@@ -113,11 +154,11 @@ class _InputProfileTechStackScreenState
                     style: primaryTextStyle(),
                   ),
                   items: this
-                      .items
-                      .map((value) => DropdownMenuItem(
+                      ._techStackItems
+                      .map((value) => DropdownMenuItem<TechStack>(
                             value: value,
                             child: Text(
-                              value,
+                              value.name!,
                               style: primaryTextStyle(),
                             ),
                           ))
@@ -125,7 +166,7 @@ class _InputProfileTechStackScreenState
                   value: selectedValue,
                   onChanged: (value) {
                     setState(() {
-                      selectedValue = value.toString();
+                      selectedValue = value as TechStack?;
                     });
                   },
                   buttonStyleData: ButtonStyleData(
@@ -169,7 +210,8 @@ class _InputProfileTechStackScreenState
                         ),
                       ),
                       searchMatchFn: (item, searchValue) {
-                        return item.value
+                        return (item.value as TechStack)
+                            .name
                             .toString()
                             .toLowerCase()
                             .contains(searchValue.toLowerCase());
@@ -189,12 +231,14 @@ class _InputProfileTechStackScreenState
                 SizedBox(
                   height: 10,
                 ),
-                MultiSelectDropDown(
-                  controller: _multiSelectController,
+                MultiSelectDropDown.network(
                   onOptionSelected: (List<ValueItem> selectedOptions) {},
-                  options: skillSetList
-                      .map((e) => ValueItem(label: e, value: e))
-                      .toList(),
+                  networkConfig: NetworkConfig(
+                      url: "${AppConstants.BASE_URL}/skillset/getAllSkillSet",
+                      method: RequestMethod.get,
+                      headers: {
+                        'Content-Type': 'application/json',
+                      }),
                   selectionType: SelectionType.multi,
                   chipConfig: ChipConfig(
                       wrapType: WrapType.wrap,
@@ -207,45 +251,36 @@ class _InputProfileTechStackScreenState
                   dropdownMargin: 20.5,
                   searchEnabled: true,
                   borderWidth: 1,
+                  controller: _multiSelectController,
+                  responseParser: (response) {
+                    final list = (response["result"] as List<dynamic>)
+                        .map<ValueItem>((e) {
+                      final item = e as Map<String, dynamic>;
+                      return ValueItem(
+                        label: item["name"],
+                        value: item["id"],
+                      );
+                    }).toList();
+
+                    return Future.value(list);
+                  },
                 ),
                 SizedBox(
                   height: 15,
                 ),
-                dialogWithTitle(
-                  context,
-                  title: "Languages",
-                  childrenWidget: [
-                    Text(
-                      "Add language",
-                      style: boldTextStyle(),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      controller: languagesTextEdittingController,
-                      focusNode: focusLanguage,
-                      decoration: inputDecoration(context,
-                          hintText: "English: Native or Bilingual"),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            languageList.add(Language(
-                                id: DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString(),
-                                text: languagesTextEdittingController.text));
-                          });
-                          Navigator.pop(context);
-                          languagesTextEdittingController.text = "";
-                        },
-                        child: Text(
-                          "Add",
-                          style: primaryTextStyle(),
-                        ))
-                  ],
-                ),
+                dialogWithTitle(context, title: "Languages",
+                    beforeDialogOpen: () {
+                  _firstFieldController.text = "";
+                  _secondFieldController.text = "";
+                },
+                    childrenWidget: _languagueDialogBody(context,
+                        operation: Operation.Add, onHandleLanguageSkill: () {
+                      _onAddEnglighSkill(_firstFieldController.text,
+                          _secondFieldController.text);
+                      Navigator.pop(context);
+                      _firstFieldController.text = "";
+                      _secondFieldController.text = "";
+                    })),
                 languageList.length > 0
                     ? Container(
                         margin: EdgeInsets.only(bottom: 16),
@@ -259,7 +294,7 @@ class _InputProfileTechStackScreenState
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           padding: const EdgeInsets.all(8),
-                          children: languageList.map((value) {
+                          children: languageList.asMap().entries.map((entry) {
                             return Column(
                               children: [
                                 Row(
@@ -267,7 +302,7 @@ class _InputProfileTechStackScreenState
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      value.text,
+                                      "${entry.value.languageName!}: ${entry.value.level}",
                                       style: primaryTextStyle(size: 14),
                                     ),
                                     Row(
@@ -275,8 +310,10 @@ class _InputProfileTechStackScreenState
                                         IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                languagesTextEdittingController
-                                                    .text = value.text;
+                                                _firstFieldController.text =
+                                                    entry.value.languageName!;
+                                                _secondFieldController.text =
+                                                    entry.value.level!;
                                               });
                                               showDialog(
                                                   context: context,
@@ -296,55 +333,28 @@ class _InputProfileTechStackScreenState
                                                             mainAxisSize:
                                                                 MainAxisSize
                                                                     .min,
-                                                            children: [
-                                                              Text(
-                                                                "Edit language",
-                                                                style:
-                                                                    boldTextStyle(),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 15,
-                                                              ),
-                                                              TextFormField(
-                                                                // controller:
-                                                                //     languagesTextEdittingController,
-                                                                initialValue:
-                                                                    value.text,
-                                                                focusNode:
-                                                                    focusLanguage,
-                                                                decoration:
-                                                                    inputDecoration(
-                                                                        context,
-                                                                        hintText:
-                                                                            "English: Native or Bilingual"),
-                                                              ),
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      languageList =
-                                                                          languageList
-                                                                              .map((e) {
-                                                                        if (e.id ==
-                                                                            value.id) {
-                                                                          e.text =
-                                                                              languagesTextEdittingController.text;
-                                                                        }
-                                                                        return e;
-                                                                      }).toList();
-                                                                    });
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    languagesTextEdittingController
-                                                                        .text = "";
-                                                                  },
-                                                                  child: Text(
-                                                                    "Edit",
-                                                                    style:
-                                                                        primaryTextStyle(),
-                                                                  ))
-                                                            ],
+                                                            children: _languagueDialogBody(
+                                                                context,
+                                                                operation:
+                                                                    Operation
+                                                                        .Edit,
+                                                                onHandleLanguageSkill:
+                                                                    () {
+                                                              _onEditEnglishSkill(
+                                                                  id: entry.key,
+                                                                  name:
+                                                                      _firstFieldController
+                                                                          .text,
+                                                                  level:
+                                                                      _secondFieldController
+                                                                          .text);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              _firstFieldController
+                                                                  .text = "";
+                                                              _secondFieldController
+                                                                  .text = "";
+                                                            }),
                                                           )),
                                                     );
                                                   });
@@ -353,9 +363,8 @@ class _InputProfileTechStackScreenState
                                         IconButton(
                                             onPressed: () {
                                               setState(() {
-                                                languageList.removeWhere(
-                                                    (element) =>
-                                                        element.id == value.id);
+                                                languageList
+                                                    .removeAt(entry.key);
                                               });
                                             },
                                             icon: Icon(Icons.delete_outlined))
@@ -377,31 +386,19 @@ class _InputProfileTechStackScreenState
                 SizedBox(
                   height: 15,
                 ),
-                dialogWithTitle(
-                  title: "Education",
-                  context,
-                  childrenWidget: [
-                    Text(
-                      "Add education",
-                      style: boldTextStyle(),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      controller: languagesTextEdittingController,
-                      focusNode: focusLanguage,
-                      decoration: inputDecoration(context,
-                          hintText: "English: Native or Bilingual"),
-                    ),
-                    TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Add",
-                          style: primaryTextStyle(),
-                        ))
-                  ],
-                ),
+                dialogWithTitle(title: "Education", context,
+                    beforeDialogOpen: () {
+                  _educationTextEditingController.text = "";
+                  _periodTextEdittingController.text = "";
+                },
+                    childrenWidget: _educationDialogBody(context,
+                        operation: Operation.Add, onHandleEducation: () {
+                      _onAddEducation(_educationTextEditingController.text,
+                          _periodTextEdittingController.text);
+                      Navigator.pop(context);
+                      _educationTextEditingController.text = "";
+                      _periodTextEdittingController.text = "";
+                    })),
                 educationList.length > 0
                     ? Container(
                         margin: EdgeInsets.only(bottom: 16),
@@ -415,7 +412,7 @@ class _InputProfileTechStackScreenState
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           padding: const EdgeInsets.all(8),
-                          children: educationList.map((value) {
+                          children: educationList.asMap().entries.map((entry) {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -424,11 +421,11 @@ class _InputProfileTechStackScreenState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      value.schoolName,
+                                      entry.value.schoolName!,
                                       style: primaryTextStyle(size: 14),
                                     ),
                                     Text(
-                                      value.period,
+                                      "${entry.value.startYear}-${entry.value.endYear}",
                                       style: secondaryTextStyle(size: 13),
                                     )
                                   ],
@@ -436,10 +433,71 @@ class _InputProfileTechStackScreenState
                                 Row(
                                   children: [
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            _educationTextEditingController
+                                                .text = entry.value.schoolName!;
+                                            // _periodTextEdittingController.text =
+                                            //     value.period;
+                                          });
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Dialog(
+                                                  backgroundColor: Colors.white,
+                                                  child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 10.0,
+                                                          left: 20.0,
+                                                          right: 20.0,
+                                                          bottom: 15.0),
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children:
+                                                            _educationDialogBody(
+                                                                context,
+                                                                operation:
+                                                                    Operation
+                                                                        .Edit,
+                                                                onHandleEducation:
+                                                                    () {
+                                                          _onEditEducation(
+                                                              id: entry.key,
+                                                              schoolName:
+                                                                  _firstFieldController
+                                                                      .text,
+                                                              startYear:
+                                                                  _datePickerController
+                                                                      .selectedRange!
+                                                                      .startDate!
+                                                                      .year,
+                                                              endYear:
+                                                                  _datePickerController
+                                                                      .selectedRange!
+                                                                      .endDate!
+                                                                      .year);
+                                                          Navigator.pop(
+                                                              context);
+                                                          _educationTextEditingController
+                                                              .text = "";
+                                                          _periodTextEdittingController
+                                                              .text = "";
+                                                        }),
+                                                      )),
+                                                );
+                                              });
+                                        },
                                         icon: Icon(Icons.edit_outlined)),
                                     IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            educationList.removeAt(entry.key);
+                                            // educationList.removeWhere(
+                                            //     (element) =>
+                                            //         element.id == value.id);
+                                          });
+                                        },
                                         icon: Icon(Icons.delete_outlined))
                                   ],
                                 )
@@ -453,12 +511,15 @@ class _InputProfileTechStackScreenState
                       ),
                 GestureDetector(
                   onTap: () {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    _handleSubmitForm();
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
                     //       builder: (context) => RegistrationScreen()),
                     // );
-                    InputProfileExperience().launch(context, isNewTask: true);
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12),
@@ -470,12 +531,340 @@ class _InputProfileTechStackScreenState
                           appStore.isDarkModeOn ? cardDarkColor : Colors.black,
                       borderRadius: BorderRadius.circular(35),
                     ),
-                    child: Text('Next', style: boldTextStyle(color: white)),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Text('Next', style: boldTextStyle(color: white)),
                   ),
                 ),
               ],
             ),
           ),
         ));
+  }
+
+  void _onAddEnglighSkill(String name, String level) {
+    setState(() {
+      languageList.add(Language(
+          studentId: profi.user!.student?.id,
+          languageName: name,
+          level: level));
+    });
+  }
+
+  void _onEditEnglishSkill(
+      {required int id, required String name, required String level}) {
+    setState(() {
+      languageList[id].languageName = name;
+      languageList[id].level = level;
+    });
+  }
+
+  void _onAddEducation(String schoolName, String period) {
+    setState(() {
+      educationList.add(Education(
+          schoolName: schoolName,
+          startYear: _datePickerController.selectedRange?.startDate?.year,
+          endYear: _datePickerController.selectedRange?.endDate?.year));
+    });
+  }
+
+  void _onEditEducation(
+      {required int id,
+      required String schoolName,
+      required int startYear,
+      required int endYear}) {
+    setState(() {
+      educationList[id].schoolName = schoolName;
+      educationList[id].startYear = startYear;
+      educationList[id].endYear = endYear;
+    });
+  }
+
+  List<Widget> _languagueDialogBody(BuildContext context,
+      {required Operation operation,
+      required VoidCallback onHandleLanguageSkill}) {
+    return [
+      Text(
+        "${operation.name} language",
+        style: boldTextStyle(),
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "Language",
+          style: primaryTextStyle(),
+        ),
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: _firstFieldController,
+            focusNode: _focusLanguage,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration:
+                inputDecoration(context, hintText: "English, Germany, etc"),
+          )),
+      SizedBox(
+        height: 15,
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "Skill level",
+          style: primaryTextStyle(),
+        ),
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      Form(
+          key: _formKey1,
+          child: TextFormField(
+            controller: _secondFieldController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration:
+                inputDecoration(context, hintText: "Beginner, Medium, etc"),
+          )),
+      TextButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate() &&
+                _formKey1.currentState!.validate()) {
+              onHandleLanguageSkill();
+            }
+          },
+          child: Text(
+            operation.name,
+            style: primaryTextStyle(),
+          ))
+    ];
+  }
+
+  List<Widget> _educationDialogBody(BuildContext context,
+      {required Operation operation, required VoidCallback onHandleEducation}) {
+    return [
+      Text(
+        "${operation.name} education",
+        style: boldTextStyle(),
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "School name",
+          style: primaryTextStyle(),
+        ),
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: _educationTextEditingController,
+            focusNode: _focusEducation,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            decoration: inputDecoration(context,
+                hintText: "Le Hong Phong, Bui Thi Xuan, etc"),
+          )),
+      SizedBox(
+        height: 15,
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "Period",
+          style: primaryTextStyle(),
+        ),
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      SfDateRangePicker(
+        controller: _datePickerController,
+        view: DateRangePickerView.decade,
+        selectionMode: DateRangePickerSelectionMode.range,
+        allowViewNavigation: false,
+      ),
+      TextButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              if (_datePickerController.selectedRange?.startDate == null ||
+                  _datePickerController.selectedRange?.endDate == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Please select the valid range"),
+                  ),
+                );
+              } else if (_datePickerController.selectedRange!.endDate!.year >
+                  DateTime.now().year) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        "End year should be less than or equal to current year"),
+                  ),
+                );
+              } else {
+                onHandleEducation();
+              }
+            }
+          },
+          child: Text(
+            "Add",
+            style: primaryTextStyle(),
+          ))
+    ];
+  }
+
+  Future<void> _handleSubmitForm() async {
+    log(_multiSelectController.selectedOptions);
+    log({"techStackId": selectedValue?.id});
+    log({
+      "skillSets": _multiSelectController.selectedOptions
+          .map((item) => item.value)
+          .toList()
+    });
+
+    log({
+      "languages": languageList
+          .map((item) =>
+              {"languageName": item.languageName, "level": item.level})
+          .toList()
+    });
+    log({
+      "education": educationList
+          .map((item) => {
+                "schoolName": item.schoolName,
+                "startYear": item.startYear,
+                "endYear": item.endYear
+              })
+          .toList()
+    });
+    await http
+        .post(Uri.parse(AppConstants.BASE_URL + "/profile/student"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + authStore.token.toString(),
+            },
+            body: jsonEncode({
+              "techStackId": selectedValue?.id,
+              "skillSets": _multiSelectController.selectedOptions
+                  .map((item) => item.value)
+                  .toList()
+            }))
+        .then((response) {
+      if (response.statusCode == 422) {
+        // Role  student existed
+        log({"studentId": profi.user!.student?.id});
+        http
+            .put(
+                Uri.parse(AppConstants.BASE_URL +
+                    "/profile/student/${profi.user!.student?.id}"),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'Authorization': 'Bearer ' + authStore.token.toString(),
+                },
+                body: jsonEncode({
+                  "techStackId": selectedValue?.id,
+                  "skillSets": _multiSelectController.selectedOptions
+                      .map((item) => item.value)
+                      .toList()
+                }))
+            .then((response) {
+          if (response.statusCode != 200) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Can't update profile. Something went wrong"),
+              ),
+            );
+          }
+        });
+      }
+    });
+
+    await http
+        .put(
+            Uri.parse(AppConstants.BASE_URL +
+                "/language/updateByStudentId/${profi.user!.student?.id}"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + authStore.token.toString(),
+            },
+            body: jsonEncode({
+              "languages": languageList
+                  .map((item) =>
+                      {"languageName": item.languageName, "level": item.level})
+                  .toList(),
+            }))
+        .then((response) {
+      if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("Can't update profile of languague. Something went wrong"),
+          ),
+        );
+      }
+    });
+
+    await http
+        .put(
+            Uri.parse(AppConstants.BASE_URL +
+                "/education/updateByStudentId/${profi.user!.student?.id}"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer ' + authStore.token.toString(),
+            },
+            body: jsonEncode({
+              "education": educationList
+                  .map((item) => {
+                        "schoolName": item.schoolName,
+                        "startYear": item.startYear,
+                        "endYear": item.endYear
+                      })
+                  .toList(),
+            }))
+        .then((response) {
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Profile techstack updated successfully"),
+          ),
+        );
+        InputProfileExperience().launch(context, isNewTask: true);
+      } else if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("Can't update profile of education. Something went wrong"),
+          ),
+        );
+      }
+    });
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

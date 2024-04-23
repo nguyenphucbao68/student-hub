@@ -1,20 +1,12 @@
-import 'dart:io';
-
-import 'package:carea/commons/AppTheme.dart';
-import 'package:carea/commons/colors.dart';
-import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/project_post_step3_screen.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
-import 'create_pin_screen.dart';
-
+// ignore: must_be_immutable
 class ProjectPostStep2Screen extends StatefulWidget {
   ProjectPostStep2Screen({Key? key, this.isAppbarNeeded, this.appBar})
       : super(key: key);
@@ -27,36 +19,26 @@ class ProjectPostStep2Screen extends StatefulWidget {
 
 class _ProjectPostStep2ScreenState extends State<ProjectPostStep2Screen> {
   final _formKey = GlobalKey<FormState>();
-  XFile? pickedFile;
-  ProfileOb pr_ob = ProfileOb();
-  UserInfo? _userInfo;
-  String? imagePath;
-  String? UserImage;
-  String dropdownValue = 'Male';
-
-  TextEditingController companyNameController = TextEditingController();
-  TextEditingController websiteController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-
+  late ProfileOb profi;
+  TextEditingController numbStdController = TextEditingController();
   FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  FocusNode f3 = FocusNode();
-  FocusNode f4 = FocusNode();
-  FocusNode f5 = FocusNode();
-  FocusNode f6 = FocusNode();
-
-  String? selectedOption;
 
   final List<String> timeList = [
     "1 to 3 months",
     "3 to 6 months",
   ];
-
   var time = '';
 
   @override
   void initState() {
     super.initState();
+    time = timeList[0];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    profi = Provider.of<ProfileOb>(context);
   }
 
   @override
@@ -154,17 +136,17 @@ class _ProjectPostStep2ScreenState extends State<ProjectPostStep2Screen> {
                   ),
                   SizedBox(height: 10),
                   TextFormField(
-                    controller: companyNameController,
+                    controller: numbStdController,
                     focusNode: f1,
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Please enter your post title';
-                    //   }
-                    //   return null;
-                    // },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter number of student';
+                      }
+                      return null;
+                    },
                     onFieldSubmitted: (v) {
                       f1.unfocus();
-                      FocusScope.of(context).requestFocus(f2);
+                      FocusScope.of(context).requestFocus(f1);
                     },
                     decoration: inputDecoration(context,
                         hintText: "Number of students"),
@@ -173,6 +155,8 @@ class _ProjectPostStep2ScreenState extends State<ProjectPostStep2Screen> {
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
+                        profi.setProjectCreateTimeSize(timeList.indexOf(time),
+                            int.tryParse(numbStdController.text) ?? 1);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
