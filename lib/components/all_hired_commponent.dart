@@ -56,7 +56,7 @@ class _AllHiredComponentState extends State<AllHiredComponent> {
     int? projectID = profi.projectInfo!.id;
     await http.get(
       Uri.parse(AppConstants.BASE_URL +
-          '/proposal/getByProjectId/$projectID?statusFlag=2'),
+          '/proposal/getByProjectId/$projectID?statusFlag=3'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),

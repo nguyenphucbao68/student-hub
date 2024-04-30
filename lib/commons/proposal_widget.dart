@@ -129,19 +129,6 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                   SizedBox(
                     height: 10,
                   ),
-
-                  // get first element of widget.data.student?.experience
-                  // if it is not null, then get title of it
-                  // if it is null, then show 'No experience'
-                  // widget.data.student?.experiences != null
-                  //     ? Text(
-                  //         widget.data.student!.experiences![0].title.toString(),
-                  //         style: boldTextStyle(size: 16),
-                  //       )
-                  //     : Text(
-                  //         'No experience',
-                  //         style: boldTextStyle(size: 16),
-                  //       ),
                   widget.data.student?.educations != null &&
                           widget.data.student!.educations!.isNotEmpty
                       ? Text(
@@ -218,8 +205,8 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child:
-                          Text('Waiting', style: boldTextStyle(color: white)),
+                      child: Text('Sent Hired Offer',
+                          style: boldTextStyle(color: white)),
                     ),
             ],
           ),

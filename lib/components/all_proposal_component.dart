@@ -63,6 +63,7 @@ class _AllProposalComponentState extends State<AllProposalComponent> {
           setState(() {
             proposalData = data['result']['items']
                 .map<Proposal>((item) => Proposal().parseWithStd(item))
+                .where((item) => item.statusFlag != 3)
                 .toList();
           });
         } else {
