@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:carea/commons/project_widget_dashboard.dart';
+import 'package:carea/model/proposal.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -24,6 +25,7 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
   late ProfileOb profi;
 
   List<Project> projectData = [];
+  List<Proposal> proposalsData = [];
 
   @override
   void initState() {
@@ -40,7 +42,11 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
   }
 
   void init() async {
-    await getProjects();
+    if (profi.currentRole == UserRole.COMPANY) {
+      await getProjects();
+    } else if (profi.currentRole == UserRole.STUDENT) {
+      await getProjectsForStudents();
+    }
   }
 
   @override
@@ -65,6 +71,7 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
       },
     ).then((response) {
       // log(response.body);
+      log(response.statusCode);
       if (response.statusCode == 200) {
         // If the server returns an OK response, then parse the JSON.
         var data = jsonDecode(response.body);
@@ -99,22 +106,181 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
     });
   }
 
+  Future<void> getProjectsForStudents() async {
+    log('test');
+    if (profi.user!.student == null) return;
+    // int companyID = profi.userInfo?.company['id'];
+    log('test 2');
+
+    int studentID = profi.user!.student!.id!;
+    String urlLink = AppConstants.BASE_URL +
+        '/proposal/project/$studentID?offset=0&limit=100';
+
+    await http.get(
+      Uri.parse(urlLink),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    ).then((response) {
+      log(response.body);
+      log(response.statusCode);
+      if (response.statusCode == 200) {
+        // If the server returns an OK response, then parse the JSON.
+        var data = jsonDecode(response.body);
+        if (data['result'] != null) {
+          setState(() {
+            proposalsData = Proposal().parseToList(data['result']) ?? [];
+            log(proposalsData.toString());
+          });
+        } else {
+          log('error');
+          // show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['message']),
+            ),
+          );
+        }
+      } else {
+        // If the server returns an error response, then throw an exception.
+        // throw Exception('Something wrong');
+        log('Something wrong');
+      }
+    }).catchError((error) {
+      log('Something wrong' + error.toString());
+      // show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something wrong'),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ProfileOb>(builder: (context, profi, child) {
-      getProjects();
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: projectData.length,
-        padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
-        itemBuilder: (context, index) {
-          Project data = projectData[index];
+      if (profi.currentRole == UserRole.COMPANY) {
+        List<Project> projects = [];
+        if (widget.titleProject == "all") {
+          projects = projectData.where((item) => item.typeFlag == 0).toList();
+        } else if (widget.titleProject == "working") {
+          projects = projectData.where((item) => item.typeFlag == 1).toList();
+        } else if (widget.titleProject == "archieved") {
+          projects = projectData.where((item) => item.typeFlag == 2).toList();
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: projects.length,
+          padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
+          itemBuilder: (context, index) {
+            Project data = projects.elementAt(index);
 
-          return ProjectWidgetDashboard(
-              data: data, btnText1: "In Delivery", btnText2: "Track order");
-        },
-      );
+            return ProjectWidgetDashboard(data: data);
+          },
+        );
+      }
+
+      List<Proposal> proposals = [];
+
+      if (widget.titleProject == "working") {
+        proposals = proposalsData
+            .where((item) => item.disableFlag == 0 && item.statusFlag == 3)
+            .toList();
+        // return ListView.builder(
+        //   shrinkWrap: true,
+        //   physics: NeverScrollableScrollPhysics(),
+        //   itemCount: proposalsData
+        //       .where((item) => item.disableFlag == 0 && item.statusFlag == 3)
+        //       .length,
+        //   padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
+        //   itemBuilder: (context, index) {
+        //     Proposal proposal = proposalsData
+        //         .where((item) => item.disableFlag == 0 && item.statusFlag == 3)
+        //         .elementAt(index);
+        //     Project data = proposal.project!;
+
+        //     return ProjectWidgetDashboard(data: data);
+        //   },
+        // );
+      }
+
+      if (widget.titleProject == "archieved") {
+        proposals =
+            proposalsData.where((item) => item.disableFlag == 1).toList();
+      }
+
+      if (widget.titleProject == "working" ||
+          widget.titleProject == "archieved") {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: proposals.length,
+          padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
+          itemBuilder: (context, index) {
+            Proposal proposal = proposals.elementAt(index);
+            Project data = proposal.project!;
+
+            return ProjectWidgetDashboard(data: data, proposalId: proposal.id);
+          },
+        );
+      }
+
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (profi.currentRole == UserRole.STUDENT) 16.height,
+        if (profi.currentRole == UserRole.STUDENT)
+          Container(
+            padding: EdgeInsets.only(left: 12, right: 12),
+            child: Text(
+              "Active Proposals (${proposalsData.where((item) => item.disableFlag == 0 && item.statusFlag == 1).length})",
+              style: boldTextStyle(size: 14, color: Colors.black45),
+              textAlign: TextAlign.left,
+            ),
+          ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: proposalsData
+              .where((item) => item.disableFlag == 0 && item.statusFlag == 1)
+              .length,
+          padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
+          itemBuilder: (context, index) {
+            Proposal proposal = proposalsData
+                .where((item) => item.disableFlag == 0 && item.statusFlag == 1)
+                .elementAt(index);
+            Project data = proposal.project!;
+
+            return ProjectWidgetDashboard(data: data, proposalId: proposal.id);
+          },
+        ),
+        if (profi.currentRole == UserRole.STUDENT)
+          Container(
+            padding: EdgeInsets.only(left: 12, right: 12),
+            child: Text(
+              "Submitted Proposals (${proposalsData.where((item) => item.disableFlag == 0 && item.statusFlag == 0).length})",
+              style: boldTextStyle(size: 14, color: Colors.black45),
+              textAlign: TextAlign.left,
+            ),
+          ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: proposalsData
+              .where((item) => item.disableFlag == 0 && item.statusFlag == 0)
+              .length,
+          padding: EdgeInsets.only(left: 12, bottom: 12, right: 12, top: 20),
+          itemBuilder: (context, index) {
+            Proposal proposal = proposalsData
+                .where((item) => item.disableFlag == 0 && item.statusFlag == 0)
+                .elementAt(index);
+            Project data = proposal.project!;
+
+            return ProjectWidgetDashboard(data: data, proposalId: proposal.id);
+          },
+        )
+      ]);
     });
   }
 

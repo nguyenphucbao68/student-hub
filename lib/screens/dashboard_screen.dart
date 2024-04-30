@@ -14,7 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, this.defaultPage = 0}) : super(key: key);
+
+  final int defaultPage;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -48,6 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void init() async {
+    log("defaultPage: ${widget.defaultPage}");
+    if (widget.defaultPage != 0) {
+      _selectedIndex = widget.defaultPage;
+    }
     await initData();
   }
 
