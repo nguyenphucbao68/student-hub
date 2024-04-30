@@ -1,18 +1,23 @@
+import 'dart:convert';
+
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/manage_project_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
 class ProjectWidgetDashboard extends StatefulWidget {
-  Project? data = Project();
-  String? btnText1;
-  String? btnText2;
+  Project data;
+  int? proposalId;
 
-  ProjectWidgetDashboard({this.data, this.btnText1, this.btnText2});
+  ProjectWidgetDashboard({required this.data, this.proposalId});
 
   @override
   _ProjectWidgetDashboardState createState() => _ProjectWidgetDashboardState();
@@ -20,40 +25,103 @@ class ProjectWidgetDashboard extends StatefulWidget {
 
 class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
   late ProfileOb profi;
+  late AuthProvider authStore;
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+  }
+
+  void onStartWorkingThisProject() async {
+    if (widget.proposalId == null) {
+      return;
+    }
+    log('start working this project');
+    log(widget.proposalId.toString());
+    await http
+        .patch(
+      Uri.parse(AppConstants.BASE_URL + '/proposal/${widget.proposalId}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode(<String, int>{
+        'statusFlag': 3,
+      }),
+    )
+        .then((response) {
+      log(response.statusCode.toString());
+      log(response.body.toString());
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("You have started working on this project"),
+          ),
+        );
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(defaultPage: 1)));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.statusCode.toString()),
+          ),
+        );
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something wrong'),
+        ),
+      );
+    });
+  }
+
   Widget buildActionButtons() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        OutlinedButton(
-          onPressed: () {
-            profi.setProjectInfo(widget.data);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ManageProjectScreen()),
-            );
-          },
-          child: Text(
-            "Manage project",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
-        SizedBox(height: 10),
-        OutlinedButton(
-          onPressed: () {},
-          child: Text(
-            "Start working this project",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
+        profi.currentRole == UserRole.COMPANY
+            ? OutlinedButton(
+                onPressed: () {
+                  profi.setProjectInfo(widget.data);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen()),
+                  );
+                },
+                child: Text(
+                  "Manage project",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              )
+            : SizedBox(),
+
+        profi.currentRole == UserRole.COMPANY
+            ? SizedBox(height: 10)
+            : SizedBox(),
+        profi.currentRole == UserRole.STUDENT
+            ? OutlinedButton(
+                onPressed: () {
+                  onStartWorkingThisProject();
+                },
+                child: Text(
+                  "Start working this project",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              )
+            : SizedBox(),
         // SizedBox(height: 10),
         // OutlinedButton(
         //   onPressed: () {},
@@ -184,59 +252,62 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
             ),
           ),
           10.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
+          // check if widget.data!.countProposals is not null and is a number
+          widget.data!.countProposals != null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(widget.data!.countProposals.toString(),
-                        style: primaryTextStyle()),
-                    Text("Proposals", style: primaryTextStyle(size: 12)),
+                    Container(
+                      width: 90,
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: appStore.isDarkModeOn
+                            ? scaffoldDarkColor
+                            : gray.withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(widget.data!.countProposals.toString(),
+                              style: primaryTextStyle()),
+                          Text("Proposals", style: primaryTextStyle(size: 12)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: appStore.isDarkModeOn
+                            ? scaffoldDarkColor
+                            : gray.withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(widget.data!.countMessages.toString(),
+                              style: primaryTextStyle()),
+                          Text("Messages", style: primaryTextStyle(size: 12)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: appStore.isDarkModeOn
+                            ? scaffoldDarkColor
+                            : gray.withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(widget.data!.countHired.toString(),
+                              style: primaryTextStyle()),
+                          Text("Hired", style: primaryTextStyle(size: 12)),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-              ),
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text(widget.data!.countMessages.toString(),
-                        style: primaryTextStyle()),
-                    Text("Messages", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text(widget.data!.countHired.toString(),
-                        style: primaryTextStyle()),
-                    Text("Hired", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                )
+              : SizedBox(),
         ],
       ),
     );

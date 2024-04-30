@@ -40,6 +40,7 @@
 //       this.disableFlag});
 // }
 
+import 'package:carea/model/project.dart';
 import 'package:carea/model/student.dart';
 
 class Proposal {
@@ -53,6 +54,7 @@ class Proposal {
   int? statusFlag;
   int? disableFlag;
   Student? student;
+  Project? project;
   Proposal({
     this.id,
     this.createdAt,
@@ -64,6 +66,7 @@ class Proposal {
     this.statusFlag,
     this.disableFlag,
     this.student,
+    this.project,
   });
 
   Proposal parse(dynamic item) {
@@ -77,6 +80,7 @@ class Proposal {
       coverLetter: item['coverLetter'],
       statusFlag: item['statusFlag'],
       disableFlag: item['disableFlag'],
+      project: Project().tryParse(item['project']),
     );
   }
 
