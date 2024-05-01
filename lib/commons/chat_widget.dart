@@ -292,7 +292,8 @@ class ChatWidget extends StatelessWidget {
                 height: 5,
               ),
               Text(
-                DateHandler.getTime(DateTime.parse(msg.createdAt!)),
+                DateHandler.getTime(
+                    DateTime.parse(msg.createdAt!).add(Duration(hours: 7))),
                 style: secondaryTextStyle(
                   size: 14,
                   color: !isMe

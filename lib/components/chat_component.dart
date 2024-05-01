@@ -17,6 +17,7 @@ import 'package:carea/store/authprovider.dart';
 import 'package:carea/model/message.dart';
 import 'package:carea/utils/Date.dart';
 import 'package:carea/commons/route_transition.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class ChatComponent extends StatefulWidget {
   @override
@@ -49,10 +50,46 @@ class _ChatComponentState extends State<ChatComponent> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    // connectToSocket();
     profi = Provider.of<ProfileOb>(context);
     getMessage();
 
     init();
+  }
+
+  void connectToSocket() {
+    final socket = io.io(
+        AppConstants.SOCKET_URL,
+        io.OptionBuilder()
+            .setTransports(['websocket'])
+            .disableAutoConnect()
+            .build());
+
+    //Add authorization to header
+    socket.io.options?['extraHeaders'] = {
+      'Authorization': 'Bearer ${authStore.token}',
+    };
+    //Add query param to url
+    socket.io.options?['query'] = {'project_id': 1};
+
+    socket.connect();
+
+    socket.onConnect((_) {
+      print('Connected to the socket server');
+    });
+
+    socket.onConnectError((data) => print('$data'));
+    socket.onError((data) => print(data));
+
+    socket.onDisconnect((_) {
+      print('Disconnected from the socket server');
+    });
+
+    socket.on('RECEIVE_MESSAGE', (data) {
+      print('Received message: $data');
+    });
+
+    socket.on("ERROR", (data) => print(data));
   }
 
   Future<void> getMessage() async {

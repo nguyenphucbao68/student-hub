@@ -21,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:carea/model/message.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class ChatScreen extends StatefulWidget {
   static String tag = '/ChatScreen';
@@ -61,11 +62,70 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    log('Hello wolrd!!!!!');
+    authStore = Provider.of<AuthProvider>(context, listen: false);
+    connectToSocket();
     init();
   }
 
   init() async {
     //
+  }
+
+  void connectToSocket() {
+    final socket = io.io(
+        AppConstants.SOCKET_URL,
+        io.OptionBuilder()
+            .setTransports(['websocket'])
+            .disableAutoConnect()
+            .build());
+
+    //Add authorization to header
+    socket.io.options?['extraHeaders'] = {
+      'Authorization': 'Bearer ${authStore.token}',
+    };
+    //Add query param to url
+    socket.io.options?['query'] = {'project_id': widget.projectId};
+
+    socket.connect();
+
+    socket.onConnect((_) {
+      print(
+          'Connected to the socket server with project_id ${widget.projectId}');
+    });
+
+    socket.onConnectError((data) => print('$data'));
+    socket.onError((data) => print(data));
+
+    socket.onDisconnect((_) {
+      print('Disconnected from the socket server');
+    });
+
+    socket.on('RECEIVE_MESSAGE', (data) {
+      print('receive 1 time!!!!!!!!');
+      // print('Received message: $data');
+      var message = data['notification'];
+      // log({message});
+      setState(() {
+        msgList.add(Message(
+            id: message['message']['id'],
+            createdAt: message['message']['createdAt'],
+            content: message['message']['content'],
+            sender: User().parse(message['sender']),
+            receiver: User().parse(message['receiver']),
+            interview: message['interview'],
+            formatedDate:
+                DateHandler.getDate(DateTime.parse(message['createdAt']))));
+        scrollController.animateTo(
+            scrollController.position.maxScrollExtent +
+                (scrollController.position.maxScrollExtent /
+                    (msgList.length - 1)),
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut);
+      });
+    });
+
+    socket.on("ERROR", (data) => print(data));
   }
 
   Future<void> _fetchMessage() async {
@@ -143,7 +203,7 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authStore = Provider.of<AuthProvider>(context);
+
     _fetchMessage();
     init();
   }
@@ -228,7 +288,9 @@ class ChatScreenState extends State<ChatScreen> {
                                 msgData.formatedDate !=
                                     msgList[index - 1].formatedDate)
                             ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: isMe
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
                                 children: [
                                   Center(
                                       child: Padding(
