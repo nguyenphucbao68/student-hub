@@ -9,6 +9,7 @@ class AppConstants {
 
 enum SOCKET_EVENTS {
   RECEIVE_MESSAGE,
+  SEND_MESSAGE,
   NOTI,
   ERROR
 }

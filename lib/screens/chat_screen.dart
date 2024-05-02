@@ -12,6 +12,7 @@ import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/logicprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:carea/utils/Date.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,21 +39,23 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> {
   late AuthProvider authStore;
-  ScrollController scrollController = ScrollController();
-  TextEditingController msgController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  TextEditingController _msgController = TextEditingController();
+  late ProfileOb profi;
   List<Message> msgList = [];
+  late io.Socket _socket;
   bool _isloading = true;
 
   FocusNode msgFocusNode = FocusNode();
 
   void createScheduleMeeting(BHMessageModel data) async {
     msgListing.insert(0, data);
-    if (mounted) scrollController.animToTop();
+    if (mounted) _scrollController.animToTop();
     FocusScope.of(context).requestFocus(msgFocusNode);
     setState(() {});
 
     await Future.delayed(Duration(seconds: 1));
-    if (mounted) scrollController.animToTop();
+    if (mounted) _scrollController.animToTop();
     setState(() {});
   }
 
@@ -62,8 +65,9 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    log('Hello wolrd!!!!!');
     authStore = Provider.of<AuthProvider>(context, listen: false);
+    profi = Provider.of<ProfileOb>(context, listen: false);
+    _fetchMessage();
     connectToSocket();
     init();
   }
@@ -73,7 +77,7 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void connectToSocket() {
-    final socket = io.io(
+    _socket = io.io(
         AppConstants.SOCKET_URL,
         io.OptionBuilder()
             .setTransports(['websocket'])
@@ -81,31 +85,30 @@ class ChatScreenState extends State<ChatScreen> {
             .build());
 
     //Add authorization to header
-    socket.io.options?['extraHeaders'] = {
+    _socket.io.options?['extraHeaders'] = {
       'Authorization': 'Bearer ${authStore.token}',
     };
     //Add query param to url
-    socket.io.options?['query'] = {'project_id': widget.projectId};
+    _socket.io.options?['query'] = {'project_id': widget.projectId};
 
-    socket.connect();
+    _socket.connect();
 
-    socket.onConnect((_) {
-      print(
+    _socket.onConnect((_) {
+      log(
           'Connected to the socket server with project_id ${widget.projectId}');
+      log('Listening event ${SOCKET_EVENTS.RECEIVE_MESSAGE.name}');
     });
 
-    socket.onConnectError((data) => print('$data'));
-    socket.onError((data) => print(data));
+    _socket.onConnectError((data) => print('$data'));
+    _socket.onError((data) => print(data));
 
-    socket.onDisconnect((_) {
+    _socket.onDisconnect((_) {
       print('Disconnected from the socket server');
     });
 
-    socket.on('RECEIVE_MESSAGE', (data) {
-      print('receive 1 time!!!!!!!!');
-      // print('Received message: $data');
+    _socket.on(SOCKET_EVENTS.RECEIVE_MESSAGE.name, (data) {
       var message = data['notification'];
-      // log({message});
+
       setState(() {
         msgList.add(Message(
             id: message['message']['id'],
@@ -116,16 +119,10 @@ class ChatScreenState extends State<ChatScreen> {
             interview: message['interview'],
             formatedDate:
                 DateHandler.getDate(DateTime.parse(message['createdAt']))));
-        scrollController.animateTo(
-            scrollController.position.maxScrollExtent +
-                (scrollController.position.maxScrollExtent /
-                    (msgList.length - 1)),
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOut);
       });
-    });
 
-    socket.on("ERROR", (data) => print(data));
+      scrollDownToBottom();
+    });
   }
 
   Future<void> _fetchMessage() async {
@@ -138,12 +135,11 @@ class ChatScreenState extends State<ChatScreen> {
         }).then((response) {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        msgList.clear();
+
         if (data['result'] != null) {
           log({'pid': widget.projectId, 'sid': widget.senderId});
-          setState(() {
-            data['result'].forEach((item) {
-              msgList.add(Message(
+          List<Message> mappedData = data['result']
+              .map<Message>((item) => Message(
                   id: item['id'],
                   createdAt: item['createdAt'],
                   content: item['content'],
@@ -151,44 +147,40 @@ class ChatScreenState extends State<ChatScreen> {
                   receiver: User().parse(item['receiver']),
                   interview: item['interview'],
                   formatedDate:
-                      DateHandler.getDate(DateTime.parse(item['createdAt']))));
-            });
+                      DateHandler.getDate(DateTime.parse(item['createdAt']))))
+              .toList();
 
+          setState(() {
+            msgList.clear();
+            msgList.addAll(mappedData);
             _isloading = false;
           });
+
+          scrollDownToBottom();
         }
       }
     });
   }
 
   sendClick() async {
-    DateFormat formatter = DateFormat('hh:mm a');
-
-    if (msgController.text.trim().isNotEmpty) {
+    if (_msgController.text.trim().isNotEmpty) {
       hideKeyboard(context);
-      var msgModel = BHMessageModel();
-      msgModel.msg = msgController.text.toString();
-      msgModel.time = formatter.format(DateTime.now());
-      msgModel.senderId = BHSender_id;
-      hideKeyboard(context);
-      msgListing.insert(0, msgModel);
 
-      // var msgModel1 = BHMessageModel();
-      // msgModel1.msg = msgController.text.toString();
-      // msgModel1.time = formatter.format(DateTime.now());
-      // msgModel1.senderId = BHReceiver_id;
+      _socket.emit(SOCKET_EVENTS.SEND_MESSAGE.name, {
+        "projectId": widget.projectId,
+        "content": _msgController.text.trim(),
+        "messageFlag": 0,
+        "senderId": profi.user?.id,
+        "receiverId": widget.senderId
+      });
 
-      msgController.text = '';
+      _msgController.text = '';
 
-      if (mounted) scrollController.animToTop();
       FocusScope.of(context).requestFocus(msgFocusNode);
-      setState(() {});
 
       await Future.delayed(Duration(seconds: 1));
 
       // msgListing.insert(0, msgModel1);jj
-
-      if (mounted) scrollController.animToTop();
     } else {
       FocusScope.of(context).requestFocus(msgFocusNode);
     }
@@ -203,9 +195,30 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    _fetchMessage();
     init();
+  }
+
+  @override
+  void dispose() {
+    _socket.disconnect();
+    _socket.dispose();
+    _scrollController.dispose();
+    _msgController.dispose();
+    super.dispose();
+  }
+
+  void scrollDownToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      log({
+        'hasClient': _scrollController.hasClients,
+        'maxScrollEvent': _scrollController.position.maxScrollExtent,
+        'listView': msgList.length
+      });
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 100), curve: Curves.easeOut);
+      }
+    });
   }
 
   @override
@@ -274,7 +287,7 @@ class ChatScreenState extends State<ChatScreen> {
                           Divider(color: Colors.transparent),
                       shrinkWrap: true,
                       reverse: false,
-                      controller: scrollController,
+                      controller: _scrollController,
                       itemCount: msgList.length,
                       padding: EdgeInsets.only(
                           top: 8, left: 8, right: 8, bottom: 70),
@@ -327,9 +340,9 @@ class ChatScreenState extends State<ChatScreen> {
                           Icon(Icons.calendar_month_rounded),
                           8.width,
                           TextField(
-                            controller: msgController,
+                            controller: _msgController,
                             focusNode: msgFocusNode,
-                            autofocus: true,
+                            autofocus: false,
                             textCapitalization: TextCapitalization.sentences,
                             textInputAction: TextInputAction.done,
                             decoration: InputDecoration.collapsed(
@@ -340,6 +353,7 @@ class ChatScreenState extends State<ChatScreen> {
                               fillColor: context.cardColor,
                               filled: true,
                             ),
+                            onTap: scrollDownToBottom,
                             style: primaryTextStyle(),
                             onSubmitted: (s) {
                               sendClick();

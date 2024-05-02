@@ -30,10 +30,15 @@ class _ChatComponentState extends State<ChatComponent> {
   List<CallingModel> chatData = chatDataList();
   List<Message> messageData = [];
   bool _isloading = true;
+  late io.Socket _socket;
 
   @override
   void initState() {
     super.initState();
+    authStore = Provider.of<AuthProvider>(context, listen: false);
+    profi = Provider.of<ProfileOb>(context, listen: false);
+    getMessage();
+    connectToSocket();
     init();
   }
 
@@ -49,16 +54,11 @@ class _ChatComponentState extends State<ChatComponent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authStore = Provider.of<AuthProvider>(context);
-    // connectToSocket();
-    profi = Provider.of<ProfileOb>(context);
-    getMessage();
-
     init();
   }
 
   void connectToSocket() {
-    final socket = io.io(
+    _socket = io.io(
         AppConstants.SOCKET_URL,
         io.OptionBuilder()
             .setTransports(['websocket'])
@@ -66,30 +66,38 @@ class _ChatComponentState extends State<ChatComponent> {
             .build());
 
     //Add authorization to header
-    socket.io.options?['extraHeaders'] = {
+    _socket.io.options?['extraHeaders'] = {
       'Authorization': 'Bearer ${authStore.token}',
     };
-    //Add query param to url
-    socket.io.options?['query'] = {'project_id': 1};
 
-    socket.connect();
+    _socket.connect();
 
-    socket.onConnect((_) {
-      print('Connected to the socket server');
+    _socket.onConnect((_) {
+      log('Connected to the socket server');
+      log('Listening event ${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}');
     });
 
-    socket.onConnectError((data) => print('$data'));
-    socket.onError((data) => print(data));
+    _socket.onConnectError((data) => print('$data'));
+    _socket.onError((data) => print(data));
 
-    socket.onDisconnect((_) {
-      print('Disconnected from the socket server');
+    _socket.onDisconnect((_) {
+      print('Disconnected from the socket server NOTIFICATION');
     });
 
-    socket.on('RECEIVE_MESSAGE', (data) {
-      print('Received message: $data');
+    _socket.on('${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}', (data) {
+      var message = data['notification'];
+      log('LOG: ${message['title']}');
+      getMessage();
     });
 
-    socket.on("ERROR", (data) => print(data));
+    _socket.on("ERROR", (data) => print(data));
+  }
+
+  @override
+  void dispose() {
+    // _socket.disconnect();
+    // _socket.dispose();
+    super.dispose();
   }
 
   Future<void> getMessage() async {
@@ -112,6 +120,13 @@ class _ChatComponentState extends State<ChatComponent> {
                   sender: User().parse(item['sender']),
                   receiver: User().parse(item['receiver']),
                   project: Project().parse(item['project'])));
+            });
+
+            messageData.sort((a, b) {
+              DateTime aDate = DateTime.parse(a.createdAt!);
+              DateTime bDate = DateTime.parse(b.createdAt!);
+
+              return bDate.compareTo(aDate);
             });
 
             _isloading = false;
@@ -173,7 +188,9 @@ class _ChatComponentState extends State<ChatComponent> {
                       Navigator.of(context).push(createRoute(ChatScreen(
                         name: message.sender!.fullName.validate(),
                         projectId: message.project!.id!,
-                        senderId: message.sender!.id!,
+                        senderId: message.sender!.id! == profi.user!.id
+                            ? message.receiver!.id!
+                            : message.sender!.id!,
                       )));
                     },
                   ),
