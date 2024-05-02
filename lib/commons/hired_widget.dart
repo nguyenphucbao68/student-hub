@@ -1,8 +1,4 @@
-import 'package:carea/commons/constants.dart';
-import 'package:carea/commons/images.dart';
-import 'package:carea/main.dart';
 import 'package:carea/model/proposal.dart';
-import 'package:carea/model/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -46,13 +42,27 @@ class _HiredWidgetState extends State<HiredWidget> {
                   SizedBox(
                     height: 10,
                   ),
+                  widget.data.student?.educations != null &&
+                          widget.data.student!.educations!.isNotEmpty
+                      ? Text(
+                          widget.data.student!.educations![0].startYear
+                                  .toString() +
+                              ' - ' +
+                              widget.data.student!.educations![0].endYear
+                                  .toString(),
+                          style: boldTextStyle(size: 16),
+                        )
+                      : Text(
+                          'No education',
+                          style: boldTextStyle(size: 16),
+                        ),
                 ],
               )
             ],
           ),
           SizedBox(height: 10),
           Container(
-            width: width * 0.8,
+            width: width,
             child: Column(
               children: <Widget>[
                 Text(

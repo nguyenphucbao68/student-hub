@@ -42,7 +42,6 @@ class _ProposalWidgetState extends State<ProposalWidget> {
       },
       body: jsonEncode(<String, int>{
         'statusFlag': 1,
-        'disableFlag': 1,
       }),
     )
         .then((response) {
@@ -130,13 +129,27 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                   SizedBox(
                     height: 10,
                   ),
+                  widget.data.student?.educations != null &&
+                          widget.data.student!.educations!.isNotEmpty
+                      ? Text(
+                          widget.data.student!.educations![0].startYear
+                                  .toString() +
+                              ' - ' +
+                              widget.data.student!.educations![0].endYear
+                                  .toString(),
+                          style: boldTextStyle(size: 16),
+                        )
+                      : Text(
+                          'No education',
+                          style: boldTextStyle(size: 16),
+                        ),
                 ],
               )
             ],
           ),
           SizedBox(height: 10),
           Container(
-            width: width * 0.8,
+            width: width,
             child: Column(
               children: <Widget>[
                 Text(
@@ -192,8 +205,8 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child:
-                          Text('Waiting', style: boldTextStyle(color: white)),
+                      child: Text('Sent Hired Offer',
+                          style: boldTextStyle(color: white)),
                     ),
             ],
           ),

@@ -1,19 +1,14 @@
 import 'dart:convert';
 
-import 'package:carea/commons/project_widget_dashboard.dart';
 import 'package:carea/commons/proposal_widget.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/model/proposal.dart';
-import 'package:carea/model/user_info.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:carea/constants/app_constants.dart';
-import 'package:carea/model/project.dart';
-import 'package:carea/store/authprovider.dart';
 import 'package:http/http.dart' as http;
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
-
-import '../model/student.dart';
 
 // ignore: must_be_immutable
 class AllProposalComponent extends StatefulWidget {
@@ -68,6 +63,7 @@ class _AllProposalComponentState extends State<AllProposalComponent> {
           setState(() {
             proposalData = data['result']['items']
                 .map<Proposal>((item) => Proposal().parseWithStd(item))
+                .where((item) => item.statusFlag != 3)
                 .toList();
           });
         } else {

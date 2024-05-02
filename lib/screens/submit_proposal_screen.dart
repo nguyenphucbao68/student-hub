@@ -1,41 +1,49 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:carea/commons/AppTheme.dart';
 import 'package:carea/commons/colors.dart';
 import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/widgets.dart';
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
+import 'package:carea/model/project.dart';
 import 'package:carea/model/user_info.dart';
+import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:carea/screens/project_post_step2_screen.dart';
+import 'package:provider/provider.dart';
 
 class SubmitProposalScreen extends StatefulWidget {
-  SubmitProposalScreen({Key? key, this.isAppbarNeeded, this.appBar})
+  SubmitProposalScreen(
+      {Key? key, this.isAppbarNeeded, this.appBar, this.project})
       : super(key: key);
   bool? isAppbarNeeded;
   final PreferredSizeWidget? appBar;
+  final Project? project;
 
   @override
   State<SubmitProposalScreen> createState() => _SubmitProposalScreenState();
 }
 
 class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
+  late AuthProvider authStore;
+
   final _formKey = GlobalKey<FormState>();
   XFile? pickedFile;
-  ProfileOb pr_ob = ProfileOb();
+  late ProfileOb profi;
   UserInfo? _userInfo;
   String? imagePath;
   String? UserImage;
   String dropdownValue = 'Male';
 
-  TextEditingController companyNameController = TextEditingController();
-  TextEditingController websiteController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+  TextEditingController coverLetterController = TextEditingController();
 
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
@@ -52,7 +60,71 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+  }
+
+  Future<void> submitProposal() async {
+    log(jsonEncode(<String, String>{
+      'projectId': widget.project?.id.toString() ?? "",
+      'studentId': profi.user?.student?.id.toString() ?? "",
+      'coverLetter': coverLetterController.text,
+    }));
+
+    // Navigator.pushNamed(context, "home", arguments: {
+    //   'defaultPage': 1,
+    // });
+
+    await http
+        .post(
+      Uri.parse(AppConstants.BASE_URL + '/proposal'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode(<String, String>{
+        'projectId': widget.project?.id.toString() ?? "",
+        'studentId': profi.user?.student?.id.toString() ?? "",
+        'coverLetter': coverLetterController.text,
+      }),
+    )
+        .then((response) {
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Submit proposal successfully"),
+          ),
+        );
+        // Navigator.pushNamed(context, "home");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(defaultPage: 1)));
+      } else {
+        // If the server returns an error response, then throw an exception.
+        // throw Exception('Failed to login');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Invalid password"),
+          ),
+        );
+      }
+    }).catchError((error) {
+      log('Failed to login' + error.toString());
+      // show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to login'),
+        ),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    profi = Provider.of<ProfileOb>(context);
+
     return WillPopScope(
       onWillPop: () async {
         FocusScope.of(context).unfocus();
@@ -92,7 +164,7 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
                   ),
                   SizedBox(height: 15),
                   TextFormField(
-                    controller: companyNameController,
+                    controller: coverLetterController,
                     focusNode: f1,
                     // multilines
                     maxLines: 5,
@@ -141,12 +213,14 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
                             high: 50,
                             textSize: 16,
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProjectPostStep2Screen()),
-                              );
+                              // log(widget.project?.title ?? "No title");
+                              submitProposal();
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           ProjectPostStep2Screen()),
+                              // );
                             },
                           ))
                     ],
