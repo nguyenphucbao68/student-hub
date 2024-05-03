@@ -40,7 +40,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
 
   void init() async {
     tabController = new TabController(length: 2, vsync: this);
-    await getProjects(); // Call getProjects() when the widget is initialized
+    await getProjects(1); // Call getProjects() when the widget is initialized
   }
 
   @override
@@ -48,9 +48,50 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
     if (mounted) super.setState(fn);
   }
 
-  Future<void> getProjects() async {
+  // add page and perPage
+  int currentPage = 1;
+  int perPage = 10;
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        // center
+        mainAxisSize: MainAxisSize.min,
+
+        children: [
+          CircularProgressIndicator(),
+          Container(
+            margin: EdgeInsets.only(left: 7),
+            child: Text("Loading...",
+                style: primaryTextStyle(
+                  size: 16,
+                  color: appStore.isDarkModeOn ? white : textPrimaryColor,
+                )),
+          )
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<void> getProjects(int? page) async {
+    // show CircularProgressIndicator
+
+    // set currentPage
+    currentPage = page ?? 1;
+
+    if (currentPage > 1) {
+      showLoaderDialog(context);
+    }
+
     await http.get(
-      Uri.parse(AppConstants.BASE_URL + '/project'),
+      Uri.parse(AppConstants.BASE_URL + '/project?page=$page&perPage=$perPage'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -63,10 +104,14 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
 
         if (data['result'] != null) {
           setState(() {
-            projects = data['result']
+            projects.addAll(data['result']
                 .map<Project>((item) => Project().parse(item))
-                .toList();
+                .toList());
           });
+          if (currentPage > 1) {
+            // close logger dialog
+            Navigator.of(context, rootNavigator: true).pop();
+          }
         } else {
           log('error');
           // show error message
@@ -134,6 +179,9 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
         ),
         body: new ActiveComponent(
           data: projects,
+          onLoadNextPage: () async {
+            await getProjects(currentPage + 1);
+          },
         ),
       ),
     );

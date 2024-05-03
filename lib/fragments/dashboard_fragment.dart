@@ -1,15 +1,10 @@
-import 'dart:convert';
-
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_project_component.dart';
-import 'package:carea/constants/app_constants.dart';
-import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
