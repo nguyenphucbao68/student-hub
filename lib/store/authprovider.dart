@@ -24,21 +24,21 @@ abstract class _AuthProvider with Store {
   @observable
   String? token = '';
 
-  @observable
-  Student? student;
+  // @observable
+  // Student? student;
 
-  @observable
-  Company? company;
+  // @observable
+  // Company? company;
 
-  @action
-  void setStudent(Student student) {
-    this.student = student;
-  }
+  // @action
+  // void setStudent(Student student) {
+  //   this.student = student;
+  // }
 
-  @action
-  void setCompany(Company company) {
-    this.company = company;
-  }
+  // @action
+  // void setCompany(Company company) {
+  //   this.company = company;
+  // }
 
   @observable
   UserRole authSignUp = UserRole.STUDENT;

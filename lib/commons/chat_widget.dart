@@ -2,18 +2,19 @@ import 'package:carea/components/schedule_interview_component.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/screens/meet_screen.dart';
+import 'package:carea/utils/Date.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:carea/model/message.dart';
 
 class ChatWidget extends StatelessWidget {
-  const ChatWidget({
-    Key? key,
-    required this.isMe,
-    required this.data,
-  }) : super(key: key);
+  const ChatWidget(
+      {Key? key, required this.isMe, required this.data, required this.msg})
+      : super(key: key);
 
   final bool isMe;
   final BHMessageModel data;
+  final Message msg;
 
   List<Widget> activeMeetingOption(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -275,7 +276,7 @@ class ChatWidget extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  data.msg!,
+                  msg.content.validate(),
                   style: primaryTextStyle(
                     color: !isMe
                         ? appStore.isDarkModeOn
@@ -287,8 +288,12 @@ class ChatWidget extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 5,
+              ),
               Text(
-                data.time!,
+                DateHandler.getTime(
+                    DateTime.parse(msg.createdAt!).add(Duration(hours: 7))),
                 style: secondaryTextStyle(
                   size: 14,
                   color: !isMe

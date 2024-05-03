@@ -3,6 +3,7 @@ import 'package:carea/components/upload_file.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/home.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/main.dart';
@@ -23,11 +24,13 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
   PlatformFile? _fileCV = null;
   PlatformFile? _fileTranscript = null;
   late AuthProvider authStore;
+  late ProfileOb profi;
   bool _isloading = false;
 
   @override
   Future<void> didChangeDependencies() async {
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
     super.didChangeDependencies();
   }
 
@@ -211,7 +214,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
       var requestCV = await http.MultipartRequest(
         'PUT',
         Uri.parse(AppConstants.BASE_URL +
-            "/profile/student/${authStore.student?.id}/resume"),
+            "/profile/student/${profi.user?.student?.id}/resume"),
       );
       requestCV.files
           .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));
@@ -226,7 +229,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
       var requestTranscript = await http.MultipartRequest(
         'PUT',
         Uri.parse(AppConstants.BASE_URL +
-            "/profile/student/${authStore.student?.id}/resume"),
+            "/profile/student/${profi.user?.student?.id}/resume"),
       );
       requestTranscript.files
           .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));

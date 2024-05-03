@@ -184,7 +184,8 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SubmitProposalScreen()),
+                                  builder: (context) => SubmitProposalScreen(
+                                      project: widget.data!)),
                             );
                           },
                           child: Container(

@@ -14,6 +14,8 @@ class Student {
   int? techStackId;
   String? resume;
   String? transcript;
+  String? fullname;
+  String? email;
   TechStack? techStack;
   List<Proposal>? proposals;
   List<Education>? educations;
@@ -30,10 +32,79 @@ class Student {
       this.techStackId,
       this.resume,
       this.transcript,
+      this.fullname,
       this.techStack,
       this.proposals,
       this.educations,
       this.languages,
       this.experiences,
-      this.skillSets});
+      this.skillSets,
+      this.email});
+
+  Student parse(dynamic data) {
+    return Student(
+      id: data['id'],
+      createdAt: data['createdAt'],
+      updatedAt: data['updatedAt'],
+      deletedAt: data['deletedAt'],
+      userId: data['userId'],
+      techStackId: data['techStackId'],
+      resume: data['resume'],
+      transcript: data['transcript'],
+      techStack: TechStack().tryParse(data['techStack']),
+      proposals: Proposal().parseToList(data['proposals']),
+      educations: Education().parseToList(data['educations']),
+      languages: Language().parseToList(data['languages']),
+      experiences: Experience().parseToList(data['experiences']),
+      skillSets: SkillSet().parseToList(data['skillSets']),
+    );
+  }
+
+  Student parseWithFullname(dynamic data) {
+    return Student(
+      id: data['id'],
+      userId: data['userId'],
+      techStackId: data['techStackId'],
+      resume: data['resume'],
+      transcript: data['transcript'],
+      fullname: data['user']['fullname'],
+      techStack: TechStack().tryParse(data['techStack']),
+      educations: Education().parseToList(data['educations']),
+      languages: Language().parseToList(data['languages']),
+      experiences: Experience().parseToList(data['experiences']),
+      skillSets: SkillSet().parseToList(data['skillSets']),
+    );
+  }
+
+  Student parseWithFullnameAndEmail(dynamic data) {
+    return Student(
+      id: data['id'],
+      userId: data['userId'],
+      techStackId: data['techStackId'],
+      resume: data['resume'],
+      transcript: data['transcript'],
+      fullname: data['fullname'],
+      email: data['email'],
+      techStack: TechStack().tryParse(data['techStack']),
+      educations: Education().parseToList(data['educations']),
+      languages: Language().parseToList(data['languages']),
+      experiences: Experience().parseToList(data['experiences']),
+      skillSets: SkillSet().parseToList(data['skillSets']),
+    );
+  }
+
+  Student? tryParse(dynamic data) {
+    if (data == null) return null;
+    return Student().parse(data);
+  }
+
+  Student? tryParseWithFullname(dynamic data) {
+    if (data == null) return null;
+    return Student().parseWithFullname(data);
+  }
+
+  Student? tryParseWithFullnameAndEmail(dynamic data) {
+    if (data == null) return null;
+    return Student().parseWithFullnameAndEmail(data);
+  }
 }

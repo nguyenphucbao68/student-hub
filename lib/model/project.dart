@@ -1,3 +1,5 @@
+import 'package:carea/model/proposal.dart';
+
 class Project {
   int? id;
   String? createdAt;
@@ -15,23 +17,6 @@ class Project {
   int? countMessages;
   int? countHired;
 
-  Project.clone({
-    this.id,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-    this.companyId,
-    this.projectScopeFlag,
-    this.title,
-    this.description,
-    this.numberOfStudents,
-    this.typeFlag,
-    this.proposals,
-    this.countProposals,
-    this.countMessages,
-    this.countHired,
-  });
-
   Project(
       {this.id,
       this.createdAt,
@@ -43,8 +28,58 @@ class Project {
       this.description,
       this.numberOfStudents,
       this.typeFlag,
+      this.proposals,
       this.countProposals,
+      this.countMessages,
+      this.countHired,
       this.isFavorite = false});
+
+  Project parse(dynamic item) {
+    return Project(
+      id: item['id'],
+      createdAt: item['createdAt'],
+      updatedAt: item['updatedAt'],
+      deletedAt: item['deletedAt'],
+      companyId: item['companyId'],
+      projectScopeFlag: item['projectScopeFlag'],
+      title: item['title'],
+      description: item['description'],
+      typeFlag: item['typeFlag'],
+      numberOfStudents: item['numberOfStudents'],
+      countProposals: item['countProposals'],
+      countMessages: item['countMessages'],
+      countHired: item['countHired'],
+    );
+  }
+
+  Project? tryParse(dynamic item) {
+    if (item == null) return null;
+    return Project().parse(item);
+  }
+
+  Project parseWithProposal(dynamic item) {
+    return Project(
+      id: item['id'],
+      createdAt: item['createdAt'],
+      updatedAt: item['updatedAt'],
+      deletedAt: item['deletedAt'],
+      companyId: item['companyId'],
+      projectScopeFlag: item['projectScopeFlag'],
+      title: item['title'],
+      description: item['description'],
+      typeFlag: item['typeFlag'],
+      numberOfStudents: item['numberOfStudents'],
+      proposals: Proposal().parseToList(item['proposals']),
+      countProposals: item['countProposals'],
+      countMessages: item['countMessages'],
+      countHired: item['countHired'],
+    );
+  }
+
+  Project? tryParseWithProposal(dynamic item) {
+    if (item == null) return null;
+    return Project().parseWithProposal(item);
+  }
 }
 
 class ProjectCreate {

@@ -1,18 +1,24 @@
+import 'dart:convert';
+
+import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
+import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/edit_project_detail_screen.dart';
 import 'package:carea/screens/manage_project_screen.dart';
+import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
 class ProjectWidgetDashboard extends StatefulWidget {
-  Project? data = Project();
-  String? btnText1;
-  String? btnText2;
+  Project data;
+  int? proposalId;
 
-  ProjectWidgetDashboard({this.data, this.btnText1, this.btnText2});
+  ProjectWidgetDashboard({required this.data, this.proposalId});
 
   @override
   _ProjectWidgetDashboardState createState() => _ProjectWidgetDashboardState();
@@ -20,89 +26,271 @@ class ProjectWidgetDashboard extends StatefulWidget {
 
 class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
   late ProfileOb profi;
+  late AuthProvider authStore;
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authStore = Provider.of<AuthProvider>(context);
+  }
+
+  void onStartWorkingThisProject() async {
+    if (widget.proposalId == null) {
+      return;
+    }
+    log('start working this project');
+    log(widget.proposalId.toString());
+    await http
+        .patch(
+      Uri.parse(AppConstants.BASE_URL + '/proposal/${widget.proposalId}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode(<String, int>{
+        'statusFlag': 3,
+      }),
+    )
+        .then((response) {
+      log(response.statusCode.toString());
+      log(response.body.toString());
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("You have started working on this project"),
+          ),
+        );
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(defaultPage: 1)));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.statusCode.toString()),
+          ),
+        );
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something wrong'),
+        ),
+      );
+    });
+  }
+
+  void handleDeleteProject() async {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () async {
+        int? projectID = widget.data.id;
+        if (projectID == null) return;
+        await http.delete(
+          Uri.parse(AppConstants.BASE_URL + '/project/$projectID'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + authStore.token.toString(),
+          },
+        ).then((response) {
+          if (response.statusCode == 200) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Project deleted"),
+              ),
+            );
+          } else {
+            print(response.statusCode);
+          }
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString()),
+            ),
+          );
+        });
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Warning"),
+      content: Text("Do you want to delete this project?"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Widget buildActionButtons() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        OutlinedButton(
-          onPressed: () {
-            profi.setProjectInfo(widget.data);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ManageProjectScreen()),
-            );
-          },
-          child: Text(
-            "Manage project",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
-        SizedBox(height: 10),
-        OutlinedButton(
-          onPressed: () {},
-          child: Text(
-            "Start working this project",
-            style: boldTextStyle(color: Colors.black, size: 16),
-          ),
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            minimumSize: Size(double.infinity, 0),
-          ),
-        ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "View hired",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "View job posting",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "Edit posting",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "Remove posting",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-      ],
+      children: profi.currentRole == UserRole.COMPANY
+          ? [
+              // Add View proposals item
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(
+                              tabIndex: 0,
+                            )),
+                  );
+                },
+                child: Text(
+                  "View proposals",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // View Messages
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(tabIndex: 2)),
+                  );
+                },
+                child: Text(
+                  "View messages",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // View hired
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(tabIndex: 3)),
+                  );
+                },
+                child: Text(
+                  "View hired",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // add a border line
+              Container(
+                height: 1,
+                color: Colors.black87,
+              ),
+              SizedBox(height: 10),
+              // View job posting
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(tabIndex: 1)),
+                  );
+                },
+                child: Text(
+                  "View job posting",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // Edit posting
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProjectDetailScreen()),
+                  );
+                },
+                child: Text(
+                  "Edit posting",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+
+              SizedBox(height: 10),
+              // Remove posting
+              OutlinedButton(
+                onPressed: () {
+                  handleDeleteProject();
+                },
+                child: Text(
+                  "Remove posting",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 1,
+                color: Colors.black87,
+              ),
+              SizedBox(height: 10),
+              OutlinedButton(
+                onPressed: () {
+                  profi.setProjectInfo(widget.data);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen()),
+                  );
+                },
+                child: Text(
+                  "Manage project",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+            ]
+          : [
+              OutlinedButton(
+                onPressed: () {
+                  onStartWorkingThisProject();
+                },
+                child: Text(
+                  "Start working this project",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              )
+            ],
     );
   }
 
@@ -184,59 +372,62 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
             ),
           ),
           10.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
+          // check if widget.data!.countProposals is not null and is a number
+          widget.data!.countProposals != null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(widget.data!.countProposals.toString(),
-                        style: primaryTextStyle()),
-                    Text("Proposals", style: primaryTextStyle(size: 12)),
+                    Container(
+                      width: 90,
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: appStore.isDarkModeOn
+                            ? scaffoldDarkColor
+                            : gray.withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(widget.data!.countProposals.toString(),
+                              style: primaryTextStyle()),
+                          Text("Proposals", style: primaryTextStyle(size: 12)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: appStore.isDarkModeOn
+                            ? scaffoldDarkColor
+                            : gray.withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(widget.data!.countMessages.toString(),
+                              style: primaryTextStyle()),
+                          Text("Messages", style: primaryTextStyle(size: 12)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: appStore.isDarkModeOn
+                            ? scaffoldDarkColor
+                            : gray.withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(widget.data!.countHired.toString(),
+                              style: primaryTextStyle()),
+                          Text("Hired", style: primaryTextStyle(size: 12)),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-              ),
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text(widget.data!.countMessages.toString(),
-                        style: primaryTextStyle()),
-                    Text("Messages", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-              Container(
-                width: 90,
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: boxDecorationWithRoundedCorners(
-                  backgroundColor: appStore.isDarkModeOn
-                      ? scaffoldDarkColor
-                      : gray.withOpacity(0.3),
-                ),
-                child: Column(
-                  children: [
-                    Text(widget.data!.countHired.toString(),
-                        style: primaryTextStyle()),
-                    Text("Hired", style: primaryTextStyle(size: 12)),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                )
+              : SizedBox(),
         ],
       ),
     );

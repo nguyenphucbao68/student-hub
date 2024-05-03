@@ -1,3 +1,4 @@
+import 'package:carea/store/authprovider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:carea/model/user_info.dart';
@@ -22,8 +23,13 @@ abstract class _ProfileOb with Store {
     pickedFile = await picker.pickImage(source: ImageSource.gallery);
   }
 
+  //user information & current role
+
   @observable
-  UserInfo? userInfo = new UserInfo();
+  UserRole? currentRole = null;
+
+  @observable
+  User? user = new User();
 
   @observable
   ProjectCreate? projectCreate = new ProjectCreate();
@@ -32,18 +38,18 @@ abstract class _ProfileOb with Store {
   Project? projectInfo = new Project();
 
   @action
-  Future<void> setUserInfo(dynamic us) async {
-    this.userInfo = us;
+  Future<void> setUser(dynamic us) async {
+    this.user = us;
   }
 
   @action
-  Future<void> setUserInfoCurrentRole(int role) async {
-    this.userInfo?.currentRole = role;
+  Future<void> setUserCurrentRole(int role) async {
+    this.currentRole = role == 0 ? UserRole.STUDENT : UserRole.COMPANY;
   }
 
   @action
-  Future<void> setUserInfoCompany(dynamic comp) async {
-    this.userInfo?.company = comp;
+  Future<void> setUserCurrentRole2(UserRole role) async {
+    this.currentRole = role;
   }
 
   @action
@@ -52,23 +58,23 @@ abstract class _ProfileOb with Store {
   }
 
   @action
-  Future<void> setProjectTitle(String title) async {
+  Future<void> setProjectCreateTitle(String title) async {
     this.projectCreate?.title = title;
   }
 
   @action
-  Future<void> setProjectCompanyId(int id) async {
+  Future<void> setProjectCreateCompanyId(int id) async {
     this.projectCreate?.companyId = id;
   }
 
   @action
-  Future<void> setProjectTimeSize(int time, int numb) async {
+  Future<void> setProjectCreateTimeSize(int time, int numb) async {
     this.projectCreate?.projectScopeFlag = time;
     this.projectCreate?.numberOfStudents = numb;
   }
 
   @action
-  Future<void> setProjectDecsription(String description) async {
+  Future<void> setProjectCreateDecsription(String description) async {
     this.projectCreate?.description = description;
   }
 }

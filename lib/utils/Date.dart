@@ -29,14 +29,14 @@ class DateHandler {
 
   // Get Time
   static String getTime(DateTime dateTime) {
-    return DateFormat('HH:mm:ss').format(dateTime);
+    return DateFormat('h:mm a').format(dateTime);
   }
 
   // Get Date Time Difference
   static String getDateTimeDifference(DateTime dateTime) {
     Duration difference = DateTime.now().difference(dateTime);
     if (difference.inDays > 0) {
-      return '${difference.inDays} days ago';
+      return '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} ago';
     } else if (difference.inHours > 0) {
       return '${difference.inHours} hours ago';
     } else if (difference.inMinutes > 0) {

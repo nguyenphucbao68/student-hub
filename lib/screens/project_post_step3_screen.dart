@@ -152,7 +152,8 @@ class _ProjectPostStep3ScreenState extends State<ProjectPostStep3Screen> {
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        profi.setProjectDecsription(descriptionController.text);
+                        profi.setProjectCreateDecsription(
+                            descriptionController.text);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -7,6 +7,7 @@ import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_search_screen.dart';
 import 'package:carea/store/authprovider.dart';
+import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,7 @@ class SavedProjectsFragment extends StatefulWidget {
 class _SavedProjectsFragmentState extends State<SavedProjectsFragment> {
   TabController? tabController;
   late AuthProvider authStore;
+  late ProfileOb profi;
   List<Project> projects = [];
 
   @override
@@ -34,6 +36,7 @@ class _SavedProjectsFragmentState extends State<SavedProjectsFragment> {
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
+    profi = Provider.of<ProfileOb>(context);
     getFavoriteProjects();
   }
 
@@ -45,12 +48,12 @@ class _SavedProjectsFragmentState extends State<SavedProjectsFragment> {
   }
 
   Future<void> getFavoriteProjects() async {
-    if (authStore.student == null) return;
+    if (profi.user?.student == null) return;
 
     await http.get(
       Uri.parse(AppConstants.BASE_URL +
           '/favoriteProject/' +
-          authStore.student!.id.toString()),
+          profi.user!.student!.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -64,18 +67,7 @@ class _SavedProjectsFragmentState extends State<SavedProjectsFragment> {
         if (data['result'] != null) {
           setState(() {
             projects = data['result']
-                .map<Project>((item) => Project(
-                    id: item['project']['id'],
-                    createdAt: item['project']['createdAt'],
-                    updatedAt: item['project']['updatedAt'],
-                    deletedAt: item['project']['deletedAt'],
-                    companyId: item['project']['companyId'],
-                    projectScopeFlag: item['project']['projectScopeFlag'],
-                    title: item['project']['title'],
-                    description: item['project']['description'],
-                    numberOfStudents: item['project']['numberOfStudents'],
-                    typeFlag: item['project']['typeFlag'],
-                    countProposals: item['project']['countProposals']))
+                .map<Project>((item) => Project().parse(item['project']))
                 .toList();
           });
         } else {

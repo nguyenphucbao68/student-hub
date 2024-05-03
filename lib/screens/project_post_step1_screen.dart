@@ -46,7 +46,7 @@ class _ProjectPostStep1ScreenState extends State<ProjectPostStep1Screen> {
   }
 
   Future<void> checkComp() async {
-    if (profi.userInfo?.company == null) {
+    if (profi.user?.company == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Create your company to create project'),
@@ -191,7 +191,7 @@ class _ProjectPostStep1ScreenState extends State<ProjectPostStep1Screen> {
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        profi.setProjectTitle(titleController.text);
+                        profi.setProjectCreateTitle(titleController.text);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

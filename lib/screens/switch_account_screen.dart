@@ -59,15 +59,18 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['result'] != null) {
-          UserInfo userInfo = UserInfo(
-            id: data['result']['id'],
-            fullName: data['result']['fullname'],
-            roles: data['result']['roles'],
-            student: data['result']['student'],
-            company: data['result']['company'],
-          );
-          profi.setUserInfo(userInfo);
-
+          // UserInfo userInfo = UserInfo(
+          //   id: data['result']['id'],
+          //   fullName: data['result']['fullname'],
+          //   roles: data['result']['roles'],
+          //   student: data['result']['student'],
+          //   company: data['result']['company'],
+          // );
+          profi.setUser(User().parse(data['result']));
+          if (profi.currentRole == null ||
+              !data['result']['roles']
+                  .contains(profi.currentRole == UserRole.STUDENT ? 1 : 0))
+            profi.setUserCurrentRole(data['result']['roles'][0]);
           // trigger rerender
           setState(() {});
         }
@@ -76,12 +79,16 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
   }
 
   void changeProfile() {
-    if (authStore.authSignUp == UserRole.STUDENT) {
-      authStore.setAuthSignUp(UserRole.COMPANY);
+    // if (authStore.authSignUp == UserRole.STUDENT) {
+    //   authStore.setAuthSignUp(UserRole.COMPANY);
+    // } else {
+    //   authStore.setAuthSignUp(UserRole.STUDENT);
+    // }
+    if (profi.currentRole == UserRole.STUDENT) {
+      profi.setUserCurrentRole2(UserRole.COMPANY);
     } else {
-      authStore.setAuthSignUp(UserRole.STUDENT);
+      profi.setUserCurrentRole2(UserRole.STUDENT);
     }
-
     setState(() {});
 
     Navigator.pushNamed(context, "home");
@@ -89,7 +96,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log("authStore.company" + authStore.company.toString());
+    // log("authStore.company" + authStore.company.toString());
     return Scaffold(
       appBar: careaAppBarWidget(
         context,
@@ -117,15 +124,22 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
             SizedBox(height: 16),
             SettingItemWidget(
               leading: Icon(Icons.person_outline, color: context.iconColor),
-              title: authStore.authSignUp == UserRole.STUDENT &&
-                      profi.userInfo != null
-                  ? (profi.userInfo!.fullName ?? "Unknown")
-                  : (authStore.company != null
-                      ? authStore.company!.companyName!
+              title: profi.currentRole == UserRole.STUDENT && profi.user != null
+                  ? (profi.user!.fullName ?? "Unknown")
+                  : (profi.user!.company != null
+                      ? profi.user!.company!.companyName!
                       : ""),
-              subTitle: authStore.authSignUp == UserRole.STUDENT
-                  ? "Student"
-                  : "Company",
+              subTitle:
+                  profi.currentRole == UserRole.STUDENT ? "Student" : "Company",
+              // title: authStore.authSignUp == UserRole.STUDENT &&
+              //         profi.userInfo != null
+              //     ? (profi.userInfo!.fullName ?? "Unknown")
+              //     : (authStore.company != null
+              //         ? authStore.company!.companyName!
+              //         : ""),
+              // subTitle: authStore.authSignUp == UserRole.STUDENT
+              //     ? "Student"
+              //     : "Company",
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 setState(() {
@@ -140,11 +154,16 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                   : Icon(Icons.arrow_forward_ios_rounded,
                       size: 18, color: context.iconColor),
             ),
-            ((authStore.authSignUp == UserRole.STUDENT &&
-                        authStore.company != null) ||
-                    (authStore.authSignUp == UserRole.COMPANY &&
-                        authStore.student != null &&
-                        profi.userInfo != null))
+            ((profi.currentRole == UserRole.STUDENT &&
+                        profi.user!.company != null) ||
+                    (profi.currentRole == UserRole.COMPANY &&
+                        profi.user!.student != null &&
+                        profi.user != null))
+                // ((authStore.authSignUp == UserRole.STUDENT &&
+                //             authStore.company != null) ||
+                //         (authStore.authSignUp == UserRole.COMPANY &&
+                //             authStore.student != null &&
+                //             profi.userInfo != null))
                 ? SizedBox(
                     width: 340,
                     child: showRow
@@ -154,14 +173,21 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                               SettingItemWidget(
                                 leading: Icon(Icons.person_outline,
                                     color: context.iconColor),
-                                title: authStore.authSignUp == UserRole.COMPANY
-                                    ? profi.userInfo!.fullName!
-                                    : (authStore.company!.companyName ??
+                                title: profi.currentRole == UserRole.COMPANY
+                                    ? profi.user!.fullName!
+                                    : (profi.user!.company!.companyName ??
                                         "Unknown"),
-                                subTitle:
-                                    authStore.authSignUp != UserRole.STUDENT
-                                        ? "Student"
-                                        : "Company",
+                                subTitle: profi.currentRole != UserRole.STUDENT
+                                    ? "Student"
+                                    : "Company",
+                                // title: authStore.authSignUp == UserRole.COMPANY
+                                //     ? profi.userInfo!.fullName!
+                                //     : (authStore.company!.companyName ??
+                                //         "Unknown"),
+                                // subTitle:
+                                //     authStore.authSignUp != UserRole.STUDENT
+                                //         ? "Student"
+                                //         : "Company",
                                 titleTextStyle: boldTextStyle(),
                                 onTap: () {
                                   changeProfile();
@@ -179,8 +205,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               title: "Profile",
               titleTextStyle: boldTextStyle(),
               onTap: () {
-                if (authStore.authSignUp == UserRole.COMPANY) {
-                  var destinationScreen = profi.userInfo?.company != null
+                if (profi.currentRole == UserRole.COMPANY) {
+                  var destinationScreen = profi.user?.company != null
                       ? ProfileInputAhaaScreen()
                       : ProfileInputNhapScreen();
                   Navigator.push(
@@ -201,8 +227,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                   : Icon(Icons.arrow_forward_ios_rounded,
                       size: 18, color: context.iconColor),
             ),
-            (authStore.authSignUp == UserRole.STUDENT &&
-                    authStore.student != null)
+            (profi.currentRole == UserRole.STUDENT &&
+                    profi.user!.student != null)
                 ? SizedBox(
                     width: 340,
                     child: showInfoStudentRow
@@ -217,7 +243,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                                 onTap: () {
                                   // NotificationScreen().launch(context);
                                   Navigator.pushNamed(
-                                      context, "techstack_education_screen", arguments: {
+                                      context, "techstack_education_screen",
+                                      arguments: {
                                         "automaticallyImplyLeading": true,
                                       });
                                 },
@@ -232,7 +259,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                                 onTap: () {
                                   // NotificationScreen().launch(context);
                                   Navigator.pushNamed(
-                                      context, "experience_screen", arguments: {
+                                      context, "experience_screen",
+                                      arguments: {
                                         "automaticallyImplyLeading": true,
                                       });
                                 },
@@ -247,7 +275,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                                 onTap: () {
                                   // NotificationScreen().launch(context);
                                   Navigator.pushNamed(
-                                      context, "cv_transcript_screen", arguments: {
+                                      context, "cv_transcript_screen",
+                                      arguments: {
                                         "automaticallyImplyLeading": true,
                                       });
                                 },

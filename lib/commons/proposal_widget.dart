@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:carea/commons/constants.dart';
-import 'package:carea/commons/images.dart';
 import 'package:carea/constants/app_constants.dart';
-import 'package:carea/main.dart';
-import 'package:carea/model/user_info.dart';
+import 'package:carea/model/proposal.dart';
+import 'package:carea/screens/candidate_profile.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -45,7 +43,6 @@ class _ProposalWidgetState extends State<ProposalWidget> {
       },
       body: jsonEncode(<String, int>{
         'statusFlag': 1,
-        'disableFlag': 1,
       }),
     )
         .then((response) {
@@ -107,99 +104,101 @@ class _ProposalWidgetState extends State<ProposalWidget> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      // padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
-
-      padding: EdgeInsets.symmetric(vertical: 8),
-      decoration: boxDecorationWithRoundedCorners(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        backgroundColor: Colors.grey.shade200,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.person_2_outlined, size: 60),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.data.student!.user!.fullname.toString(),
-                    style: boldTextStyle(size: 16),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              )
-            ],
-          ),
-          SizedBox(height: 10),
-          Container(
-            width: width * 0.8,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  widget.data.coverLetter!,
-                  style: secondaryTextStyle(size: 14),
-                ),
-              ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CandidateProfileScreen(
+              studentId: widget.data.student!.id,
             ),
           ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  alignment: Alignment.center,
-                  width: width * 0.45,
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16),
+        // padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
+
+        padding: EdgeInsets.symmetric(vertical: 8),
+        decoration: boxDecorationWithRoundedCorners(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          backgroundColor: Colors.grey.shade200,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.person_2_outlined, size: 60),
+                SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.data.student!.fullname.toString(),
+                      style: boldTextStyle(size: 16),
                     ),
-                  ),
-                  child: Text('Message', style: boldTextStyle(color: black)),
-                ),
-              ),
-              SizedBox(height: 8),
-              widget.data.statusFlag == 0
-                  ? GestureDetector(
-                      onTap: () {
-                        _onHireHandleBtn(context);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: width * 0.45,
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text('Hire', style: boldTextStyle(color: white)),
-                      ),
-                    )
-                  : widget.data.statusFlag == 1
-                      ? Container(
-                          alignment: Alignment.center,
-                          width: width * 0.45,
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(12),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    widget.data.student?.educations != null &&
+                            widget.data.student!.educations!.isNotEmpty
+                        ? Text(
+                            widget.data.student!.educations![0].startYear
+                                    .toString() +
+                                ' - ' +
+                                widget.data.student!.educations![0].endYear
+                                    .toString(),
+                            style: boldTextStyle(size: 16),
+                          )
+                        : Text(
+                            'No education',
+                            style: boldTextStyle(size: 16),
                           ),
-                          child: Text('Waiting',
-                              style: boldTextStyle(color: white)),
-                        )
-                      : Container(
+                  ],
+                )
+              ],
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: width,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    widget.data.coverLetter!,
+                    style: secondaryTextStyle(size: 14),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: width * 0.45,
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                    ),
+                    child: Text('Message', style: boldTextStyle(color: black)),
+                  ),
+                ),
+                SizedBox(height: 8),
+                widget.data.statusFlag == 0
+                    ? GestureDetector(
+                        onTap: () {
+                          _onHireHandleBtn(context);
+                        },
+                        child: Container(
                           alignment: Alignment.center,
                           width: width * 0.45,
                           padding: EdgeInsets.symmetric(vertical: 8),
@@ -208,11 +207,24 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child:
-                              Text('Hired', style: boldTextStyle(color: white)),
+                              Text('Hire', style: boldTextStyle(color: white)),
                         ),
-            ],
-          ),
-        ],
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        width: width * 0.45,
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text('Sent Hired Offer',
+                            style: boldTextStyle(color: white)),
+                      ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

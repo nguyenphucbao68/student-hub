@@ -62,19 +62,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
       if (data['result'] != null) {
         projects = data['result']
-            .map<Project>((item) => Project(
-                id: item['projectId'],
-                createdAt: item['createdAt'],
-                updatedAt: item['updatedAt'],
-                deletedAt: item['deletedAt'],
-                companyId: item['companyId'],
-                projectScopeFlag: item['projectScopeFlag'],
-                title: item['title'],
-                description: item['description'],
-                numberOfStudents: item['numberOfStudents'],
-                typeFlag: item['typeFlag'],
-                countProposals: item['countProposals'],
-                isFavorite: item['isFavorite']))
+            .map<Project>((item) => Project().parse(item))
             .toList();
         return projects;
       } else {

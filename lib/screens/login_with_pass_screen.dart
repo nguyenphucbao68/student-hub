@@ -292,7 +292,7 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
                   SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => ForgotPassScreen()));

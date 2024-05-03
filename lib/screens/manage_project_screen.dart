@@ -1,27 +1,19 @@
-import 'dart:convert';
-
-import 'package:carea/commons/colors.dart';
-import 'package:carea/commons/constants.dart';
-import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_hired_commponent.dart';
-import 'package:carea/components/all_project_component.dart';
-import 'package:carea/components/manage_project_detail_component.dart';
-import 'package:carea/constants/app_constants.dart';
-import 'package:carea/model/project.dart';
 import 'package:carea/components/all_proposal_component.dart';
-import 'package:carea/screens/project_post_step1_screen.dart';
+import 'package:carea/components/manage_project_detail_component.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class ManageProjectScreen extends StatefulWidget {
   int? index = 0;
-  ManageProjectScreen({this.index});
+  int? tabIndex = 0;
+
+  ManageProjectScreen({this.index, this.tabIndex});
   @override
   _ManageProjectScreenState createState() => _ManageProjectScreenState();
 }
@@ -47,6 +39,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
     super.initState();
     tabController =
         TabController(length: 4, vsync: this, initialIndex: widget.index ?? 0);
+    tabController?.index = widget.tabIndex ?? 0;
   }
 
   @override

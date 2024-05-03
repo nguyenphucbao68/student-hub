@@ -28,7 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String name = profi.userInfo!.fullName.toString();
+    String name = profi.user!.fullName.toString();
     return Scaffold(
       appBar: careaAppBarWidget(
         context,

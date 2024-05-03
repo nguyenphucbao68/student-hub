@@ -1,15 +1,10 @@
-import 'dart:convert';
-
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_project_component.dart';
-import 'package:carea/constants/app_constants.dart';
-import 'package:carea/model/project.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -21,10 +16,8 @@ class DashBoardFragment extends StatefulWidget {
 class _DashBoardFragmentState extends State<DashBoardFragment>
     with SingleTickerProviderStateMixin {
   late double width;
-  late AuthProvider authStore;
+  // late AuthProvider authStore;
   late ProfileOb profi;
-
-  List<Project> projects = [];
 
   TabController? tabController;
 
@@ -42,11 +35,11 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authStore = Provider.of<AuthProvider>(context);
-    log('current Role' + authStore.authSignUp.name);
-    log(authStore.authSignUp.name);
-    log(UserRole.COMPANY.name);
-    // profi = Provider.of<ProfileOb>(context);
+    // authStore = Provider.of<AuthProvider>(context);
+    // log('current Role' + authStore.authSignUp.name);
+    // log(authStore.authSignUp.name);
+    // log(UserRole.COMPANY.name);
+    profi = Provider.of<ProfileOb>(context);
     width = MediaQuery.of(context).size.width;
     init();
   }
@@ -68,6 +61,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   }
 
   // Future<void> checkRole() async {
+  //   if(profi.currentRole != null) return;
   //   await http.get(
   //     Uri.parse(AppConstants.BASE_URL + '/auth/me'),
   //     headers: <String, String>{
@@ -78,10 +72,10 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
   //     if (response.statusCode == 200) {
   //       var data = jsonDecode(response.body);
   //       if (data['result'] != null) {
-  //         authStore.setCompany(data['result']['company']);
+  //         // authStore.setCompany(data['result']['company']);
   //         // profi.setUserInfoCompany(data['result']['company']);
   //         // if (profi.userInfo?.currentRole == null)
-  //           profi.setUserInfoCurrentRole(data['result']['roles'][0]);
+  //           profi.setUserCurrentRole(data['result']['roles'][0]);
   //         setState(() {});
   //       }
   //     }
@@ -119,7 +113,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Your projects', style: boldTextStyle()),
-                        authStore.authSignUp == UserRole.COMPANY
+                        profi.currentRole == UserRole.COMPANY
                             ? customButton(
                                 txt: 'Post a project',
                                 wid: 120,
