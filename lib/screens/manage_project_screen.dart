@@ -11,7 +11,9 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class ManageProjectScreen extends StatefulWidget {
   int? index = 0;
-  ManageProjectScreen({this.index});
+  int? tabIndex = 0;
+
+  ManageProjectScreen({this.index, this.tabIndex});
   @override
   _ManageProjectScreenState createState() => _ManageProjectScreenState();
 }
@@ -37,6 +39,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
     super.initState();
     tabController =
         TabController(length: 4, vsync: this, initialIndex: widget.index ?? 0);
+    tabController?.index = widget.tabIndex ?? 0;
   }
 
   @override
