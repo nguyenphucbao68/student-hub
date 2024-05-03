@@ -1,6 +1,7 @@
 import 'package:carea/commons/project_widget.dart';
 import 'package:carea/model/project.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class ActiveComponent extends StatefulWidget {
   List<Project> data = [
@@ -38,20 +39,31 @@ class ActiveComponent extends StatefulWidget {
         numberOfStudents: 0,
         typeFlag: 0),
   ];
-  ActiveComponent({this.data = const []});
+  // add onLoadNextPage function as a param
+  final Function? onLoadNextPage;
+  ActiveComponent({this.data = const [], this.onLoadNextPage});
 
   @override
   _ActiveComponentState createState() => _ActiveComponentState();
 }
 
 class _ActiveComponentState extends State<ActiveComponent> {
+  final _controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
     init();
   }
 
-  void init() async {}
+  void init() async {
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+        log("test");
+        widget.onLoadNextPage!();
+      }
+    });
+  }
 
   @override
   void setState(fn) {
@@ -61,6 +73,7 @@ class _ActiveComponentState extends State<ActiveComponent> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: _controller,
       shrinkWrap: true,
       itemCount: widget.data.length,
       padding: EdgeInsets.only(left: 16, bottom: 16, right: 16, top: 24),

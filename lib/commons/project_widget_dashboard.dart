@@ -4,6 +4,7 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/screens/dashboard_screen.dart';
+import 'package:carea/screens/edit_project_detail_screen.dart';
 import 'package:carea/screens/manage_project_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -78,13 +79,185 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
     });
   }
 
+  void handleDeleteProject() async {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () async {
+        int? projectID = widget.data.id;
+        if (projectID == null) return;
+        await http.delete(
+          Uri.parse(AppConstants.BASE_URL + '/project/$projectID'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + authStore.token.toString(),
+          },
+        ).then((response) {
+          if (response.statusCode == 200) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Project deleted"),
+              ),
+            );
+          } else {
+            print(response.statusCode);
+          }
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString()),
+            ),
+          );
+        });
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Warning"),
+      content: Text("Do you want to delete this project?"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Widget buildActionButtons() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        profi.currentRole == UserRole.COMPANY
-            ? OutlinedButton(
+      children: profi.currentRole == UserRole.COMPANY
+          ? [
+              // Add View proposals item
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(
+                              tabIndex: 0,
+                            )),
+                  );
+                },
+                child: Text(
+                  "View proposals",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // View Messages
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(tabIndex: 2)),
+                  );
+                },
+                child: Text(
+                  "View messages",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // View hired
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(tabIndex: 3)),
+                  );
+                },
+                child: Text(
+                  "View hired",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // add a border line
+              Container(
+                height: 1,
+                color: Colors.black87,
+              ),
+              SizedBox(height: 10),
+              // View job posting
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageProjectScreen(tabIndex: 1)),
+                  );
+                },
+                child: Text(
+                  "View job posting",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              // Edit posting
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProjectDetailScreen()),
+                  );
+                },
+                child: Text(
+                  "Edit posting",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+
+              SizedBox(height: 10),
+              // Remove posting
+              OutlinedButton(
+                onPressed: () {
+                  handleDeleteProject();
+                },
+                child: Text(
+                  "Remove posting",
+                  style: boldTextStyle(color: Colors.black, size: 16),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: Size(double.infinity, 0),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 1,
+                color: Colors.black87,
+              ),
+              SizedBox(height: 10),
+              OutlinedButton(
                 onPressed: () {
                   profi.setProjectInfo(widget.data);
                   Navigator.push(
@@ -101,14 +274,10 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   padding: EdgeInsets.symmetric(vertical: 12),
                   minimumSize: Size(double.infinity, 0),
                 ),
-              )
-            : SizedBox(),
-
-        profi.currentRole == UserRole.COMPANY
-            ? SizedBox(height: 10)
-            : SizedBox(),
-        profi.currentRole == UserRole.STUDENT
-            ? OutlinedButton(
+              ),
+            ]
+          : [
+              OutlinedButton(
                 onPressed: () {
                   onStartWorkingThisProject();
                 },
@@ -121,56 +290,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   minimumSize: Size(double.infinity, 0),
                 ),
               )
-            : SizedBox(),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "View hired",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "View job posting",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "Edit posting",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-        // SizedBox(height: 10),
-        // OutlinedButton(
-        //   onPressed: () {},
-        //   child: Text(
-        //     "Remove posting",
-        //     style: boldTextStyle(color: Colors.black, size: 16),
-        //   ),
-        //   style: OutlinedButton.styleFrom(
-        //     padding: EdgeInsets.symmetric(vertical: 12),
-        //     minimumSize: Size(double.infinity, 0),
-        //   ),
-        // ),
-      ],
+            ],
     );
   }
 
