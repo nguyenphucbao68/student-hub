@@ -85,7 +85,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         AlertDialog alert = AlertDialog(
           title: Text("Congrats"),
-          content: Text("You've successfully signed up"),
+          content: Text(
+              "You've successfully signed up. Please check your email to confirm your account before logging in"),
           actions: [
             okButton,
           ],

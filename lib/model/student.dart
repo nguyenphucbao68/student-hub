@@ -15,6 +15,7 @@ class Student {
   String? resume;
   String? transcript;
   String? fullname;
+  String? email;
   TechStack? techStack;
   List<Proposal>? proposals;
   List<Education>? educations;
@@ -37,7 +38,8 @@ class Student {
       this.educations,
       this.languages,
       this.experiences,
-      this.skillSets});
+      this.skillSets,
+      this.email});
 
   Student parse(dynamic data) {
     return Student(
@@ -74,6 +76,23 @@ class Student {
     );
   }
 
+  Student parseWithFullnameAndEmail(dynamic data) {
+    return Student(
+      id: data['id'],
+      userId: data['userId'],
+      techStackId: data['techStackId'],
+      resume: data['resume'],
+      transcript: data['transcript'],
+      fullname: data['fullname'],
+      email: data['email'],
+      techStack: TechStack().tryParse(data['techStack']),
+      educations: Education().parseToList(data['educations']),
+      languages: Language().parseToList(data['languages']),
+      experiences: Experience().parseToList(data['experiences']),
+      skillSets: SkillSet().parseToList(data['skillSets']),
+    );
+  }
+
   Student? tryParse(dynamic data) {
     if (data == null) return null;
     return Student().parse(data);
@@ -82,5 +101,10 @@ class Student {
   Student? tryParseWithFullname(dynamic data) {
     if (data == null) return null;
     return Student().parseWithFullname(data);
+  }
+
+  Student? tryParseWithFullnameAndEmail(dynamic data) {
+    if (data == null) return null;
+    return Student().parseWithFullnameAndEmail(data);
   }
 }
