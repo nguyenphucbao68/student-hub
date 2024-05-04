@@ -118,9 +118,9 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               ],
             ),
             SizedBox(height: 8),
-            Text('Andrew Desuza', style: boldTextStyle(size: 18)),
-            SizedBox(height: 8),
-            Text('+1 111 455 654 321', style: secondaryTextStyle()),
+            Text(profi.user?.fullName ?? "", style: boldTextStyle(size: 18)),
+            // SizedBox(height: 8),
+            // Text(profi, style: secondaryTextStyle()),
             SizedBox(height: 16),
             SettingItemWidget(
               leading: Icon(Icons.person_outline, color: context.iconColor),
