@@ -42,6 +42,7 @@ class _ScheduleInterviewComponentState
   String? startAt;
   String? endAt;
   int? duration = 0;
+  DateFormat dateFormat = DateFormat(DATE_FORMAT_4);
 
   void selectDate(
       BuildContext context, TextEditingController controller) async {
@@ -71,7 +72,6 @@ class _ScheduleInterviewComponentState
             endTimeController.text == "") return;
         startAt = startDateController.text + " " + startTimeController.text;
         endAt = endDateController.text + " " + endTimeController.text;
-        DateFormat dateFormat = DateFormat('dd/MM/yyyy HH:mm');
         duration = dateFormat
             .parse(endAt!)
             .difference(dateFormat.parse(startAt!))
@@ -87,11 +87,9 @@ class _ScheduleInterviewComponentState
     await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
-      builder: (_, child) {
-        return Theme(
-          data: appStore.isDarkModeOn
-              ? ThemeData.dark()
-              : AppThemeData.lightTheme,
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
           child: child!,
         );
       },
@@ -107,7 +105,6 @@ class _ScheduleInterviewComponentState
             endTimeController.text == "") return;
         startAt = startDateController.text + " " + startTimeController.text;
         endAt = endDateController.text + " " + endTimeController.text;
-        DateFormat dateFormat = DateFormat('dd/MM/yyyy HH:mm');
         duration = dateFormat
             .parse(endAt!)
             .difference(dateFormat.parse(startAt!))

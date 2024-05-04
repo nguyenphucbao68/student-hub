@@ -46,6 +46,7 @@ class ChatScreenState extends State<ChatScreen> {
   List<Message> msgList = [];
   late io.Socket _socket;
   bool _isloading = true;
+  // int? intervewIdTemp = null;
 
   FocusNode msgFocusNode = FocusNode();
 
@@ -112,24 +113,32 @@ class ChatScreenState extends State<ChatScreen> {
 
       scrollDownToBottom();
     });
-
-    _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
-      var message = data['notification'];
-
-      setState(() {
-        msgList.add(Message(
-            id: message['message']['id'],
-            createdAt: message['message']['createdAt'],
-            content: message['message']['content'],
-            sender: User().parse(message['sender']),
-            receiver: User().parse(message['receiver']),
-            interview: message['interview'],
-            formatedDate:
-                DateHandler.getDate(DateTime.parse(message['createdAt']))));
-      });
-
-      scrollDownToBottom();
-    });
+    // _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+    //   var message = data['notification'];
+    //   int index = msgList
+    //       .indexWhere((element) => element.interview?.id == intervewIdTemp);
+    //   print(index);
+    //   if (index != -1)
+    //     setState(() {
+    //       Interview? updItv = Interview().tryParse(message['interview']);
+    //       updItv?.meetingRoom = MettingRroom().tryParse(message['meetingRoom']);
+    //       msgList[index].interview = updItv;
+    //     });
+    //   else
+    //     setState(() {
+    //       msgList.add(Message(
+    //           id: message['message']['id'],
+    //           createdAt: message['message']['createdAt'],
+    //           content: message['message']['content'],
+    //           sender: User().parse(message['sender']),
+    //           receiver: User().parse(message['receiver']),
+    //           interview: message['interview'],
+    //           formatedDate:
+    //               DateHandler.getDate(DateTime.parse(message['createdAt']))));
+    //     });
+    //   intervewIdTemp = null;
+    //   scrollDownToBottom();
+    // });
   }
 
   Future<void> _fetchMessage() async {
@@ -152,7 +161,8 @@ class ChatScreenState extends State<ChatScreen> {
                   content: item['content'],
                   sender: User().parse(item['sender']),
                   receiver: User().parse(item['receiver']),
-                  interview: Interview().tryParse(item['interview']),
+                  interview:
+                      Interview().tryParseWithMeetingRoom(item['interview']),
                   formatedDate:
                       DateHandler.getDate(DateTime.parse(item['createdAt']))))
               .toList();
@@ -206,17 +216,15 @@ class ChatScreenState extends State<ChatScreen> {
       "meeting_room_code": data.title,
       "meeting_room_id": data.title,
     });
-
-    FocusScope.of(context).requestFocus(msgFocusNode);
-
     await Future.delayed(Duration(seconds: 1));
-
-    setState(() {});
+    _fetchMessage();
   }
 
   updateScheduleInterview(Interview? data) async {
     if (data == null) return;
     print(data.title);
+    print(data.startTime);
+    print(data.endTime);
     _socket.emit(SOCKET_EVENTS.UPDATE_INTERVIEW.name, {
       "interviewId": data.id,
       "senderId": profi.user?.id,
@@ -227,21 +235,13 @@ class ChatScreenState extends State<ChatScreen> {
       "endTime": data.endTime,
       "updateAction": true
     });
-
-    FocusScope.of(context).requestFocus(msgFocusNode);
-
     await Future.delayed(Duration(seconds: 1));
-
-    setState(() {
-      // msgList = msgList.map((e) {
-      //   if(e.)
-      // })
-      // msgList.index((element) => element..id == )
-    });
+    _fetchMessage();
   }
 
   deleteScheduleInterview(Interview? data) async {
     if (data == null) return;
+    // intervewIdTemp = data.id;
     _socket.emit(SOCKET_EVENTS.UPDATE_INTERVIEW.name, {
       "interviewId": data.id,
       "projectId": widget.projectId,
@@ -249,12 +249,8 @@ class ChatScreenState extends State<ChatScreen> {
       "receiverId": widget.senderId,
       "deleteAction": true
     });
-
-    FocusScope.of(context).requestFocus(msgFocusNode);
-
     await Future.delayed(Duration(seconds: 1));
-
-    setState(() {});
+    _fetchMessage();
   }
 
   @override

@@ -28,6 +28,19 @@ class Interview {
       endTime: data['endTime'],
       disableFlag: data['disableFlag'],
       meetingRoomId: data['meetingRoomId'],
+      // meetingRoom: MettingRroom().tryParse(data['meetingRoom']),
+    );
+  }
+
+  Interview? tryParseWithMeetingRoom(dynamic data) {
+    if (data == null) return null;
+    return Interview(
+      id: data['id'],
+      title: data['title'],
+      startTime: data['startTime'],
+      endTime: data['endTime'],
+      disableFlag: data['disableFlag'],
+      meetingRoomId: data['meetingRoomId'],
       meetingRoom: MettingRroom().tryParse(data['meetingRoom']),
     );
   }

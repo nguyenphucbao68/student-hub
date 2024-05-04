@@ -34,11 +34,9 @@ class ChatWidget extends StatelessWidget {
       GestureDetector(
         onTap: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    VideoConferencePage(conferenceID: 'dwedewdfasmands')),
-          );
+              context, MaterialPageRoute(builder: (context) => MeetScreen())
+              // VideoConferencePage(conferenceID: 'dwedewdfasmands')),
+              );
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 36),

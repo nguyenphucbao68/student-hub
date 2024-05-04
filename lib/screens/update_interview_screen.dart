@@ -128,6 +128,9 @@ class _ScheduleInterviewComponentState extends State<UpdateInterviewScreen> {
         formatDate(widget.data.endTime, format: DATE_FORMAT_3);
     endTimeController.text =
         formatDate(widget.data.endTime, format: TIME_FORMAT_3);
+
+    startAt = startDateController.text + " " + startTimeController.text;
+    endAt = endDateController.text + " " + endTimeController.text;
     duration = DateTime.parse(widget.data.endTime!)
         .difference(DateTime.parse(widget.data.startTime!))
         .inMinutes;
