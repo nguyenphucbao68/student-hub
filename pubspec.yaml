@@ -32,10 +32,11 @@ dependencies:
   multi_dropdown: ^2.1.4
   provider: ^6.1.2
   flutter_secure_storage: ^9.0.0
-  file_picker: ^8.0.0+1
+  file_picker: ^6.2.1
   open_app_file: ^4.0.2
   syncfusion_flutter_datepicker: ^21.2.3
   socket_io_client: ^2.0.3+1
+  zego_uikit_prebuilt_video_conference: ^2.7.1
 
 dev_dependencies:
   flutter_test:

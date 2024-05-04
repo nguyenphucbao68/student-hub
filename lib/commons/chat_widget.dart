@@ -5,6 +5,7 @@ import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/meet_screen.dart';
+import 'package:carea/screens/video_conference.dart';
 import 'package:carea/utils/Date.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +35,9 @@ class ChatWidget extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MeetScreen()),
+            MaterialPageRoute(
+                builder: (context) =>
+                    VideoConferencePage(conferenceID: 'dwedewdfasmands')),
           );
         },
         child: Container(
@@ -240,7 +243,7 @@ class ChatWidget extends StatelessWidget {
                     ),
                     6.height,
                     Row(
-                      children: !DateTime.now().isAfter(DateTime.parse(
+                      children: DateTime.now().isAfter(DateTime.parse(
                               msg.interview!.meetingRoom!.expiredAt!))
                           ? cancelMeetingOption(context)
                           : activeMeetingOption(context),

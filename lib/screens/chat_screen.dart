@@ -112,6 +112,24 @@ class ChatScreenState extends State<ChatScreen> {
 
       scrollDownToBottom();
     });
+
+    _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+      var message = data['notification'];
+
+      setState(() {
+        msgList.add(Message(
+            id: message['message']['id'],
+            createdAt: message['message']['createdAt'],
+            content: message['message']['content'],
+            sender: User().parse(message['sender']),
+            receiver: User().parse(message['receiver']),
+            interview: message['interview'],
+            formatedDate:
+                DateHandler.getDate(DateTime.parse(message['createdAt']))));
+      });
+
+      scrollDownToBottom();
+    });
   }
 
   Future<void> _fetchMessage() async {
@@ -218,6 +236,7 @@ class ChatScreenState extends State<ChatScreen> {
       // msgList = msgList.map((e) {
       //   if(e.)
       // })
+      // msgList.index((element) => element..id == )
     });
   }
 
