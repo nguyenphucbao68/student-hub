@@ -58,6 +58,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
     ).then((response) {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
+        log(data);
         if (data['result'] != null) {
           // UserInfo userInfo = UserInfo(
           //   id: data['result']['id'],

@@ -2,6 +2,7 @@ import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/calling_component.dart';
 import 'package:carea/components/chat_component.dart';
 import 'package:carea/main.dart';
+import 'package:carea/screens/switch_account_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -10,7 +11,8 @@ class InboxFragment extends StatefulWidget {
   _InboxFragmentState createState() => _InboxFragmentState();
 }
 
-class _InboxFragmentState extends State<InboxFragment> with SingleTickerProviderStateMixin {
+class _InboxFragmentState extends State<InboxFragment>
+    with SingleTickerProviderStateMixin {
   TabController? tabController;
 
   @override
@@ -33,26 +35,22 @@ class _InboxFragmentState extends State<InboxFragment> with SingleTickerProvider
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: appStore.isDarkModeOn ? cardDarkColor : white,
-          child: Icon(Icons.add, color: context.iconColor),
-        ),
-        appBar: careaAppBarWidget(
-          context,
-          titleText: "Inbox",
-          actionWidget: IconButton(
-            onPressed: () {
-              //
-            },
-            icon: Icon(Icons.search, color: context.iconColor, size: 20),
-          ),
-          actionWidget2: IconButton(
-            onPressed: () {
-              //
-            },
-            icon: Icon(Icons.chat, color: context.iconColor, size: 20),
-          ),
+        appBar: AppBar(
+          backgroundColor: context.scaffoldBackgroundColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SwitchAccountScreen()),
+                );
+              },
+              icon: Icon(Icons.person, color: context.iconColor),
+            ),
+          ],
+          title: Text("Inbox", style: boldTextStyle(size: 18)),
+          elevation: 0.0,
         ),
         body: Column(
           children: [
@@ -60,7 +58,8 @@ class _InboxFragmentState extends State<InboxFragment> with SingleTickerProvider
               unselectedLabelColor: gray.withOpacity(0.6),
               labelColor: Colors.red,
               labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              unselectedLabelStyle:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               indicatorColor: context.iconColor,
               tabs: [
                 Tab(child: Text('Chats')),

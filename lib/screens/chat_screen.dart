@@ -10,6 +10,7 @@ import 'package:carea/components/schedule_interview_component.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
+import 'package:carea/model/interview_model.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/logicprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -48,18 +49,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   FocusNode msgFocusNode = FocusNode();
 
-  void createScheduleMeeting(BHMessageModel data) async {
-    msgListing.insert(0, data);
-    if (mounted) _scrollController.animToTop();
-    FocusScope.of(context).requestFocus(msgFocusNode);
-    setState(() {});
-
-    await Future.delayed(Duration(seconds: 1));
-    if (mounted) _scrollController.animToTop();
-    setState(() {});
-  }
-
-  var msgListing = getChatMsgData();
+  // var msgListing = getChatMsgData();
   var personName = '';
 
   @override
@@ -94,8 +84,7 @@ class ChatScreenState extends State<ChatScreen> {
     _socket.connect();
 
     _socket.onConnect((_) {
-      log(
-          'Connected to the socket server with project_id ${widget.projectId}');
+      log('Connected to the socket server with project_id ${widget.projectId}');
       log('Listening event ${SOCKET_EVENTS.RECEIVE_MESSAGE.name}');
     });
 
@@ -145,7 +134,7 @@ class ChatScreenState extends State<ChatScreen> {
                   content: item['content'],
                   sender: User().parse(item['sender']),
                   receiver: User().parse(item['receiver']),
-                  interview: item['interview'],
+                  interview: Interview().tryParse(item['interview']),
                   formatedDate:
                       DateHandler.getDate(DateTime.parse(item['createdAt']))))
               .toList();
@@ -184,6 +173,68 @@ class ChatScreenState extends State<ChatScreen> {
     } else {
       FocusScope.of(context).requestFocus(msgFocusNode);
     }
+    setState(() {});
+  }
+
+  createScheduleInterview(Interview data) async {
+    _socket.emit(SOCKET_EVENTS.SCHEDULE_INTERVIEW.name, {
+      "title": data.title,
+      "content": profi.user!.fullName! + " want to schedule a meeting",
+      "startTime": data.startTime,
+      "endTime": data.endTime,
+      "projectId": widget.projectId,
+      "senderId": profi.user?.id,
+      "receiverId": widget.senderId,
+      "meeting_room_code": data.title,
+      "meeting_room_id": data.title,
+    });
+
+    FocusScope.of(context).requestFocus(msgFocusNode);
+
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {});
+  }
+
+  updateScheduleInterview(Interview? data) async {
+    if (data == null) return;
+    print(data.title);
+    _socket.emit(SOCKET_EVENTS.UPDATE_INTERVIEW.name, {
+      "interviewId": data.id,
+      "senderId": profi.user?.id,
+      "receiverId": widget.senderId,
+      "projectId": widget.projectId,
+      "title": data.title,
+      "startTime": data.startTime,
+      "endTime": data.endTime,
+      "updateAction": true
+    });
+
+    FocusScope.of(context).requestFocus(msgFocusNode);
+
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {
+      // msgList = msgList.map((e) {
+      //   if(e.)
+      // })
+    });
+  }
+
+  deleteScheduleInterview(Interview? data) async {
+    if (data == null) return;
+    _socket.emit(SOCKET_EVENTS.UPDATE_INTERVIEW.name, {
+      "interviewId": data.id,
+      "projectId": widget.projectId,
+      "senderId": profi.user?.id,
+      "receiverId": widget.senderId,
+      "deleteAction": true
+    });
+
+    FocusScope.of(context).requestFocus(msgFocusNode);
+
+    await Future.delayed(Duration(seconds: 1));
+
     setState(() {});
   }
 
@@ -233,7 +284,7 @@ class ChatScreenState extends State<ChatScreen> {
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(widget.name!, style: boldTextStyle(size: 18)),
+              Text(widget.name, style: boldTextStyle(size: 18)),
               // 8.width,
               // Container(
               //   padding: EdgeInsets.all(2),
@@ -244,11 +295,11 @@ class ChatScreenState extends State<ChatScreen> {
             ],
           ),
           actions: [
-            IconButton(
-                onPressed: () {
-                  launch('tel:${123456789}');
-                },
-                icon: Icon(Icons.call, color: context.iconColor, size: 18)),
+            // IconButton(
+            //     onPressed: () {
+            //       launch('tel:${123456789}');
+            //     },
+            //     icon: Icon(Icons.call, color: context.iconColor, size: 18)),
             IconButton(
               icon: Icon(Icons.more_horiz, color: context.iconColor, size: 26),
               onPressed: () {
@@ -263,7 +314,7 @@ class ChatScreenState extends State<ChatScreen> {
                   context: context,
                   builder: (context) {
                     return ScheduleInterviewComponent(
-                        scheduleMeetingCallback: createScheduleMeeting);
+                        scheduleInterviewCallback: createScheduleInterview);
                   },
                 );
               },
@@ -292,7 +343,7 @@ class ChatScreenState extends State<ChatScreen> {
                       padding: EdgeInsets.only(
                           top: 8, left: 8, right: 8, bottom: 70),
                       itemBuilder: (_, index) {
-                        BHMessageModel data = msgListing[0];
+                        // BHMessageModel data = msgListing[0];
                         Message msgData = msgList[index];
                         // var isMe = data.senderId == BHSender_id;
                         var isMe = msgData.sender!.id != widget.senderId;
@@ -315,14 +366,22 @@ class ChatScreenState extends State<ChatScreen> {
                                     padding: EdgeInsets.only(top: 5, bottom: 5),
                                   )),
                                   ChatWidget(
-                                      isMe: isMe, data: data, msg: msgData)
+                                      isMe: isMe,
+                                      msg: msgData,
+                                      updateInterviewCallback:
+                                          updateScheduleInterview,
+                                      deleteInterviewCallback:
+                                          deleteScheduleInterview)
                                 ],
                               )
                             : ChatWidget(
                                 isMe: isMe,
-                                data: data,
+                                // data: data,
                                 msg: msgData,
-                              );
+                                updateInterviewCallback:
+                                    updateScheduleInterview,
+                                deleteInterviewCallback:
+                                    deleteScheduleInterview);
                       },
                     ),
                   ),
