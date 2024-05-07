@@ -37,6 +37,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^21.2.3
   socket_io_client: ^2.0.3+1
   # zego_uikit_prebuilt_video_conference: ^2.7.1
+  flutter_toggle_tab: ^1.4.1
 
 dev_dependencies:
   flutter_test:

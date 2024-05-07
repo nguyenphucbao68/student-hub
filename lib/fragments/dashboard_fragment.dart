@@ -27,6 +27,11 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
     Tab(text: 'Working'),
     Tab(text: 'Archieved'),
   ];
+  final tabsVi = const [
+    Tab(text: "Tất cả dự án"),
+    Tab(text: "Đang hoạt động"),
+    Tab(text: "Đã lưu trữ"),
+  ];
 
   @override
   void initState() {
@@ -103,7 +108,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                 icon: Icon(Icons.person, color: context.iconColor),
               ),
             ],
-            title: Text("Dashboard", style: boldTextStyle(size: 18)),
+            title: Text(appStore.dashboard, style: boldTextStyle(size: 18)),
             elevation: 0.0,
           ),
           body: SingleChildScrollView(
@@ -114,10 +119,10 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Your projects', style: boldTextStyle()),
+                        Text(appStore.yourProject, style: boldTextStyle()),
                         profi.currentRole == UserRole.COMPANY
                             ? customButton(
-                                txt: 'Post a project',
+                                txt: appStore.postAProject,
                                 wid: 120,
                                 color: appStore.buttonPrimaryColor,
                                 txtcolor: appStore.txtPrimaryColor,
@@ -151,7 +156,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                           indicatorColor: appStore.txtPrimaryColor,
                           labelColor: appStore.txtPrimaryColor,
                           unselectedLabelColor: appStore.textPrimaryColor,
-                          tabs: tabs,
+                          tabs: appStore.isVi ? tabsVi : tabs,
                           // font size
                           labelStyle: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w500),

@@ -50,7 +50,7 @@ class _InboxFragmentState extends State<InboxFragment>
               icon: Icon(Icons.person, color: context.iconColor),
             ),
           ],
-          title: Text("Inbox", style: boldTextStyle(size: 18)),
+          title: Text(appStore.message, style: boldTextStyle(size: 18)),
           elevation: 0.0,
         ),
         body: Column(

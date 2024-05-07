@@ -5,6 +5,7 @@ import 'package:carea/fragments/alert_fragment.dart';
 import 'package:carea/fragments/dashboard_fragment.dart';
 import 'package:carea/fragments/inbox_fragment2.dart';
 import 'package:carea/fragments/projects_fragment.dart';
+import 'package:carea/main.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -93,19 +94,19 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(
             icon: Icon(Icons.list_alt_outlined),
             activeIcon: Icon(Icons.list),
-            label: 'Projects'),
+            label: appStore.project),
         BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_outlined),
             activeIcon: Icon(Icons.dashboard),
-            label: 'Dashboard'),
+            label: appStore.dashboard),
         BottomNavigationBarItem(
             icon: Icon(Icons.message_outlined),
             activeIcon: Icon(Icons.message_sharp),
-            label: 'Message'),
+            label: appStore.message),
         BottomNavigationBarItem(
           icon: Icon(Icons.notifications_active_outlined),
           activeIcon: Icon(Icons.notifications_active),
-          label: 'Alert',
+          label: appStore.alert,
         ),
       ],
     );

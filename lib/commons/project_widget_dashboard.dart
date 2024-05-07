@@ -146,7 +146,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   );
                 },
                 child: Text(
-                  "View proposals",
+                  appStore.viewProposals,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -167,7 +167,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   );
                 },
                 child: Text(
-                  "View messages",
+                  appStore.viewMessages,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -188,7 +188,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   );
                 },
                 child: Text(
-                  "View hired",
+                  appStore.viewHired,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -215,7 +215,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   );
                 },
                 child: Text(
-                  "View job posting",
+                  appStore.viewJobPosting,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -236,7 +236,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   );
                 },
                 child: Text(
-                  "Edit posting",
+                  appStore.editPosting,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -253,7 +253,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   handleDeleteProject();
                 },
                 child: Text(
-                  "Remove posting",
+                  appStore.removePosting,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -278,7 +278,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   );
                 },
                 child: Text(
-                  "Manage project",
+                  appStore.manageProject,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -294,7 +294,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                   onStartWorkingThisProject();
                 },
                 child: Text(
-                  "Start working this project",
+                  appStore.startWorkingThisProject,
                   style:
                       boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
@@ -373,7 +373,14 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
             ),
           ),
           5.height,
-          Text(ytd > 0 ? "Created $ytd days ago" : "Created today",
+          Text(
+              ytd > 0
+                  ? appStore.isVi
+                      ? "Đã tạo $ytd ngày trước"
+                      : "Created $ytd days ago"
+                  : appStore.isVi
+                      ? "Tạo Hôm nay"
+                      : "Created today",
               style: primaryTextStyle(
                   size: 14, color: appStore.textSecondaryColor)),
           SizedBox(height: 5),
@@ -403,7 +410,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                         children: [
                           Text(widget.data.countProposals.toString(),
                               style: primaryTextStyle()),
-                          Text("Proposals", style: primaryTextStyle(size: 12)),
+                          Text(appStore.proposal,
+                              style: primaryTextStyle(size: 12)),
                         ],
                       ),
                     ),
@@ -419,7 +427,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                         children: [
                           Text(widget.data.countMessages.toString(),
                               style: primaryTextStyle()),
-                          Text("Messages", style: primaryTextStyle(size: 12)),
+                          Text(appStore.message,
+                              style: primaryTextStyle(size: 12)),
                         ],
                       ),
                     ),
@@ -435,7 +444,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                         children: [
                           Text(widget.data.countHired.toString(),
                               style: primaryTextStyle()),
-                          Text("Hired", style: primaryTextStyle(size: 12)),
+                          Text(appStore.hired,
+                              style: primaryTextStyle(size: 12)),
                         ],
                       ),
                     ),

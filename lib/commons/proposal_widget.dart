@@ -72,7 +72,7 @@ class _ProposalWidgetState extends State<ProposalWidget> {
       onPressed: () {
         context.pop();
       },
-      child: Text("Cancel", style: boldTextStyle(color: grey)),
+      child: Text(appStore.cancel, style: boldTextStyle(color: grey)),
     );
 
     Widget sendBtn = ElevatedButton(
@@ -80,16 +80,18 @@ class _ProposalWidgetState extends State<ProposalWidget> {
         onHireHandle();
         context.pop();
       },
-      child: Text("Send", style: boldTextStyle(color: grey)),
+      child: Text(appStore.send, style: boldTextStyle(color: grey)),
     );
 
     AlertDialog alert = AlertDialog(
       title: Text(
-        "Hired offer",
+        appStore.hiredOffer,
         style: boldTextStyle(size: 14),
       ),
       content: Text(
-        "Do you really want to send hired offer for student to do this project?",
+        appStore.isVi
+            ? "Bạn có chắc sẽ gửi yêu cầu cho cho sinh viên để thực hiện dự án này?"
+            : "Do you really want to send hired offer for student to do this project?",
         style: primaryTextStyle(size: 13),
       ),
       actions: [cancelBtn, sendBtn],
@@ -190,7 +192,8 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                         width: 2,
                       ),
                     ),
-                    child: Text('Message', style: boldTextStyle(color: black)),
+                    child: Text(appStore.message,
+                        style: boldTextStyle(color: black)),
                   ),
                 ),
                 SizedBox(height: 8),
@@ -207,8 +210,8 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child:
-                              Text('Hire', style: boldTextStyle(color: white)),
+                          child: Text(appStore.hire,
+                              style: boldTextStyle(color: white)),
                         ),
                       )
                     : Container(
@@ -219,7 +222,7 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text('Sent Hired Offer',
+                        child: Text(appStore.sentHiredOffer,
                             style: boldTextStyle(color: white)),
                       ),
               ],

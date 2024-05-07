@@ -34,6 +34,12 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
     Tab(text: 'Message'),
     Tab(text: 'Hired'),
   ];
+  final tabsVi = const [
+    Tab(text: 'Đề xuất'),
+    Tab(text: 'Chi tiết'),
+    Tab(text: 'Tin nhắn'),
+    Tab(text: 'Đã thuê'),
+  ];
 
   @override
   void initState() {
@@ -107,7 +113,8 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                 icon: Icon(Icons.person, color: context.iconColor),
               ),
             ],
-            title: Text("Project information", style: boldTextStyle(size: 18)),
+            title: Text(appStore.projectInformation,
+                style: boldTextStyle(size: 18)),
             elevation: 0.0,
           ),
           body: SingleChildScrollView(
@@ -139,7 +146,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                         color: appStore.iconColor),
                     labelColor: appStore.txtPrimaryColor,
                     unselectedLabelColor: appStore.textPrimaryColor,
-                    tabs: tabs,
+                    tabs: appStore.isVi ? tabsVi : tabs,
                     labelStyle:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                     indicatorSize: TabBarIndicatorSize.tab,
