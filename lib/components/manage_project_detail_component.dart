@@ -35,7 +35,7 @@ class _ManageProjectDetailComponentState
     super.didChangeDependencies();
   }
 
-  void hadleDeleteProject() async {
+  void handleCloseProject() async {
     if (profi.projectInfo == null) return;
     int? projectID = profi.projectInfo!.id;
     await http.delete(
@@ -154,7 +154,7 @@ class _ManageProjectDetailComponentState
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        hadleDeleteProject();
+                        handleCloseProject();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12),
@@ -165,7 +165,7 @@ class _ManageProjectDetailComponentState
                               : Colors.black,
                           borderRadius: BorderRadius.circular(35),
                         ),
-                        child: Text('Delete project',
+                        child: Text('Close project',
                             style: boldTextStyle(color: white)),
                       ),
                     ),
