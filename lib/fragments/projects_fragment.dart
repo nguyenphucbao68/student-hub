@@ -131,6 +131,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
           ],
           title: Text("StudentHub", style: boldTextStyle(size: 18)),
           elevation: 0.0,
+          automaticallyImplyLeading: false,
         ),
         body: new ActiveComponent(
           data: projects,

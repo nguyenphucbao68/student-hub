@@ -10,7 +10,8 @@ class InboxFragment extends StatefulWidget {
   _InboxFragmentState createState() => _InboxFragmentState();
 }
 
-class _InboxFragmentState extends State<InboxFragment> with SingleTickerProviderStateMixin {
+class _InboxFragmentState extends State<InboxFragment>
+    with SingleTickerProviderStateMixin {
   TabController? tabController;
 
   @override
@@ -33,34 +34,29 @@ class _InboxFragmentState extends State<InboxFragment> with SingleTickerProvider
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: appStore.isDarkModeOn ? cardDarkColor : white,
-          child: Icon(Icons.add, color: context.iconColor),
-        ),
-        appBar: careaAppBarWidget(
-          context,
-          titleText: "Inbox",
-          actionWidget: IconButton(
-            onPressed: () {
-              //
-            },
-            icon: Icon(Icons.search, color: context.iconColor, size: 20),
-          ),
-          actionWidget2: IconButton(
-            onPressed: () {
-              //
-            },
-            icon: Icon(Icons.chat, color: context.iconColor, size: 20),
-          ),
-        ),
+        appBar: careaAppBarWidget(context,
+            titleText: "Message",
+            actionWidget: IconButton(
+              onPressed: () {
+                //
+              },
+              icon: Icon(Icons.search, color: context.iconColor, size: 20),
+            ),
+            actionWidget2: IconButton(
+              onPressed: () {
+                //
+              },
+              icon: Icon(Icons.chat, color: context.iconColor, size: 20),
+            ),
+            leadingIcon: false),
         body: Column(
           children: [
             TabBar(
               unselectedLabelColor: gray.withOpacity(0.6),
               labelColor: Colors.red,
               labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              unselectedLabelStyle:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               indicatorColor: context.iconColor,
               tabs: [
                 Tab(child: Text('Chats')),

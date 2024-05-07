@@ -176,7 +176,8 @@ PreferredSizeWidget careaAppBarWidget(BuildContext context,
     {String? titleText,
     Widget? actionWidget,
     Widget? actionWidget2,
-    bool leadingIcon = true}) {
+    bool leadingIcon = true,
+    bool? automaticallyImplyLeading}) {
   return AppBar(
     backgroundColor: context.scaffoldBackgroundColor,
     leading: leadingIcon
@@ -190,6 +191,9 @@ PreferredSizeWidget careaAppBarWidget(BuildContext context,
     actions: [actionWidget ?? SizedBox(), actionWidget2 ?? SizedBox()],
     title: Text(titleText ?? "", style: boldTextStyle(size: 18)),
     elevation: 0.0,
+    automaticallyImplyLeading: automaticallyImplyLeading != null
+          ? automaticallyImplyLeading
+          : false
   );
 }
 

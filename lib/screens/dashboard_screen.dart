@@ -1,17 +1,19 @@
 import 'dart:convert';
-
 import 'package:carea/constants/app_constants.dart';
-import 'package:carea/fragments/alert_fragment.dart';
 import 'package:carea/fragments/dashboard_fragment.dart';
 import 'package:carea/fragments/inbox_fragment2.dart';
 import 'package:carea/fragments/projects_fragment.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
+import 'package:carea/store/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:carea/screens/notification_screen.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:carea/model/notification_model.dart' as NotificationModel;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, this.defaultPage = 0}) : super(key: key);
@@ -24,29 +26,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  var _pages = <Widget>[
-    // SavedProjectsFragment(),
-    ProjectsFragment(),
-    DashBoardFragment(),
-    InboxFragment(),
-    // OrderFragment(),
-    AlertFragment(),
-    // SettingFragment(),
-  ];
+  // var _pages = <Widget>[
+  //   ProjectsFragment(),
+  //   DashBoardFragment(),
+  //   InboxFragment(),
+  //   NotificationScreen()
+  // ];
+  NotificationModel.Notification? _newNotification = null;
   late AuthProvider authStore;
   late ProfileOb profi;
+  late io.Socket _socket;
+  late SocketService socketService;
 
   @override
   void initState() {
     super.initState();
+    authStore = Provider.of<AuthProvider>(context, listen: false);
+    profi = Provider.of<ProfileOb>(context, listen: false);
+    socketService = Provider.of<SocketService>(context, listen: false);
+    connectToSocket();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authStore = Provider.of<AuthProvider>(context);
-    profi = Provider.of<ProfileOb>(context);
-    init();
   }
 
   void init() async {
@@ -79,6 +82,38 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void connectToSocket() {
+    socketService.authSocket(userToken: authStore.token!);
+
+    _socket = socketService.socket;
+
+    _socket.connect();
+
+    _socket.onConnect((_) {
+      log('Connected to the socket server');
+      log('Listening event ${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}');
+    });
+
+    _socket.onConnectError((data) => print('$data'));
+    _socket.onError((data) => print(data));
+
+    _socket.onDisconnect((_) {
+      print('Disconnected from the socket server NOTIFICATION');
+    });
+
+    _socket.on('${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}', (data) {
+      var noti = data['notification'];
+      log('LOG: ${noti['title']}');
+
+      setState(() {
+        _newNotification = NotificationModel.Notification().parse(noti);
+        log({_newNotification?.title});
+      });
+    });
+
+    _socket.on("ERROR", (data) => print(data));
+  }
+
   Widget _bottomTab() {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
@@ -105,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(
           icon: Icon(Icons.notifications_active_outlined),
           activeIcon: Icon(Icons.notifications_active),
-          label: 'Alert',
+          label: 'Notification',
         ),
       ],
     );
@@ -122,7 +157,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return DoublePressBackWidget(
       child: Scaffold(
         bottomNavigationBar: _bottomTab(),
-        body: Center(child: _pages.elementAt(_selectedIndex)),
+        body: Center(
+            child: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            ProjectsFragment(),
+            DashBoardFragment(),
+            InboxFragment(),
+            NotificationScreen(
+               newNotification: _newNotification,
+            )
+          ],
+        )),
       ),
     );
   }

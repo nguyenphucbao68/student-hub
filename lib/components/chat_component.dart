@@ -37,8 +37,6 @@ class _ChatComponentState extends State<ChatComponent> {
     super.initState();
     authStore = Provider.of<AuthProvider>(context, listen: false);
     profi = Provider.of<ProfileOb>(context, listen: false);
-    getMessage();
-    connectToSocket();
     init();
   }
 
@@ -54,43 +52,8 @@ class _ChatComponentState extends State<ChatComponent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    getMessage();
     init();
-  }
-
-  void connectToSocket() {
-    _socket = io.io(
-        AppConstants.SOCKET_URL,
-        io.OptionBuilder()
-            .setTransports(['websocket'])
-            .disableAutoConnect()
-            .build());
-
-    //Add authorization to header
-    _socket.io.options?['extraHeaders'] = {
-      'Authorization': 'Bearer ${authStore.token}',
-    };
-
-    _socket.connect();
-
-    _socket.onConnect((_) {
-      log('Connected to the socket server');
-      log('Listening event ${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}');
-    });
-
-    _socket.onConnectError((data) => print('$data'));
-    _socket.onError((data) => print(data));
-
-    _socket.onDisconnect((_) {
-      print('Disconnected from the socket server NOTIFICATION');
-    });
-
-    _socket.on('${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}', (data) {
-      var message = data['notification'];
-      log('LOG: ${message['title']}');
-      getMessage();
-    });
-
-    _socket.on("ERROR", (data) => print(data));
   }
 
   @override

@@ -29,7 +29,7 @@ class Routes {
     'profile_screen': (context) => SwitchAccountScreen(),
     'forgot_pass_screen': (context) => const ForgotPassScreen(),
     'create_new_pass_screen': (context) => const CreateNewPassScreen(),
-    'notification_screen': (context) => NotificationScreen(),
+    // 'notification_screen': (context) => NotificationScreen(),
     'techstack_education_screen': (context) => InputProfileTechStackScreen(),
     'experience_screen': (context) => InputProfileExperience(),
     'cv_transcript_screen': (context) => InputProfileCVScreen()

@@ -22,4 +22,18 @@ class Interview {
       this.receiver,
       this.sender,
       this.startTime});
+
+  Interview parse(props) {
+    return Interview(
+      endTime: props['endTime'],
+      expiredAt: props['expiredAt'],
+      id: props['id'],
+      meetingRoomCode: props['meetingRoomCode'],
+      meetingRoomId: props['meetingRoomId'],
+      project: props['project'],
+      receiver: props['receiver'],
+      sender: props['sender'],
+      startTime: props['startTime'],
+    );
+  }
 }

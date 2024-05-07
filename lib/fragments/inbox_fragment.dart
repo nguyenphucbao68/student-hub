@@ -39,16 +39,15 @@ class _InboxFragmentState extends State<InboxFragment>
           backgroundColor: appStore.isDarkModeOn ? cardDarkColor : white,
           child: Icon(Icons.add, color: context.iconColor),
         ),
-        appBar: careaAppBarWidget(
-          context,
-          titleText: "Inbox",
-          actionWidget: IconButton(
-            onPressed: () {
-              //
-            },
-            icon: Icon(Icons.person, color: context.iconColor, size: 20),
-          ),
-        ),
+        appBar: careaAppBarWidget(context,
+            titleText: "Inbox",
+            actionWidget: IconButton(
+              onPressed: () {
+                //
+              },
+              icon: Icon(Icons.person, color: context.iconColor, size: 20),
+            ),
+            leadingIcon: false),
         body: Column(
           children: [
             TabBar(

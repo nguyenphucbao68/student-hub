@@ -13,6 +13,7 @@ import 'package:carea/model/calling_model.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/logicprovider.dart';
 import 'package:carea/store/profile_ob.dart';
+import 'package:carea/store/socket_service.dart';
 import 'package:carea/utils/Date.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -44,6 +45,7 @@ class ChatScreenState extends State<ChatScreen> {
   late ProfileOb profi;
   List<Message> msgList = [];
   late io.Socket _socket;
+  late SocketService socketService;
   bool _isloading = true;
 
   FocusNode msgFocusNode = FocusNode();
@@ -67,6 +69,7 @@ class ChatScreenState extends State<ChatScreen> {
     super.initState();
     authStore = Provider.of<AuthProvider>(context, listen: false);
     profi = Provider.of<ProfileOb>(context, listen: false);
+    socketService = Provider.of<SocketService>(context, listen: false);
     _fetchMessage();
     connectToSocket();
     init();
@@ -77,33 +80,16 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void connectToSocket() {
-    _socket = io.io(
-        AppConstants.SOCKET_URL,
-        io.OptionBuilder()
-            .setTransports(['websocket'])
-            .disableAutoConnect()
-            .build());
-
-    //Add authorization to header
-    _socket.io.options?['extraHeaders'] = {
-      'Authorization': 'Bearer ${authStore.token}',
-    };
+    _socket = socketService.socket;
+  
     //Add query param to url
     _socket.io.options?['query'] = {'project_id': widget.projectId};
 
-    _socket.connect();
+    _socket.disconnect().connect();
 
     _socket.onConnect((_) {
-      log(
-          'Connected to the socket server with project_id ${widget.projectId}');
+      log('Connected to the socket server with project_id ${widget.projectId}');
       log('Listening event ${SOCKET_EVENTS.RECEIVE_MESSAGE.name}');
-    });
-
-    _socket.onConnectError((data) => print('$data'));
-    _socket.onError((data) => print(data));
-
-    _socket.onDisconnect((_) {
-      print('Disconnected from the socket server');
     });
 
     _socket.on(SOCKET_EVENTS.RECEIVE_MESSAGE.name, (data) {
@@ -120,6 +106,8 @@ class ChatScreenState extends State<ChatScreen> {
             formatedDate:
                 DateHandler.getDate(DateTime.parse(message['createdAt']))));
       });
+
+      _socket.hasListeners('RECEIVE_MESSAGE');
 
       scrollDownToBottom();
     });
@@ -200,8 +188,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    _socket.disconnect();
-    _socket.dispose();
+    _socket.off(SOCKET_EVENTS.RECEIVE_MESSAGE.name);
     _scrollController.dispose();
     _msgController.dispose();
     super.dispose();
@@ -209,11 +196,6 @@ class ChatScreenState extends State<ChatScreen> {
 
   void scrollDownToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      log({
-        'hasClient': _scrollController.hasClients,
-        'maxScrollEvent': _scrollController.position.maxScrollExtent,
-        'listView': msgList.length
-      });
       if (_scrollController.hasClients) {
         _scrollController.animateTo(_scrollController.position.maxScrollExtent,
             duration: Duration(milliseconds: 100), curve: Curves.easeOut);
@@ -234,12 +216,6 @@ class ChatScreenState extends State<ChatScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(widget.name!, style: boldTextStyle(size: 18)),
-              // 8.width,
-              // Container(
-              //   padding: EdgeInsets.all(2),
-              //   decoration: boxDecorationWithRoundedCorners(
-              //       boxShape: BoxShape.circle, backgroundColor: Colors.blue),
-              //   child: Icon(Icons.done, color: white, size: 10),
               // )
             ],
           ),

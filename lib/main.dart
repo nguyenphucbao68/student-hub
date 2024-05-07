@@ -12,6 +12,7 @@ import 'package:carea/store/AppStore.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/routes.dart';
 import 'package:carea/store/profile_ob.dart';
+import 'package:carea/store/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -44,7 +45,8 @@ void main() async {
           Provider(create: (_) => authStore),
           Provider(
               create: (_) =>
-                  ProfileOb()), // Thêm MyProvider vào danh sách các providers
+                  ProfileOb()),
+          Provider(create: (_) => SocketService()) // Thêm MyProvider vào danh sách các providers
         ],
         child: MyApp(),
       ),
@@ -64,6 +66,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late AuthProvider authStore;
   late ProfileOb profile;
+  late SocketService socketService;
   int isAuthenticated = 0;
   // Student? student;
   // Company? company;
@@ -79,6 +82,11 @@ class _MyAppState extends State<MyApp> {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
     profile = Provider.of<ProfileOb>(context);
+    socketService = Provider.of<SocketService>(context);
+
+    if (authStore.isLoggedIn) {
+      socketService.authSocket(userToken: authStore.token!);
+    }
   }
 
   Future<void> checkAuth() async {
