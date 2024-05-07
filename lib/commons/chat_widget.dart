@@ -1,31 +1,42 @@
+import 'package:carea/commons/constants.dart';
 import 'package:carea/components/schedule_interview_component.dart';
+import 'package:carea/screens/update_interview_screen.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
+import 'package:carea/screens/dashboard_screen.dart';
 import 'package:carea/screens/meet_screen.dart';
+import 'package:carea/screens/video_conference.dart';
 import 'package:carea/utils/Date.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:carea/model/message.dart';
 
 class ChatWidget extends StatelessWidget {
-  const ChatWidget(
-      {Key? key, required this.isMe, required this.data, required this.msg})
-      : super(key: key);
+  const ChatWidget({
+    Key? key,
+    required this.isMe,
+    required this.msg,
+    required this.updateInterviewCallback,
+    required this.deleteInterviewCallback,
+  }) : super(key: key);
 
   final bool isMe;
-  final BHMessageModel data;
+  // final BHMessageModel data;
   final Message msg;
+  final Function updateInterviewCallback;
+  final Function deleteInterviewCallback;
 
   List<Widget> activeMeetingOption(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return [
-      130.width,
+      isMe ? 130.width : 180.width,
       GestureDetector(
         onTap: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MeetScreen()),
-          );
+              context, MaterialPageRoute(builder: (context) => MeetScreen())
+              // VideoConferencePage(conferenceID: 'dwedewdfasmands')),
+              );
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 36),
@@ -45,83 +56,87 @@ class ChatWidget extends StatelessWidget {
           //     style: primaryTextStyle(size: 12, color: white)),
         ),
       ),
-      4.width,
-      IconButton(
-          padding: EdgeInsets.only(top: 10),
-          onPressed: () {
-            showModalBottomSheet(
-              enableDrag: true,
-              isDismissible: true,
-              isScrollControlled: true,
-              constraints: BoxConstraints.expand(
-                height: height * 0.15,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60),
-                    topRight: Radius.circular(60)),
-              ),
-              context: context,
-              builder: (context) {
-                return SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: context.scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ScheduleInterviewComponent(
-                                        scheduleMeetingCallback: () {},
-                                      )),
-                            );
-                          },
-                          child: Text(
-                            "Re-schedule the meeting",
-                            style: boldTextStyle(color: Colors.black, size: 16),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            minimumSize: Size(double.infinity, 0),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        OutlinedButton(
-                          onPressed: () {
-                            data.meetingInfo!.isCancel = true;
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Cancel the messages",
-                            style: boldTextStyle(color: Colors.black, size: 16),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            minimumSize: Size(double.infinity, 0),
-                          ),
-                        ),
-                      ],
-                    ),
+      isMe
+          ? IconButton(
+              padding: EdgeInsets.only(top: 10),
+              onPressed: () {
+                showModalBottomSheet(
+                  enableDrag: true,
+                  isDismissible: true,
+                  isScrollControlled: true,
+                  constraints: BoxConstraints.expand(
+                    height: height * 0.15,
                   ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(60),
+                        topRight: Radius.circular(60)),
+                  ),
+                  context: context,
+                  builder: (context) {
+                    return SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: context.scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8)),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UpdateInterviewScreen(
+                                              data: msg.interview!,
+                                              updateInterviewCallback:
+                                                  updateInterviewCallback),
+                                    ));
+                              },
+                              child: Text(
+                                "Re-schedule the meeting",
+                                style: boldTextStyle(
+                                    color: Colors.black, size: 16),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                minimumSize: Size(double.infinity, 0),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            OutlinedButton(
+                              onPressed: () {
+                                deleteInterviewCallback(msg.interview);
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Cancel the intervew",
+                                style: boldTextStyle(
+                                    color: Colors.black, size: 16),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                minimumSize: Size(double.infinity, 0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
-          icon: Icon(
-            Icons.pending_outlined,
-            size: 40,
-          ))
+              icon: Icon(
+                Icons.pending_outlined,
+                size: 40,
+              ))
+          : SizedBox(),
     ];
   }
 
@@ -150,7 +165,7 @@ class ChatWidget extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Text(
-                  data.msg!,
+                  msg.content!,
                   style: boldTextStyle(
                       size: 17, color: appStore.isDarkModeOn ? white : black),
                 ),
@@ -177,10 +192,16 @@ class ChatWidget extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                               flex: 1,
-                              child: Text(
-                                  "Title: " + data.meetingInfo!.scheduleTitle!,
+                              // child: Text(msg.interview!.title!,
+                              child: Text("Title: " + msg.interview!.title!,
                                   style: boldTextStyle(size: 16))),
-                          Text(data.meetingInfo!.duration!,
+                          Text(
+                              DateTime.parse(msg.interview!.endTime!)
+                                      .difference(DateTime.parse(
+                                          msg.interview!.startTime!))
+                                      .inMinutes
+                                      .toString() +
+                                  " minutes",
                               style: TextStyle(
                                   fontSize: 15, fontStyle: FontStyle.italic)),
                         ],
@@ -193,7 +214,11 @@ class ChatWidget extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "  Start time: " + data.meetingInfo!.startTime!,
+                              // msg.interview?.startTime ?? 'Unknown',
+                              "  Start time: " +
+                                  DateFormat(DATE_FORMAT_4).format(
+                                      DateTime.parse(
+                                          msg.interview!.startTime!)),
                               style: primaryTextStyle(
                                   size: 15,
                                   color: appStore.isDarkModeOn ? white : black),
@@ -202,7 +227,10 @@ class ChatWidget extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "  End time: " + data.meetingInfo!.endTime!,
+                              // msg.interview?.endTime ?? 'Unknown',
+                              "  End time: " +
+                                  DateFormat(DATE_FORMAT_4).format(
+                                      DateTime.parse(msg.interview!.endTime!)),
                               style: primaryTextStyle(
                                   size: 15,
                                   color: appStore.isDarkModeOn ? white : black),
@@ -213,9 +241,10 @@ class ChatWidget extends StatelessWidget {
                     ),
                     6.height,
                     Row(
-                      children: !data.meetingInfo!.isCancel!
-                          ? activeMeetingOption(context)
-                          : cancelMeetingOption(context),
+                      children: DateTime.now().isAfter(DateTime.parse(
+                              msg.interview!.meetingRoom!.expiredAt!))
+                          ? cancelMeetingOption(context)
+                          : activeMeetingOption(context),
                     ),
                   ],
                 ),
@@ -313,9 +342,10 @@ class ChatWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
 
-    if (data.meetingInfo != null) {
+    if (msg.interview != null) {
+      if (msg.interview?.disableFlag == 1) return SizedBox();
       return scheduleMeetingWiget(context);
     }
     return messageWidget(context);
