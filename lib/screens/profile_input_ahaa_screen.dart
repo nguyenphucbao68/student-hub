@@ -315,9 +315,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
-                        color: appStore.isDarkModeOn
-                            ? cardDarkColor
-                            : Colors.white,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(45),
                         border: Border.all(
                           color: Colors.black,

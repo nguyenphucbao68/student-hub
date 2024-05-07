@@ -316,6 +316,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                 width: 30,
                 child: Switch(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  activeColor: context.iconColor,
                   value: appStore.isDarkModeOn,
                   onChanged: (bool value) {
                     appStore.toggleDarkMode(value: value);

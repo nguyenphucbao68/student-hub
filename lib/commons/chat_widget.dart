@@ -43,7 +43,7 @@ class ChatWidget extends StatelessWidget {
           margin: EdgeInsets.only(top: 12),
           decoration: boxDecorationWithRoundedCorners(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            backgroundColor: appStore.isDarkModeOn ? scaffoldDarkColor : black,
+            backgroundColor: appStore.buttonPrimaryColor!,
           ),
           child: Row(
             children: [
@@ -102,7 +102,7 @@ class ChatWidget extends StatelessWidget {
                               child: Text(
                                 "Re-schedule the meeting",
                                 style: boldTextStyle(
-                                    color: Colors.black, size: 16),
+                                    color: appStore.textPrimaryColor, size: 16),
                               ),
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 12),
@@ -118,7 +118,7 @@ class ChatWidget extends StatelessWidget {
                               child: Text(
                                 "Cancel the intervew",
                                 style: boldTextStyle(
-                                    color: Colors.black, size: 16),
+                                    color: appStore.textPrimaryColor, size: 16),
                               ),
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 12),
@@ -175,7 +175,8 @@ class ChatWidget extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 8),
                 padding:
                     EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 12),
-                decoration: boxDecorationWithRoundedCorners(
+                decoration: BoxDecoration(
+                  color: appStore.appBarColor,
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   border: Border.all(
                     color: appStore.isDarkModeOn ? white : black,
@@ -280,7 +281,7 @@ class ChatWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: !isMe
                 ? appStore.isDarkModeOn
-                    ? scaffoldDarkColor
+                    ? appStore.buttonPrimaryColor
                     : gray.withOpacity(0.2)
                 : appStore.isDarkModeOn
                     ? cardDarkColor

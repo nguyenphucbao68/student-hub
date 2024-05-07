@@ -36,6 +36,7 @@ class _InboxFragmentState extends State<InboxFragment>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: context.scaffoldBackgroundColor,
           actions: [
             IconButton(

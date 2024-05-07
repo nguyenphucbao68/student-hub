@@ -19,7 +19,7 @@ class ProjectsFragment extends StatefulWidget {
 }
 
 class _ProjectsFragmentState extends State<ProjectsFragment>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   TabController? tabController;
   late AuthProvider authStore;
 
@@ -146,6 +146,7 @@ class _ProjectsFragmentState extends State<ProjectsFragment>
         backgroundColor:
             appStore.isDarkModeOn ? scaffoldDarkColor : editTextBgColor,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: context.scaffoldBackgroundColor,
           actions: [
             IconButton(

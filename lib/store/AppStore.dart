@@ -37,6 +37,24 @@ abstract class AppStoreBase with Store {
   Color? textSecondaryColor;
 
   @observable
+  Color? txtPrimaryColor;
+
+  @observable
+  Color? txtSecondaryColor;
+
+  @observable
+  Color? buttonPrimaryColor;
+
+  @observable
+  Color? buttonSecondaryColor;
+
+  @observable
+  Color? buttonPrimaryColorGlobal;
+
+  @observable
+  Color? buttonSecondaryColorGlobal;
+
+  @observable
   Color? appBarColor;
 
   @observable
@@ -66,6 +84,15 @@ abstract class AppStoreBase with Store {
       textPrimaryColor = whiteColor;
       textSecondaryColor = Colors.white54;
 
+      txtPrimaryColor = blackColor;
+      txtSecondaryColor = whiteColor;
+
+      buttonPrimaryColor = Colors.grey.shade700;
+      buttonSecondaryColor = blackColor;
+
+      buttonPrimaryColorGlobal = blackColor;
+      buttonSecondaryColorGlobal = whiteColor;
+
       textPrimaryColorGlobal = whiteColor;
       textSecondaryColorGlobal = Colors.white54;
       shadowColorGlobal = appShadowColorDark;
@@ -82,6 +109,15 @@ abstract class AppStoreBase with Store {
 
       textPrimaryColor = appTextColorPrimary;
       textSecondaryColor = appTextColorSecondary;
+
+      txtPrimaryColor = whiteColor;
+      txtSecondaryColor = blackColor;
+
+      buttonPrimaryColor = blackColor;
+      buttonSecondaryColor = whiteColor;
+
+      buttonPrimaryColorGlobal = black;
+      buttonSecondaryColorGlobal = whiteColor;
 
       textPrimaryColorGlobal = appTextColorPrimary;
       textSecondaryColorGlobal = appTextColorSecondary;

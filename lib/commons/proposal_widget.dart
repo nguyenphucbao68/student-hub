@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:carea/constants/app_constants.dart';
+import 'package:carea/main.dart';
 import 'package:carea/model/proposal.dart';
 import 'package:carea/screens/candidate_profile.dart';
 import 'package:carea/store/authprovider.dart';
@@ -136,7 +137,7 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                   children: [
                     Text(
                       widget.data.student!.fullname.toString(),
-                      style: boldTextStyle(size: 16),
+                      style: boldTextStyle(size: 16, color: Colors.black),
                     ),
                     SizedBox(
                       height: 10,
@@ -149,11 +150,11 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                                 ' - ' +
                                 widget.data.student!.educations![0].endYear
                                     .toString(),
-                            style: boldTextStyle(size: 16),
+                            style: boldTextStyle(size: 16, color: Colors.black),
                           )
                         : Text(
                             'No education',
-                            style: boldTextStyle(size: 16),
+                            style: boldTextStyle(size: 16, color: Colors.black),
                           ),
                   ],
                 )
@@ -166,7 +167,7 @@ class _ProposalWidgetState extends State<ProposalWidget> {
                 children: <Widget>[
                   Text(
                     widget.data.coverLetter!,
-                    style: secondaryTextStyle(size: 14),
+                    style: secondaryTextStyle(size: 14, color: Colors.black),
                   ),
                 ],
               ),

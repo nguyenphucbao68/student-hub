@@ -84,7 +84,7 @@ class _ManageProjectDetailComponentState
             Text.rich(
               TextSpan(
                 style: secondaryTextStyle(),
-                text: profi.projectInfo!.description!,
+                text: profi.projectInfo!.description ?? '',
               ),
             ).paddingOnly(right: 16, left: 16),
             SizedBox(height: 25),

@@ -1,5 +1,6 @@
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_project_component.dart';
+import 'package:carea/main.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
@@ -88,6 +89,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
       // checkRole();
       return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: context.scaffoldBackgroundColor,
             actions: [
               IconButton(
@@ -117,6 +119,8 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                             ? customButton(
                                 txt: 'Post a project',
                                 wid: 120,
+                                color: appStore.buttonPrimaryColor,
+                                txtcolor: appStore.txtPrimaryColor,
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -135,7 +139,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                           MediaQuery.of(context).padding.top,
                       // height: 500,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: appStore.appColorPrimaryLightColor,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Column(children: [
@@ -143,10 +147,10 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                           controller: tabController,
                           indicator: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.0),
-                              color: Colors.black),
-                          indicatorColor: Colors.white,
-                          labelColor: Colors.white,
-                          unselectedLabelColor: Colors.black,
+                              color: appStore.iconColor),
+                          indicatorColor: appStore.txtPrimaryColor,
+                          labelColor: appStore.txtPrimaryColor,
+                          unselectedLabelColor: appStore.textPrimaryColor,
                           tabs: tabs,
                           // font size
                           labelStyle: TextStyle(

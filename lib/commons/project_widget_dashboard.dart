@@ -136,6 +136,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               // Add View proposals item
               OutlinedButton(
                 onPressed: () {
+                  profi.setProjectInfo(widget.data);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -146,7 +147,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "View proposals",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -157,6 +159,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               // View Messages
               OutlinedButton(
                 onPressed: () {
+                  profi.setProjectInfo(widget.data);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -165,7 +168,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "View messages",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -176,6 +180,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               // View hired
               OutlinedButton(
                 onPressed: () {
+                  profi.setProjectInfo(widget.data);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -184,7 +189,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "View hired",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -201,6 +207,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               // View job posting
               OutlinedButton(
                 onPressed: () {
+                  profi.setProjectInfo(widget.data);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -209,7 +216,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "View job posting",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -220,6 +228,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               // Edit posting
               OutlinedButton(
                 onPressed: () {
+                  profi.setProjectInfo(widget.data);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -228,7 +237,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "Edit posting",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -244,7 +254,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "Remove posting",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -268,7 +279,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "Manage project",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -283,7 +295,8 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                 },
                 child: Text(
                   "Start working this project",
-                  style: boldTextStyle(color: Colors.black, size: 16),
+                  style:
+                      boldTextStyle(color: appStore.textPrimaryColor, size: 16),
                 ),
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -298,7 +311,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
   Widget build(BuildContext context) {
     profi = Provider.of<ProfileOb>(context);
     int ytd = DateTime.now()
-        .difference(DateTime.parse(widget.data!.createdAt.toString()))
+        .difference(DateTime.parse(widget.data.createdAt.toString()))
         .inDays;
     return Container(
       margin: EdgeInsets.only(bottom: 16),
@@ -317,7 +330,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
               children: <Widget>[
                 Expanded(
                     flex: 1,
-                    child: Text(widget.data!.title.toString(),
+                    child: Text(widget.data.title.toString(),
                         style: boldTextStyle(size: 16))),
                 IconButton(
                   icon: Icon(Icons.more_horiz,
@@ -361,19 +374,20 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
           ),
           5.height,
           Text(ytd > 0 ? "Created $ytd days ago" : "Created today",
-              style: primaryTextStyle(size: 14, color: Colors.black38)),
+              style: primaryTextStyle(
+                  size: 14, color: appStore.textSecondaryColor)),
           SizedBox(height: 5),
           new Container(
             width: MediaQuery.of(context).size.width * 0.8,
             padding: EdgeInsets.symmetric(vertical: 8),
             child: new Text(
-              widget.data!.description.toString(),
+              widget.data.description.toString(),
               style: secondaryTextStyle(),
             ),
           ),
           10.height,
           // check if widget.data!.countProposals is not null and is a number
-          widget.data!.countProposals != null
+          widget.data.countProposals != null
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -387,7 +401,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                       ),
                       child: Column(
                         children: [
-                          Text(widget.data!.countProposals.toString(),
+                          Text(widget.data.countProposals.toString(),
                               style: primaryTextStyle()),
                           Text("Proposals", style: primaryTextStyle(size: 12)),
                         ],
@@ -403,7 +417,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                       ),
                       child: Column(
                         children: [
-                          Text(widget.data!.countMessages.toString(),
+                          Text(widget.data.countMessages.toString(),
                               style: primaryTextStyle()),
                           Text("Messages", style: primaryTextStyle(size: 12)),
                         ],
@@ -419,7 +433,7 @@ class _ProjectWidgetDashboardState extends State<ProjectWidgetDashboard> {
                       ),
                       child: Column(
                         children: [
-                          Text(widget.data!.countHired.toString(),
+                          Text(widget.data.countHired.toString(),
                               style: primaryTextStyle()),
                           Text("Hired", style: primaryTextStyle(size: 12)),
                         ],

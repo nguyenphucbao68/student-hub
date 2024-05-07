@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:carea/commons/project_widget_dashboard.dart';
+import 'package:carea/main.dart';
 import 'package:carea/model/proposal.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
@@ -236,7 +237,8 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
             padding: EdgeInsets.only(left: 12, right: 12),
             child: Text(
               "Active Proposals (${proposalsData.where((item) => item.disableFlag == 0 && item.statusFlag == 1).length})",
-              style: boldTextStyle(size: 14, color: Colors.black45),
+              style:
+                  boldTextStyle(size: 14, color: appStore.textSecondaryColor),
               textAlign: TextAlign.left,
             ),
           ),
@@ -261,7 +263,8 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
             padding: EdgeInsets.only(left: 12, right: 12),
             child: Text(
               "Submitted Proposals (${proposalsData.where((item) => item.disableFlag == 0 && item.statusFlag == 0).length})",
-              style: boldTextStyle(size: 14, color: Colors.black45),
+              style:
+                  boldTextStyle(size: 14, color: appStore.textSecondaryColor),
               textAlign: TextAlign.left,
             ),
           ),
