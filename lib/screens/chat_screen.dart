@@ -279,6 +279,20 @@ class ChatScreenState extends State<ChatScreen> {
     // });
   }
 
+  disableScheduleInterview(Interview? data) async {
+    if (data == null) return;
+    await http.patch(
+      Uri.parse(AppConstants.BASE_URL + '/interview/${data.id}/disable'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    );
+    print('da disable');
+    await Future.delayed(Duration(seconds: 1));
+    _fetchMessage();
+  }
+
   deleteScheduleInterview(Interview? data) async {
     if (data == null) return;
     // intervewIdTemp = data.id;
@@ -432,6 +446,8 @@ class ChatScreenState extends State<ChatScreen> {
                                       msg: msgData,
                                       updateInterviewCallback:
                                           updateScheduleInterview,
+                                      disableInterviewCallback:
+                                          disableScheduleInterview,
                                       deleteInterviewCallback:
                                           deleteScheduleInterview)
                                 ],
@@ -442,6 +458,8 @@ class ChatScreenState extends State<ChatScreen> {
                                 msg: msgData,
                                 updateInterviewCallback:
                                     updateScheduleInterview,
+                                disableInterviewCallback:
+                                    disableScheduleInterview,
                                 deleteInterviewCallback:
                                     deleteScheduleInterview);
                       },

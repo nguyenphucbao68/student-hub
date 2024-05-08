@@ -3,6 +3,7 @@ import 'package:carea/model/user_info.dart';
 
 class Interview {
   int? id;
+  String? deletedAt;
   String? title;
   String? startTime;
   String? endTime;
@@ -12,6 +13,7 @@ class Interview {
 
   Interview(
       {this.id,
+      this.deletedAt,
       this.title,
       this.startTime,
       this.endTime,
@@ -23,6 +25,7 @@ class Interview {
     if (data == null) return null;
     return Interview(
       id: data['id'],
+      deletedAt: data['deletedAt'],
       title: data['title'],
       startTime: data['startTime'],
       endTime: data['endTime'],
@@ -36,6 +39,7 @@ class Interview {
     if (data == null) return null;
     return Interview(
       id: data['id'],
+      deletedAt: data['deletedAt'],
       title: data['title'],
       startTime: data['startTime'],
       endTime: data['endTime'],
