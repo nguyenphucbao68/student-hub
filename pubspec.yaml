@@ -6,7 +6,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=2.18.0  <4.0.0"
 
 dependencies:
   flutter:
@@ -36,7 +36,7 @@ dependencies:
   open_app_file: ^4.0.2
   syncfusion_flutter_datepicker: ^21.2.3
   socket_io_client: ^2.0.3+1
-  # zego_uikit_prebuilt_video_conference: ^2.7.1
+  zego_uikit_prebuilt_video_conference: ^2.7.1
 
 dev_dependencies:
   flutter_test:
