@@ -38,7 +38,9 @@ class ChatWidget extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) =>
                     //  MeetScreen())
-                    VideoConferencePage(conferenceID: 'dwedewdfasmands')),
+                    VideoConferencePage(
+                        conferenceID:
+                            msg.interview!.meetingRoom!.meetingRoomCode!)),
           );
         },
         child: Container(

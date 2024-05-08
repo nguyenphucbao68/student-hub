@@ -25,6 +25,8 @@ import 'package:carea/model/message.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
+import 'dart:math' as math;
+
 class ChatScreen extends StatefulWidget {
   static String tag = '/ChatScreen';
   final String name;
@@ -118,7 +120,7 @@ class ChatScreenState extends State<ChatScreen> {
     //   int index = msgList
     //       .indexWhere((element) => element.interview?.id == intervewIdTemp);
     //   print(index);
-    //   if (index != -1)
+    //   if (intervewIdTemp == null || index != -1)
     //     setState(() {
     //       Interview? updItv = Interview().tryParse(message['interview']);
     //       updItv?.meetingRoom = MettingRroom().tryParse(message['meetingRoom']);
@@ -205,19 +207,44 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   createScheduleInterview(Interview data) async {
-    _socket.emit(SOCKET_EVENTS.SCHEDULE_INTERVIEW.name, {
-      "title": data.title,
-      "content": profi.user!.fullName! + " want to schedule a meeting",
-      "startTime": data.startTime,
-      "endTime": data.endTime,
-      "projectId": widget.projectId,
-      "senderId": profi.user?.id,
-      "receiverId": widget.senderId,
-      "meeting_room_code": data.title,
-      "meeting_room_id": data.title,
-    });
+    String mtRC = math.Random().nextInt(10000).toString();
+
+    await http.post(
+      Uri.parse(AppConstants.BASE_URL + '/interview'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "title": data.title,
+        "content": profi.user!.fullName! + " want to schedule a meeting",
+        "startTime": data.startTime,
+        "endTime": data.endTime,
+        "projectId": widget.projectId,
+        "senderId": profi.user?.id,
+        "receiverId": widget.senderId,
+        "meeting_room_code": mtRC,
+        "meeting_room_id": mtRC,
+      }),
+    );
     await Future.delayed(Duration(seconds: 1));
     _fetchMessage();
+    _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+      var message = data['notification'];
+      setState(() {
+        msgList.add(Message(
+            id: message['message']['id'],
+            createdAt: message['message']['createdAt'],
+            content: message['message']['content'],
+            sender: User().parse(message['sender']),
+            receiver: User().parse(message['receiver']),
+            interview: message['interview'],
+            formatedDate:
+                DateHandler.getDate(DateTime.parse(message['createdAt']))));
+      });
+
+      scrollDownToBottom();
+    });
   }
 
   updateScheduleInterview(Interview? data) async {
@@ -225,32 +252,52 @@ class ChatScreenState extends State<ChatScreen> {
     print(data.title);
     print(data.startTime);
     print(data.endTime);
-    _socket.emit(SOCKET_EVENTS.UPDATE_INTERVIEW.name, {
-      "interviewId": data.id,
-      "senderId": profi.user?.id,
-      "receiverId": widget.senderId,
-      "projectId": widget.projectId,
-      "title": data.title,
-      "startTime": data.startTime,
-      "endTime": data.endTime,
-      "updateAction": true
-    });
+    // intervewIdTemp = data.id;
+    await http.patch(
+      Uri.parse(AppConstants.BASE_URL + '/interview/${data.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "title": data.title,
+        "startTime": data.startTime,
+        "endTime": data.endTime,
+      }),
+    );
     await Future.delayed(Duration(seconds: 1));
     _fetchMessage();
+    // _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+    //   var message = data['notification'];
+    //   int index =
+    //       msgList.indexWhere((element) => element.interview?.id == data.id);
+    //   setState(() {
+    //     Interview? updItv = Interview().tryParse(message['interview']);
+    //     updItv?.meetingRoom = MettingRroom().tryParse(message['meetingRoom']);
+    //     msgList[index].interview = updItv;
+    //   });
+    // });
   }
 
   deleteScheduleInterview(Interview? data) async {
     if (data == null) return;
     // intervewIdTemp = data.id;
-    _socket.emit(SOCKET_EVENTS.UPDATE_INTERVIEW.name, {
-      "interviewId": data.id,
-      "projectId": widget.projectId,
-      "senderId": profi.user?.id,
-      "receiverId": widget.senderId,
-      "deleteAction": true
-    });
+    await http.delete(
+      Uri.parse(AppConstants.BASE_URL + '/interview/${data.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    );
     await Future.delayed(Duration(seconds: 1));
     _fetchMessage();
+    // _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+    //   int index =
+    //       msgList.indexWhere((element) => element.interview?.id == data.id);
+    //   setState(() {
+    //     msgList[index].interview?.disableFlag = 1;
+    //   });
+    // });
   }
 
   @override
