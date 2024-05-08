@@ -184,14 +184,27 @@ class ChatScreenState extends State<ChatScreen> {
   sendClick() async {
     if (_msgController.text.trim().isNotEmpty) {
       hideKeyboard(context);
-
-      _socket.emit(SOCKET_EVENTS.SEND_MESSAGE.name, {
-        "projectId": widget.projectId,
-        "content": _msgController.text.trim(),
-        "messageFlag": 0,
-        "senderId": profi.user?.id,
-        "receiverId": widget.senderId
-      });
+      await http.post(
+        Uri.parse(AppConstants.BASE_URL + '/message/sendMessage'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ' + authStore.token.toString(),
+        },
+        body: jsonEncode({
+          "projectId": widget.projectId,
+          "content": _msgController.text.trim(),
+          "messageFlag": 0,
+          "senderId": profi.user?.id,
+          "receiverId": widget.senderId,
+        }),
+      );
+      // _socket.emit(SOCKET_EVENTS.SEND_MESSAGE.name, {
+      //   "projectId": widget.projectId,
+      //   "content": _msgController.text.trim(),
+      //   "messageFlag": 0,
+      //   "senderId": profi.user?.id,
+      //   "receiverId": widget.senderId
+      // });
 
       _msgController.text = '';
 
