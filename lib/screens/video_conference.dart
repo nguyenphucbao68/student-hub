@@ -1,46 +1,48 @@
-// import 'dart:math' as math;
-// import 'package:flutter/material.dart';
-// import 'package:zego_uikit_prebuilt_video_conference/zego_uikit_prebuilt_video_conference.dart';
+import 'package:carea/store/profile_ob.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-// final String localUserID = math.Random().nextInt(10000).toString();
+import 'package:zego_uikit_prebuilt_video_conference/zego_uikit_prebuilt_video_conference.dart';
 
-// const String callID = '982343240';
+import 'dart:math' as math;
 
-// class VideoConferencePage extends StatefulWidget {
-//   final String conferenceID;
+final String localUserID = math.Random().nextInt(10000).toString();
 
-//   const VideoConferencePage({
-//     super.key,
-//     required this.conferenceID,
-//   });
+class VideoConferencePage extends StatefulWidget {
+  final String conferenceID;
 
-//   @override
-//   State<StatefulWidget> createState() => VideoConferencePageState();
-// }
+  const VideoConferencePage({
+    super.key,
+    required this.conferenceID,
+  });
 
-// class VideoConferencePageState extends State<VideoConferencePage> {
-//   final controller = ZegoUIKitPrebuiltVideoConferenceController();
+  @override
+  State<StatefulWidget> createState() => VideoConferencePageState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     print('da  toi');
-//     try {
-//       return Container();
+class VideoConferencePageState extends State<VideoConferencePage> {
+  final controller = ZegoUIKitPrebuiltVideoConferenceController();
+  late ProfileOb profi;
 
-//       // return SafeArea(
-//       //   child: ZegoUIKitPrebuiltVideoConference(
-//       //     appID: 1080864601,
-//       //     appSign:
-//       //         "9e3ba169e7b61d512d13b9d6fe63efceac69545a3aec980e446abfe38c8b4534",
-//       //     userID: localUserID,
-//       //     userName: 'user_$localUserID',
-//       //     conferenceID: "conferenceID",
-//       //     config: ZegoUIKitPrebuiltVideoConferenceConfig(),
-//       //   ),
-//       // );
-//     } catch (e) {
-//       print('Error: $e');
-//       return Container();
-//     }
-//   }
-// }
+  @override
+  void initState() {
+    super.initState();
+    profi = Provider.of<ProfileOb>(context, listen: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: ZegoUIKitPrebuiltVideoConference(
+          appID: 1247576097,
+          appSign:
+              '7d6266f0d5e6ce71461df7593e53b9a12c2b0e5faa342a061cc45251dc8c5009',
+          userID: localUserID,
+          userName: profi.user?.fullName ?? 'user_$localUserID',
+          conferenceID: widget.conferenceID,
+          config: ZegoUIKitPrebuiltVideoConferenceConfig(
+            turnOnCameraWhenJoining: false,
+          )),
+    );
+  }
+}

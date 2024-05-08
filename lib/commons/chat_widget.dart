@@ -18,6 +18,7 @@ class ChatWidget extends StatelessWidget {
     required this.isMe,
     required this.msg,
     required this.updateInterviewCallback,
+    required this.disableInterviewCallback,
     required this.deleteInterviewCallback,
   }) : super(key: key);
 
@@ -25,6 +26,7 @@ class ChatWidget extends StatelessWidget {
   // final BHMessageModel data;
   final Message msg;
   final Function updateInterviewCallback;
+  final Function disableInterviewCallback;
   final Function deleteInterviewCallback;
 
   List<Widget> activeMeetingOption(BuildContext context) {
@@ -34,9 +36,14 @@ class ChatWidget extends StatelessWidget {
       GestureDetector(
         onTap: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => MeetScreen())
-              // VideoConferencePage(conferenceID: 'dwedewdfasmands')),
-              );
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    //  MeetScreen())
+                    VideoConferencePage(
+                        conferenceID:
+                            msg.interview!.meetingRoom!.meetingRoomCode!)),
+          );
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 36),
@@ -65,7 +72,7 @@ class ChatWidget extends StatelessWidget {
                   isDismissible: true,
                   isScrollControlled: true,
                   constraints: BoxConstraints.expand(
-                    height: height * 0.15,
+                    height: height * 0.23,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -112,11 +119,27 @@ class ChatWidget extends StatelessWidget {
                             SizedBox(height: 10),
                             OutlinedButton(
                               onPressed: () {
+                                disableInterviewCallback(msg.interview);
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Cancel this intervew",
+                                style: boldTextStyle(
+                                    color: Colors.black, size: 16),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                minimumSize: Size(double.infinity, 0),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            OutlinedButton(
+                              onPressed: () {
                                 deleteInterviewCallback(msg.interview);
                                 Navigator.pop(context);
                               },
                               child: Text(
-                                "Cancel the intervew",
+                                "Delete this intervew",
                                 style: boldTextStyle(
                                     color: appStore.textPrimaryColor, size: 16),
                               ),
@@ -242,8 +265,9 @@ class ChatWidget extends StatelessWidget {
                     ),
                     6.height,
                     Row(
-                      children: DateTime.now().isAfter(DateTime.parse(
-                              msg.interview!.meetingRoom!.expiredAt!))
+                      children: (DateTime.now().isAfter(DateTime.parse(
+                                  msg.interview!.meetingRoom!.expiredAt!)) ||
+                              msg.interview?.disableFlag == 1)
                           ? cancelMeetingOption(context)
                           : activeMeetingOption(context),
                     ),
@@ -346,8 +370,12 @@ class ChatWidget extends StatelessWidget {
     // double height = MediaQuery.of(context).size.height;
 
     if (msg.interview != null) {
-      if (msg.interview?.disableFlag == 1) return SizedBox();
-      return scheduleMeetingWiget(context);
+      print(msg.interview?.title);
+      print(msg.interview?.deletedAt);
+      print(msg.interview?.disableFlag);
+      if (msg.interview?.deletedAt == null || msg.interview?.deletedAt == '')
+        return scheduleMeetingWiget(context);
+      return SizedBox();
     }
     return messageWidget(context);
   }
