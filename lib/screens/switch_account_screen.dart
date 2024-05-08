@@ -334,6 +334,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               onTap: () async {
                 appStore.toggleLanguage();
                 setState(() {});
+                Navigator.pushNamed(context, "home");
               },
               trailing: SizedBox(
                   height: 30,
@@ -350,6 +351,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                     selectedLabelIndex: (index) {
                       appStore.toggleLanguage();
                       setState(() {});
+                      Navigator.pushNamed(context, "home");
                     },
                   )),
             ),
