@@ -4,11 +4,13 @@ import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/proposal.dart';
 import 'package:carea/screens/candidate_profile.dart';
+import 'package:carea/screens/chat_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:carea/commons/route_transition.dart';
 
 // ignore: must_be_immutable
 class ProposalWidget extends StatefulWidget {
@@ -165,13 +167,17 @@ class _ProposalWidgetState extends State<ProposalWidget> {
             SizedBox(height: 10),
             Container(
               width: width,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    widget.data.coverLetter!,
-                    style: secondaryTextStyle(size: 14, color: Colors.black),
-                  ),
-                ],
+              child: Padding(
+                padding: EdgeInsets.only(left: 8, right: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      widget.data.coverLetter!,
+                      style: primaryTextStyle(size: 14, color: Colors.black),
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 10),
@@ -179,7 +185,12 @@ class _ProposalWidgetState extends State<ProposalWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(createRoute(ChatScreen(
+                        name: widget.data.student!.fullname!,
+                        projectId: widget.data.projectId!,
+                        senderId: widget.data.userId!)));
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     width: width * 0.45,

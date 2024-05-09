@@ -55,6 +55,8 @@ class Proposal {
   int? disableFlag;
   Student? student;
   Project? project;
+  int? userId;
+
   Proposal({
     this.id,
     this.createdAt,
@@ -67,6 +69,7 @@ class Proposal {
     this.disableFlag,
     this.student,
     this.project,
+    this.userId
   });
 
   Proposal parse(dynamic item) {
@@ -96,6 +99,9 @@ class Proposal {
       statusFlag: item['statusFlag'],
       disableFlag: item['disableFlag'],
       student: Student().tryParseWithFullname(item['student']),
+      userId: item['userId'] != null
+            ? item['userId']
+            : item['student']['userId']
     );
   }
 

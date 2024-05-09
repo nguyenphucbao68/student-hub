@@ -141,7 +141,8 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                     SizedBox(height: 10),
                     Container(
                       height: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).padding.top,
+                          MediaQuery.of(context).padding.top +
+                          150,
                       // height: 500,
                       decoration: BoxDecoration(
                         color: appStore.appColorPrimaryLightColor,

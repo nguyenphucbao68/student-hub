@@ -29,7 +29,7 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
   TextEditingController? _emailController;
   TextEditingController? _passwordController;
 
-  bool isIconTrue = false;
+  bool isIconTrue = true;
   bool isChecked = false;
 
   FocusNode f1 = FocusNode();

@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:carea/commons/data_provider.dart';
 import 'package:carea/constants/app_constants.dart';
-import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/chat_screen.dart';
 import 'package:carea/store/profile_ob.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
