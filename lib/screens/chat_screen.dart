@@ -115,32 +115,9 @@ class ChatScreenState extends State<ChatScreen> {
 
       scrollDownToBottom();
     });
-    // _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
-    //   var message = data['notification'];
-    //   int index = msgList
-    //       .indexWhere((element) => element.interview?.id == intervewIdTemp);
-    //   print(index);
-    //   if (intervewIdTemp == null || index != -1)
-    //     setState(() {
-    //       Interview? updItv = Interview().tryParse(message['interview']);
-    //       updItv?.meetingRoom = MettingRroom().tryParse(message['meetingRoom']);
-    //       msgList[index].interview = updItv;
-    //     });
-    //   else
-    //     setState(() {
-    //       msgList.add(Message(
-    //           id: message['message']['id'],
-    //           createdAt: message['message']['createdAt'],
-    //           content: message['message']['content'],
-    //           sender: User().parse(message['sender']),
-    //           receiver: User().parse(message['receiver']),
-    //           interview: message['interview'],
-    //           formatedDate:
-    //               DateHandler.getDate(DateTime.parse(message['createdAt']))));
-    //     });
-    //   intervewIdTemp = null;
-    //   scrollDownToBottom();
-    // });
+    _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+      _fetchMessage();
+    });
   }
 
   Future<void> _fetchMessage() async {
@@ -241,23 +218,6 @@ class ChatScreenState extends State<ChatScreen> {
       }),
     );
     await Future.delayed(Duration(seconds: 1));
-    _fetchMessage();
-    _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
-      var message = data['notification'];
-      setState(() {
-        msgList.add(Message(
-            id: message['message']['id'],
-            createdAt: message['message']['createdAt'],
-            content: message['message']['content'],
-            sender: User().parse(message['sender']),
-            receiver: User().parse(message['receiver']),
-            interview: message['interview'],
-            formatedDate:
-                DateHandler.getDate(DateTime.parse(message['createdAt']))));
-      });
-
-      scrollDownToBottom();
-    });
   }
 
   updateScheduleInterview(Interview? data) async {
@@ -279,17 +239,6 @@ class ChatScreenState extends State<ChatScreen> {
       }),
     );
     await Future.delayed(Duration(seconds: 1));
-    _fetchMessage();
-    // _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
-    //   var message = data['notification'];
-    //   int index =
-    //       msgList.indexWhere((element) => element.interview?.id == data.id);
-    //   setState(() {
-    //     Interview? updItv = Interview().tryParse(message['interview']);
-    //     updItv?.meetingRoom = MettingRroom().tryParse(message['meetingRoom']);
-    //     msgList[index].interview = updItv;
-    //   });
-    // });
   }
 
   disableScheduleInterview(Interview? data) async {
@@ -303,7 +252,6 @@ class ChatScreenState extends State<ChatScreen> {
     );
     print('da disable');
     await Future.delayed(Duration(seconds: 1));
-    _fetchMessage();
   }
 
   deleteScheduleInterview(Interview? data) async {
@@ -316,15 +264,8 @@ class ChatScreenState extends State<ChatScreen> {
         'Authorization': 'Bearer ' + authStore.token.toString(),
       },
     );
+    disableScheduleInterview(data);
     await Future.delayed(Duration(seconds: 1));
-    _fetchMessage();
-    // _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
-    //   int index =
-    //       msgList.indexWhere((element) => element.interview?.id == data.id);
-    //   setState(() {
-    //     msgList[index].interview?.disableFlag = 1;
-    //   });
-    // });
   }
 
   @override
