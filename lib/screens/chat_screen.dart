@@ -73,6 +73,7 @@ class ChatScreenState extends State<ChatScreen> {
     _socket = io.io(
         AppConstants.SOCKET_URL,
         io.OptionBuilder()
+            .enableForceNew()
             .setTransports(['websocket'])
             .disableAutoConnect()
             .build());
@@ -160,7 +161,8 @@ class ChatScreenState extends State<ChatScreen> {
 
   sendClick() async {
     if (_msgController.text.trim().isNotEmpty) {
-      hideKeyboard(context);
+      String msg = _msgController.text.trim();
+      _msgController.text = '';
       await http.post(
         Uri.parse(AppConstants.BASE_URL + '/message/sendMessage'),
         headers: <String, String>{
@@ -169,25 +171,12 @@ class ChatScreenState extends State<ChatScreen> {
         },
         body: jsonEncode({
           "projectId": widget.projectId,
-          "content": _msgController.text.trim(),
+          "content": msg,
           "messageFlag": 0,
           "senderId": profi.user?.id,
           "receiverId": widget.senderId,
         }),
       );
-      // _socket.emit(SOCKET_EVENTS.SEND_MESSAGE.name, {
-      //   "projectId": widget.projectId,
-      //   "content": _msgController.text.trim(),
-      //   "messageFlag": 0,
-      //   "senderId": profi.user?.id,
-      //   "receiverId": widget.senderId
-      // });
-
-      _msgController.text = '';
-
-      FocusScope.of(context).requestFocus(msgFocusNode);
-
-      await Future.delayed(Duration(seconds: 1));
 
       // msgListing.insert(0, msgModel1);jj
     } else {
@@ -430,7 +419,25 @@ class ChatScreenState extends State<ChatScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Icon(Icons.calendar_month_rounded),
+                          IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  enableDrag: true,
+                                  isDismissible: true,
+                                  isScrollControlled: true,
+                                  constraints: BoxConstraints(
+                                    minHeight: height * 0.55,
+                                    maxHeight: height,
+                                  ),
+                                  context: context,
+                                  builder: (context) {
+                                    return ScheduleInterviewComponent(
+                                        scheduleInterviewCallback:
+                                            createScheduleInterview);
+                                  },
+                                );
+                              },
+                              icon: Icon(Icons.calendar_month_rounded)),
                           8.width,
                           TextField(
                             controller: _msgController,

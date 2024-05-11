@@ -9,7 +9,7 @@ class Interview {
   String? endTime;
   int? disableFlag;
   int? meetingRoomId;
-  MettingRroom? meetingRoom;
+  MeetingRoom? meetingRoom;
 
   Interview(
       {this.id,
@@ -31,7 +31,7 @@ class Interview {
       endTime: data['endTime'],
       disableFlag: data['disableFlag'],
       meetingRoomId: data['meetingRoomId'],
-      // meetingRoom: MettingRroom().tryParse(data['meetingRoom']),
+      meetingRoom: MeetingRoom().tryParse(data['meetingRoom']),
     );
   }
 
@@ -45,27 +45,33 @@ class Interview {
       endTime: data['endTime'],
       disableFlag: data['disableFlag'],
       meetingRoomId: data['meetingRoomId'],
-      meetingRoom: MettingRroom().tryParse(data['meetingRoom']),
+      meetingRoom: MeetingRoom().tryParse(data['meetingRoom']),
     );
   }
 }
 
-class MettingRroom {
+class MeetingRoom {
   int? id;
   String? meetingRoomCode;
   String? meetingRoomId;
   String? expiredAt;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
 
-  MettingRroom(
-      {this.id, this.meetingRoomCode, this.meetingRoomId, this.expiredAt});
+  MeetingRoom(
+      {this.id, this.meetingRoomCode, this.meetingRoomId, this.expiredAt, this.createdAt, this.deletedAt, this.updatedAt});
 
-  MettingRroom? tryParse(dynamic data) {
+  MeetingRoom? tryParse(dynamic data) {
     if (data == null) return null;
-    return MettingRroom(
+    return MeetingRoom(
       id: data['id'],
       meetingRoomCode: data['meeting_room_code'],
       meetingRoomId: data['meeting_room_id'],
       expiredAt: data['expired_at'],
+      createdAt: data['createdAt'],
+      updatedAt: data['updatedAt'],
+      deletedAt: data['deletedAt'],
     );
   }
 }

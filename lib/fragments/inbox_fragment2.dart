@@ -64,7 +64,6 @@ class _InboxFragmentState extends State<InboxFragment>
               indicatorColor: context.iconColor,
               tabs: [
                 Tab(child: Text('Chats')),
-                Tab(child: Text('Calls')),
               ],
               controller: tabController,
               indicatorSize: TabBarIndicatorSize.tab,
@@ -74,7 +73,6 @@ class _InboxFragmentState extends State<InboxFragment>
                 controller: tabController,
                 children: [
                   ChatComponent(),
-                  CallingComponent(),
                 ],
               ),
             ),
