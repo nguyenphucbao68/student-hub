@@ -10,6 +10,7 @@ import 'package:carea/screens/profile_input_nhap_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +59,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
     ).then((response) {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
+        log(data);
         if (data['result'] != null) {
           // UserInfo userInfo = UserInfo(
           //   id: data['result']['id'],
@@ -129,8 +131,9 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                   : (profi.user!.company != null
                       ? profi.user!.company!.companyName!
                       : ""),
-              subTitle:
-                  profi.currentRole == UserRole.STUDENT ? "Student" : "Company",
+              subTitle: profi.currentRole == UserRole.STUDENT
+                  ? appStore.student
+                  : appStore.company,
               // title: authStore.authSignUp == UserRole.STUDENT &&
               //         profi.userInfo != null
               //     ? (profi.userInfo!.fullName ?? "Unknown")
@@ -178,8 +181,8 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                                     : (profi.user!.company!.companyName ??
                                         "Unknown"),
                                 subTitle: profi.currentRole != UserRole.STUDENT
-                                    ? "Student"
-                                    : "Company",
+                                    ? appStore.student
+                                    : appStore.company,
                                 // title: authStore.authSignUp == UserRole.COMPANY
                                 //     ? profi.userInfo!.fullName!
                                 //     : (authStore.company!.companyName ??
@@ -202,7 +205,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                 : SizedBox(),
             SettingItemWidget(
               leading: Icon(Icons.person_2, color: context.iconColor),
-              title: "Profile",
+              title: appStore.profile,
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 if (profi.currentRole == UserRole.COMPANY) {
@@ -290,7 +293,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                 : SizedBox(),
             SettingItemWidget(
               leading: Icon(Icons.settings, color: context.iconColor),
-              title: "Change Password",
+              title: appStore.changePassword,
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 // NotificationScreen().launch(context);
@@ -315,6 +318,7 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                 width: 30,
                 child: Switch(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  activeColor: context.iconColor,
                   value: appStore.isDarkModeOn,
                   onChanged: (bool value) {
                     appStore.toggleDarkMode(value: value);
@@ -324,8 +328,36 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
               ),
             ),
             SettingItemWidget(
+              leading: Icon(Icons.language, color: context.iconColor),
+              title: appStore.language,
+              titleTextStyle: boldTextStyle(),
+              onTap: () async {
+                appStore.toggleLanguage();
+                setState(() {});
+                Navigator.pushNamed(context, "home");
+              },
+              trailing: SizedBox(
+                  height: 30,
+                  width: 98,
+                  child: // Here default theme colors are used for activeBgColor, activeFgColor, inactiveBgColor and inactiveFgColor
+                      FlutterToggleTab(
+                    width: 25,
+                    borderRadius: 10,
+                    selectedBackgroundColors: [Colors.black],
+                    selectedTextStyle: primaryTextStyle(color: Colors.white),
+                    unSelectedTextStyle: primaryTextStyle(color: Colors.black),
+                    labels: ['vi', 'en'],
+                    selectedIndex: appStore.isVi ? 0 : 1,
+                    selectedLabelIndex: (index) {
+                      appStore.toggleLanguage();
+                      setState(() {});
+                      Navigator.pushNamed(context, "home");
+                    },
+                  )),
+            ),
+            SettingItemWidget(
               leading: Icon(Icons.login, color: context.iconColor),
-              title: "Logout",
+              title: appStore.logout,
               titleTextStyle: boldTextStyle(),
               onTap: () {
                 showConfirmDialogCustom(context, onAccept: (c) {

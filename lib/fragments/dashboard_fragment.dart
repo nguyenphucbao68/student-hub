@@ -1,5 +1,6 @@
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/components/all_project_component.dart';
+import 'package:carea/main.dart';
 import 'package:carea/screens/project_post_step1_screen.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
@@ -25,6 +26,11 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
     Tab(text: 'All projects'),
     Tab(text: 'Working'),
     Tab(text: 'Archieved'),
+  ];
+  final tabsVi = const [
+    Tab(text: "Tất cả dự án"),
+    Tab(text: "Đang hoạt động"),
+    Tab(text: "Đã lưu trữ"),
   ];
 
   @override
@@ -88,6 +94,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
       // checkRole();
       return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: context.scaffoldBackgroundColor,
             actions: [
               IconButton(
@@ -101,7 +108,7 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                 icon: Icon(Icons.person, color: context.iconColor),
               ),
             ],
-            title: Text("Dashboard", style: boldTextStyle(size: 18)),
+            title: Text(appStore.dashboard, style: boldTextStyle(size: 18)),
             elevation: 0.0,
           ),
           body: SingleChildScrollView(
@@ -112,11 +119,13 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Your projects', style: boldTextStyle()),
+                        Text(appStore.yourProject, style: boldTextStyle()),
                         profi.currentRole == UserRole.COMPANY
                             ? customButton(
-                                txt: 'Post a project',
+                                txt: appStore.postAProject,
                                 wid: 120,
+                                color: appStore.buttonPrimaryColor,
+                                txtcolor: appStore.txtPrimaryColor,
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -132,10 +141,11 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                     SizedBox(height: 10),
                     Container(
                       height: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).padding.top,
+                          MediaQuery.of(context).padding.top +
+                          150,
                       // height: 500,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: appStore.appColorPrimaryLightColor,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Column(children: [
@@ -143,11 +153,11 @@ class _DashBoardFragmentState extends State<DashBoardFragment>
                           controller: tabController,
                           indicator: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.0),
-                              color: Colors.black),
-                          indicatorColor: Colors.white,
-                          labelColor: Colors.white,
-                          unselectedLabelColor: Colors.black,
-                          tabs: tabs,
+                              color: appStore.iconColor),
+                          indicatorColor: appStore.txtPrimaryColor,
+                          labelColor: appStore.txtPrimaryColor,
+                          unselectedLabelColor: appStore.textPrimaryColor,
+                          tabs: appStore.isVi ? tabsVi : tabs,
                           // font size
                           labelStyle: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w500),

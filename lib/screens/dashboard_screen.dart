@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:carea/components/chat_component.dart';
 import 'package:carea/constants/app_constants.dart';
-import 'package:carea/fragments/alert_fragment.dart';
 import 'package:carea/fragments/dashboard_fragment.dart';
-import 'package:carea/fragments/inbox_fragment2.dart';
 import 'package:carea/fragments/projects_fragment.dart';
+import 'package:carea/main.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -12,6 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:carea/screens/notification_screen.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:carea/model/notification.dart' as noti;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, this.defaultPage = 0}) : super(key: key);
@@ -24,21 +27,73 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int _messageCounter = 0;
+  int _alertCounter = 0;
+
   var _pages = <Widget>[
-    // SavedProjectsFragment(),
     ProjectsFragment(),
     DashBoardFragment(),
-    InboxFragment(),
-    // OrderFragment(),
-    AlertFragment(),
-    // SettingFragment(),
+    ChatComponent(),
+    NotificationScreen(),
   ];
   late AuthProvider authStore;
   late ProfileOb profi;
+  late io.Socket _socket;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  void connectToSocket() {
+    _socket = io.io(
+        AppConstants.SOCKET_URL,
+        io.OptionBuilder()
+            .setTransports(['websocket'])
+            .disableAutoConnect()
+            .build());
+
+    //Add authorization to header
+    _socket.io.options?['extraHeaders'] = {
+      'Authorization': 'Bearer ${authStore.token}',
+    };
+
+    _socket.disconnect().connect();
+
+    _socket.onConnect((_) {
+      log('Connected to the socket server [ALL APP]');
+      log('Listening event ${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}');
+    });
+
+    _socket.onConnectError((data) => print('$data'));
+    _socket.onError((data) => print(data));
+
+    _socket.onDisconnect((_) {
+      print('Disconnected from the socket server [ALL APP]');
+    });
+
+    _socket.on('${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}', (data) {
+      setState(() {
+        _alertCounter++;
+      });
+      noti.Notification notification =
+          noti.Notification().parse(data["notification"]);
+
+      if (notification.typeNotifyFlag == NOTIFICATION_TYPE.CHAT) {
+        setState(() {
+          _messageCounter++;
+        });
+      }
+    });
+
+    _socket.on("ERROR", (data) => print(data));
+  }
+
+  @override
+  void dispose() {
+    _socket.disconnect();
+    _socket.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
     profi = Provider.of<ProfileOb>(context);
+    connectToSocket();
     init();
   }
 
@@ -93,26 +149,43 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(
             icon: Icon(Icons.list_alt_outlined),
             activeIcon: Icon(Icons.list),
-            label: 'Projects'),
+            label: appStore.project),
         BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_outlined),
             activeIcon: Icon(Icons.dashboard),
-            label: 'Dashboard'),
+            label: appStore.dashboard),
         BottomNavigationBarItem(
-            icon: Icon(Icons.message_outlined),
+            icon: _messageCounter != 0
+                ? Badge(
+                    label: Text(_messageCounter.toString()),
+                    child: Icon(Icons.message_outlined),
+                  )
+                : Icon(Icons.message_outlined),
             activeIcon: Icon(Icons.message_sharp),
-            label: 'Message'),
+            label: appStore.message),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications_active_outlined),
-          activeIcon: Icon(Icons.notifications_active),
-          label: 'Alert',
-        ),
+            icon: _alertCounter != 0
+                ? Badge(
+                    label: Text(_alertCounter.toString()),
+                    child: Icon(Icons.notifications_active_outlined),
+                  )
+                : Icon(Icons.notifications_active_outlined),
+            activeIcon: Icon(Icons.notifications_active),
+            label: appStore.alert),
       ],
     );
   }
 
   void _onItemTapped(int index) {
     setState(() {
+      if (index == 2) {
+        _messageCounter = 0;
+      }
+
+      if (index == 3) {
+        _alertCounter = 0;
+      }
+
       _selectedIndex = index;
     });
   }

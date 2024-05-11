@@ -186,13 +186,14 @@ class _EditProjectDetailScreenState extends State<EditProjectDetailScreen> {
                           title: Row(
                             children: [
                               // SizedBox(width: 16),
-                              Text(timeList[index], style: primaryTextStyle()),
+                              Text(timeList[index],
+                                  style: primaryTextStyle(color: Colors.black)),
                             ],
                           ),
                           controlAffinity: ListTileControlAffinity.trailing,
                           value: timeList[index],
                           groupValue: time,
-                          activeColor: context.iconColor,
+                          activeColor: Colors.black,
                           hoverColor: Colors.black,
                           onChanged: (value) {
                             setState(() {
@@ -253,9 +254,7 @@ class _EditProjectDetailScreenState extends State<EditProjectDetailScreen> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
-                        color: appStore.isDarkModeOn
-                            ? cardDarkColor
-                            : Colors.white,
+                        color: appStore.buttonSecondaryColorGlobal,
                         borderRadius: BorderRadius.circular(45),
                         border: Border.all(
                           color: Colors.black,
@@ -274,9 +273,7 @@ class _EditProjectDetailScreenState extends State<EditProjectDetailScreen> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
-                        color: appStore.isDarkModeOn
-                            ? cardDarkColor
-                            : Colors.black,
+                        color: appStore.buttonPrimaryColorGlobal,
                         borderRadius: BorderRadius.circular(45),
                       ),
                       child: Text('Cancel', style: boldTextStyle(color: white)),

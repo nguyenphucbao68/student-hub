@@ -8,21 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-class ScheduleInterviewComponent extends StatefulWidget {
-  const ScheduleInterviewComponent({
+class UpdateInterviewScreen extends StatefulWidget {
+  const UpdateInterviewScreen({
     Key? key,
-    required this.scheduleInterviewCallback,
+    required this.data,
+    required this.updateInterviewCallback,
   }) : super(key: key);
 
-  final Function scheduleInterviewCallback;
+  final Function updateInterviewCallback;
+  final Interview data;
 
   @override
   _ScheduleInterviewComponentState createState() =>
       _ScheduleInterviewComponentState();
 }
 
-class _ScheduleInterviewComponentState
-    extends State<ScheduleInterviewComponent> {
+class _ScheduleInterviewComponentState extends State<UpdateInterviewScreen> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController titleController = TextEditingController();
@@ -118,11 +119,21 @@ class _ScheduleInterviewComponentState
   @override
   void initState() {
     super.initState();
-    init();
-  }
+    titleController.text = widget.data.title!;
+    startDateController.text =
+        formatDate(widget.data.startTime, format: DATE_FORMAT_3);
+    startTimeController.text =
+        formatDate(widget.data.startTime, format: TIME_FORMAT_3);
+    endDateController.text =
+        formatDate(widget.data.endTime, format: DATE_FORMAT_3);
+    endTimeController.text =
+        formatDate(widget.data.endTime, format: TIME_FORMAT_3);
 
-  void init() async {
-    //
+    startAt = startDateController.text + " " + startTimeController.text;
+    endAt = endDateController.text + " " + endTimeController.text;
+    duration = DateTime.parse(widget.data.endTime!)
+        .difference(DateTime.parse(widget.data.startTime!))
+        .inMinutes;
   }
 
   @override
@@ -132,10 +143,14 @@ class _ScheduleInterviewComponentState
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Container(
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        elevation: 0.3,
+        iconTheme: IconThemeData(color: appStore.isDarkModeOn ? white : black),
+        title: Text(widget.data.title!, style: boldTextStyle(size: 18)),
+      ),
+      body: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: context.scaffoldBackgroundColor,
@@ -146,17 +161,9 @@ class _ScheduleInterviewComponentState
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 5),
-                Center(
-                    child: Text('Schedule a video interview',
-                        style: boldTextStyle(size: 19))),
-                SizedBox(height: 5),
-                Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Divider(color: primaryColor)),
                 Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: Text(
@@ -179,7 +186,7 @@ class _ScheduleInterviewComponentState
                     FocusScope.of(context).requestFocus(f2);
                   },
                   decoration:
-                      inputDecoration(context, hintText: "Interview title"),
+                      inputDecoration(context, hintText: widget.data.title!),
                 ),
                 SizedBox(height: 16),
                 Padding(
@@ -368,10 +375,11 @@ class _ScheduleInterviewComponentState
                         if (_formKey.currentState!.validate()) {
                           if (duration! > 0) {
                             var inte = Interview();
+                            inte.id = widget.data.id;
                             inte.title = titleController.text;
                             inte.startTime = startAt;
                             inte.endTime = endAt;
-                            widget.scheduleInterviewCallback(inte);
+                            widget.updateInterviewCallback(inte);
                             Navigator.pop(context);
                           } else {
                             Navigator.pop(context);
@@ -392,8 +400,7 @@ class _ScheduleInterviewComponentState
                           color: appStore.isDarkModeOn ? cardDarkColor : black,
                           borderRadius: BorderRadius.circular(45),
                         ),
-                        child: Text("Send Invite",
-                            style: boldTextStyle(color: white)),
+                        child: Text("Save", style: boldTextStyle(color: white)),
                       ),
                     ),
                   ],
@@ -402,6 +409,6 @@ class _ScheduleInterviewComponentState
               ],
             ),
           )),
-    );
+    ));
   }
 }

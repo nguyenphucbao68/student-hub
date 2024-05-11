@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:carea/commons/data_provider.dart';
 import 'package:carea/constants/app_constants.dart';
-import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
 import 'package:carea/model/project.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/chat_screen.dart';
 import 'package:carea/store/profile_ob.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +16,16 @@ import 'package:carea/model/message.dart';
 import 'package:carea/utils/Date.dart';
 import 'package:carea/commons/route_transition.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:carea/commons/widgets.dart';
+import 'package:carea/model/notification.dart' as noti;
 
 class ChatComponent extends StatefulWidget {
   @override
   _ChatComponentState createState() => _ChatComponentState();
 }
 
-class _ChatComponentState extends State<ChatComponent> {
+class _ChatComponentState extends State<ChatComponent>
+    with AutomaticKeepAliveClientMixin<ChatComponent> {
   late AuthProvider authStore;
   late ProfileOb profi;
   List<CallingModel> chatData = chatDataList();
@@ -42,6 +43,9 @@ class _ChatComponentState extends State<ChatComponent> {
     init();
   }
 
+  @override
+  bool get wantKeepAlive => true;
+
   void init() async {
     //
   }
@@ -57,11 +61,19 @@ class _ChatComponentState extends State<ChatComponent> {
     init();
   }
 
+  @override
+  void dispose() {
+    _socket.disconnect();
+    _socket.dispose();
+    super.dispose();
+  }
+
   void connectToSocket() {
     _socket = io.io(
         AppConstants.SOCKET_URL,
         io.OptionBuilder()
             .setTransports(['websocket'])
+            .enableForceNew()
             .disableAutoConnect()
             .build());
 
@@ -73,7 +85,7 @@ class _ChatComponentState extends State<ChatComponent> {
     _socket.connect();
 
     _socket.onConnect((_) {
-      log('Connected to the socket server');
+      log('Connected to the socket server [MESSAGE]');
       log('Listening event ${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}');
     });
 
@@ -81,7 +93,7 @@ class _ChatComponentState extends State<ChatComponent> {
     _socket.onError((data) => print(data));
 
     _socket.onDisconnect((_) {
-      print('Disconnected from the socket server NOTIFICATION');
+      print('Disconnected from the socket server [MESSAGE]');
     });
 
     _socket.on('${SOCKET_EVENTS.NOTI.name}_${profi.user!.id}', (data) {
@@ -91,13 +103,6 @@ class _ChatComponentState extends State<ChatComponent> {
     });
 
     _socket.on("ERROR", (data) => print(data));
-  }
-
-  @override
-  void dispose() {
-    // _socket.disconnect();
-    // _socket.dispose();
-    super.dispose();
   }
 
   Future<void> getMessage() async {
@@ -138,71 +143,87 @@ class _ChatComponentState extends State<ChatComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return _isloading
-        ? Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Center(
-                child: CircularProgressIndicator(
-              color: darkCyan,
-            )))
-        : ListView.builder(
-            shrinkWrap: true,
-            itemCount: messageData.length,
-            padding: EdgeInsets.only(left: 0, bottom: 70, right: 0, top: 8),
-            itemBuilder: (context, index) {
-              Message message = messageData[index];
+    return Scaffold(
+      appBar:
+          careaAppBarWidget(context, titleText: "Message", leadingIcon: false),
+      body: _isloading
+          ? Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                  child: CircularProgressIndicator(
+                color: darkCyan,
+              )))
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: messageData.length,
+              padding: EdgeInsets.only(left: 0, bottom: 70, right: 0, top: 8),
+              itemBuilder: (context, index) {
+                Message message = messageData[index];
 
-              return Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          margin: EdgeInsets.only(top: 15),
-                          child: CircleAvatar(
-                            child: Text(
-                                message.sender!.fullName!.split(' ').last[0]),
-                          )),
-                      16.width,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(message.sender!.fullName.validate(),
-                              style: boldTextStyle()),
-                          2.height,
-                          Text(message.project!.title.validate(),
-                              style: secondaryTextStyle()),
-                          8.height,
-                          Text(message.content.validate(),
-                              style: primaryTextStyle()),
-                        ],
-                      ).expand(),
-                      Text(
-                          DateHandler.getDateTimeDifference(
-                              DateTime.parse(message.createdAt!)),
-                          style: secondaryTextStyle()),
-                    ],
-                  ).paddingSymmetric(vertical: 8, horizontal: 16).onTap(
-                    () {
-                      Navigator.of(context).push(createRoute(ChatScreen(
-                        name: message.sender!.fullName.validate(),
-                        projectId: message.project!.id!,
-                        senderId: message.sender!.id! == profi.user!.id
-                            ? message.receiver!.id!
-                            : message.sender!.id!,
-                      )));
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Divider(
-                      thickness: 0.2,
+                return Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            margin: EdgeInsets.only(top: 15),
+                            child: CircleAvatar(
+                              child: Text((message.sender!.id! == profi.user!.id
+                                      ? message.receiver!.fullName.validate()
+                                      : message.sender!.fullName.validate())
+                                  .split(' ')
+                                  .last[0]),
+                            )),
+                        16.width,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                message.sender!.id! == profi.user!.id
+                                    ? message.receiver!.fullName.validate()
+                                    : message.sender!.fullName.validate(),
+                                style: boldTextStyle()),
+                            2.height,
+                            Text(message.project!.title.validate(),
+                                style: secondaryTextStyle()),
+                            8.height,
+                            Text(message.content.validate(),
+                                style: primaryTextStyle()),
+                          ],
+                        ).expand(),
+                        Text(
+                            DateHandler.getDateTimeDifference(
+                                DateTime.parse(message.createdAt!)),
+                            style: secondaryTextStyle()),
+                      ],
+                    ).paddingSymmetric(vertical: 8, horizontal: 16).onTap(
+                      () {
+                        Navigator.of(context)
+                            .push(createRoute(ChatScreen(
+                          name: message.sender!.id! == profi.user!.id
+                              ? message.receiver!.fullName.validate()
+                              : message.sender!.fullName.validate(),
+                          projectId: message.project!.id!,
+                          senderId: message.sender!.id! == profi.user!.id
+                              ? message.receiver!.id!
+                              : message.sender!.id!,
+                        )))
+                            .then((value) {
+                          getMessage();
+                        });
+                      },
                     ),
-                  )
-                ],
-              );
-            },
-          );
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      child: Divider(
+                        thickness: 0.2,
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+    );
   }
 }

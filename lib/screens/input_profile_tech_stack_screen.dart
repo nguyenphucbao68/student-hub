@@ -241,11 +241,9 @@ class _InputProfileTechStackScreenState
                       }),
                   selectionType: SelectionType.multi,
                   chipConfig: ChipConfig(
-                      wrapType: WrapType.wrap,
-                      backgroundColor:
-                          appStore.isDarkModeOn ? cardDarkColor : Colors.black),
+                      wrapType: WrapType.wrap, backgroundColor: Colors.black),
                   dropdownHeight: 250,
-                  optionTextStyle: TextStyle(fontSize: 14),
+                  optionTextStyle: TextStyle(fontSize: 14, color: Colors.black),
                   selectedOptionIcon: Icon(Icons.check_circle),
                   selectedOptionTextColor: Colors.black,
                   dropdownMargin: 20.5,

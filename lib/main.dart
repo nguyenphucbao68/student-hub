@@ -19,7 +19,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
- 
+
 void main() async {
   //region Entry Point
   WidgetsFlutterBinding.ensureInitialized();
@@ -162,6 +162,7 @@ class _MyAppState extends State<MyApp> {
         initialRoute: "/",
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
         // home: LoginWithPassScreen(),
+        locale: appStore.isVi ? Locale('vi', 'VN') : Locale('en', 'US'),
         home: Observer(
           builder: (context) {
             authStore.setLoggedIn(isAuthenticated == 1);

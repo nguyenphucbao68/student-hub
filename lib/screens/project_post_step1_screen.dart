@@ -36,53 +36,80 @@ class _ProjectPostStep1ScreenState extends State<ProjectPostStep1Screen> {
     init();
   }
 
+  late bool showSnackBarFlag = false;
+
+  Future<void> checkComp() async {
+    if (profi.user?.company == null) {
+      showSnackBarFlag =
+          true; // Set flag to true if snack bar needs to be shown
+      // Navigator.push(...) // Don't navigate here
+    }
+  }
+
   void init() async {
     await checkComp();
+    if (showSnackBarFlag) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Create your company to create project'),
+          ),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SwitchAccountScreen()),
+        );
+      });
+    }
   }
+
+  // void init() async {
+  //   await checkComp();
+  // }
 
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
   }
 
-  Future<void> checkComp() async {
-    if (profi.user?.company == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Create your company to create project'),
-        ),
-      );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SwitchAccountScreen()),
-      );
-    }
-    // await http.get(
-    //   Uri.parse(AppConstants.BASE_URL + '/auth/me'),
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Authorization': 'Bearer ' + authStore.token.toString(),
-    //   },
-    // ).then((response) {
-    //   log(response.body);
-    //   if (response.statusCode == 200) {
-    //     var data = jsonDecode(response.body);
-    //     if (data['result']['company'] != null) {
-    //       profi.setUserInfoCompany(data['result']['company']);
-    //     } else {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //         SnackBar(
-    //           content: Text('Create your company to create project'),
-    //         ),
-    //       );
-    //       Navigator.push(
-    //         context,
-    //         MaterialPageRoute(builder: (context) => SwitchAccountScreen()),
-    //       );
-    //     }
-    //   }
-    // });
-  }
+  // Future<void> checkComp() async {
+  //   if (profi.user?.company == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Create your company to create project'),
+  //       ),
+  //     );
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => SwitchAccountScreen()),
+  //     );
+  //   }
+  //   // await http.get(
+  //   //   Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+  //   //   headers: <String, String>{
+  //   //     'Content-Type': 'application/json; charset=UTF-8',
+  //   //     'Authorization': 'Bearer ' + authStore.token.toString(),
+  //   //   },
+  //   // ).then((response) {
+  //   //   log(response.body);
+  //   //   if (response.statusCode == 200) {
+  //   //     var data = jsonDecode(response.body);
+  //   //     if (data['result']['company'] != null) {
+  //   //       profi.setUserInfoCompany(data['result']['company']);
+  //   //     } else {
+  //   //       ScaffoldMessenger.of(context).showSnackBar(
+  //   //         SnackBar(
+  //   //           content: Text('Create your company to create project'),
+  //   //         ),
+  //   //       );
+  //   //       Navigator.push(
+  //   //         context,
+  //   //         MaterialPageRoute(builder: (context) => SwitchAccountScreen()),
+  //   //       );
+  //   //     }
+  //   //   }
+  //   // });
+  // }
 
   @override
   Widget build(BuildContext context) {

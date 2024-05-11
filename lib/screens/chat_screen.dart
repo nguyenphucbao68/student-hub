@@ -10,6 +10,7 @@ import 'package:carea/components/schedule_interview_component.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/calling_model.dart';
+import 'package:carea/model/interview_model.dart';
 import 'package:carea/model/user_info.dart';
 import 'package:carea/store/logicprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -23,6 +24,8 @@ import 'package:http/http.dart' as http;
 import 'package:carea/model/message.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+
+import 'dart:math' as math;
 
 class ChatScreen extends StatefulWidget {
   static String tag = '/ChatScreen';
@@ -45,21 +48,11 @@ class ChatScreenState extends State<ChatScreen> {
   List<Message> msgList = [];
   late io.Socket _socket;
   bool _isloading = true;
+  // int? intervewIdTemp = null;
 
   FocusNode msgFocusNode = FocusNode();
 
-  void createScheduleMeeting(BHMessageModel data) async {
-    msgListing.insert(0, data);
-    if (mounted) _scrollController.animToTop();
-    FocusScope.of(context).requestFocus(msgFocusNode);
-    setState(() {});
-
-    await Future.delayed(Duration(seconds: 1));
-    if (mounted) _scrollController.animToTop();
-    setState(() {});
-  }
-
-  var msgListing = getChatMsgData();
+  // var msgListing = getChatMsgData();
   var personName = '';
 
   @override
@@ -80,6 +73,7 @@ class ChatScreenState extends State<ChatScreen> {
     _socket = io.io(
         AppConstants.SOCKET_URL,
         io.OptionBuilder()
+            .enableForceNew()
             .setTransports(['websocket'])
             .disableAutoConnect()
             .build());
@@ -94,8 +88,7 @@ class ChatScreenState extends State<ChatScreen> {
     _socket.connect();
 
     _socket.onConnect((_) {
-      log(
-          'Connected to the socket server with project_id ${widget.projectId}');
+      log('Connected to the socket server with project_id ${widget.projectId}');
       log('Listening event ${SOCKET_EVENTS.RECEIVE_MESSAGE.name}');
     });
 
@@ -123,6 +116,9 @@ class ChatScreenState extends State<ChatScreen> {
 
       scrollDownToBottom();
     });
+    _socket.on(SOCKET_EVENTS.RECEIVE_INTERVIEW.name, (data) {
+      _fetchMessage();
+    });
   }
 
   Future<void> _fetchMessage() async {
@@ -145,7 +141,8 @@ class ChatScreenState extends State<ChatScreen> {
                   content: item['content'],
                   sender: User().parse(item['sender']),
                   receiver: User().parse(item['receiver']),
-                  interview: item['interview'],
+                  interview:
+                      Interview().tryParseWithMeetingRoom(item['interview']),
                   formatedDate:
                       DateHandler.getDate(DateTime.parse(item['createdAt']))))
               .toList();
@@ -164,27 +161,100 @@ class ChatScreenState extends State<ChatScreen> {
 
   sendClick() async {
     if (_msgController.text.trim().isNotEmpty) {
-      hideKeyboard(context);
-
-      _socket.emit(SOCKET_EVENTS.SEND_MESSAGE.name, {
-        "projectId": widget.projectId,
-        "content": _msgController.text.trim(),
-        "messageFlag": 0,
-        "senderId": profi.user?.id,
-        "receiverId": widget.senderId
-      });
-
+      String msg = _msgController.text.trim();
       _msgController.text = '';
-
-      FocusScope.of(context).requestFocus(msgFocusNode);
-
-      await Future.delayed(Duration(seconds: 1));
+      await http.post(
+        Uri.parse(AppConstants.BASE_URL + '/message/sendMessage'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ' + authStore.token.toString(),
+        },
+        body: jsonEncode({
+          "projectId": widget.projectId,
+          "content": msg,
+          "messageFlag": 0,
+          "senderId": profi.user?.id,
+          "receiverId": widget.senderId,
+        }),
+      );
 
       // msgListing.insert(0, msgModel1);jj
     } else {
       FocusScope.of(context).requestFocus(msgFocusNode);
     }
     setState(() {});
+  }
+
+  createScheduleInterview(Interview data) async {
+    String mtRC = math.Random().nextInt(10000).toString();
+
+    await http.post(
+      Uri.parse(AppConstants.BASE_URL + '/interview'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "title": data.title,
+        "content": profi.user!.fullName! + " want to schedule a meeting",
+        "startTime": data.startTime,
+        "endTime": data.endTime,
+        "projectId": widget.projectId,
+        "senderId": profi.user?.id,
+        "receiverId": widget.senderId,
+        "meeting_room_code": mtRC,
+        "meeting_room_id": mtRC,
+      }),
+    );
+    await Future.delayed(Duration(seconds: 1));
+  }
+
+  updateScheduleInterview(Interview? data) async {
+    if (data == null) return;
+    print(data.title);
+    print(data.startTime);
+    print(data.endTime);
+    // intervewIdTemp = data.id;
+    await http.patch(
+      Uri.parse(AppConstants.BASE_URL + '/interview/${data.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+      body: jsonEncode({
+        "title": data.title,
+        "startTime": data.startTime,
+        "endTime": data.endTime,
+      }),
+    );
+    await Future.delayed(Duration(seconds: 1));
+  }
+
+  disableScheduleInterview(Interview? data) async {
+    if (data == null) return;
+    await http.patch(
+      Uri.parse(AppConstants.BASE_URL + '/interview/${data.id}/disable'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    );
+    print('da disable');
+    await Future.delayed(Duration(seconds: 1));
+  }
+
+  deleteScheduleInterview(Interview? data) async {
+    if (data == null) return;
+    // intervewIdTemp = data.id;
+    await http.delete(
+      Uri.parse(AppConstants.BASE_URL + '/interview/${data.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    );
+    disableScheduleInterview(data);
+    await Future.delayed(Duration(seconds: 1));
   }
 
   @override
@@ -233,7 +303,7 @@ class ChatScreenState extends State<ChatScreen> {
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(widget.name!, style: boldTextStyle(size: 18)),
+              Text(widget.name, style: boldTextStyle(size: 18)),
               // 8.width,
               // Container(
               //   padding: EdgeInsets.all(2),
@@ -244,11 +314,11 @@ class ChatScreenState extends State<ChatScreen> {
             ],
           ),
           actions: [
-            IconButton(
-                onPressed: () {
-                  launch('tel:${123456789}');
-                },
-                icon: Icon(Icons.call, color: context.iconColor, size: 18)),
+            // IconButton(
+            //     onPressed: () {
+            //       launch('tel:${123456789}');
+            //     },
+            //     icon: Icon(Icons.call, color: context.iconColor, size: 18)),
             IconButton(
               icon: Icon(Icons.more_horiz, color: context.iconColor, size: 26),
               onPressed: () {
@@ -263,7 +333,7 @@ class ChatScreenState extends State<ChatScreen> {
                   context: context,
                   builder: (context) {
                     return ScheduleInterviewComponent(
-                        scheduleMeetingCallback: createScheduleMeeting);
+                        scheduleInterviewCallback: createScheduleInterview);
                   },
                 );
               },
@@ -292,7 +362,7 @@ class ChatScreenState extends State<ChatScreen> {
                       padding: EdgeInsets.only(
                           top: 8, left: 8, right: 8, bottom: 70),
                       itemBuilder: (_, index) {
-                        BHMessageModel data = msgListing[0];
+                        // BHMessageModel data = msgListing[0];
                         Message msgData = msgList[index];
                         // var isMe = data.senderId == BHSender_id;
                         var isMe = msgData.sender!.id != widget.senderId;
@@ -315,14 +385,26 @@ class ChatScreenState extends State<ChatScreen> {
                                     padding: EdgeInsets.only(top: 5, bottom: 5),
                                   )),
                                   ChatWidget(
-                                      isMe: isMe, data: data, msg: msgData)
+                                      isMe: isMe,
+                                      msg: msgData,
+                                      updateInterviewCallback:
+                                          updateScheduleInterview,
+                                      disableInterviewCallback:
+                                          disableScheduleInterview,
+                                      deleteInterviewCallback:
+                                          deleteScheduleInterview)
                                 ],
                               )
                             : ChatWidget(
                                 isMe: isMe,
-                                data: data,
+                                // data: data,
                                 msg: msgData,
-                              );
+                                updateInterviewCallback:
+                                    updateScheduleInterview,
+                                disableInterviewCallback:
+                                    disableScheduleInterview,
+                                deleteInterviewCallback:
+                                    deleteScheduleInterview);
                       },
                     ),
                   ),
@@ -337,7 +419,25 @@ class ChatScreenState extends State<ChatScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Icon(Icons.calendar_month_rounded),
+                          IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  enableDrag: true,
+                                  isDismissible: true,
+                                  isScrollControlled: true,
+                                  constraints: BoxConstraints(
+                                    minHeight: height * 0.55,
+                                    maxHeight: height,
+                                  ),
+                                  context: context,
+                                  builder: (context) {
+                                    return ScheduleInterviewComponent(
+                                        scheduleInterviewCallback:
+                                            createScheduleInterview);
+                                  },
+                                );
+                              },
+                              icon: Icon(Icons.calendar_month_rounded)),
                           8.width,
                           TextField(
                             controller: _msgController,

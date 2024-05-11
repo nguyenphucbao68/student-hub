@@ -28,4 +28,20 @@ class Message {
       this.sender,
       this.project,
       this.formatedDate});
+
+  Message parse(props) {
+    return Message(
+      id: props["id"],
+      createdAt: props["createdAt"],
+      updateAt: props["updateAt"],
+      content: props["content"],
+      deleteAt: props["deleteAt"],
+      interview: Interview().tryParse(props["interview"]),
+      messageFlag: props["messageFlag"],
+      receiver: User().parse(props["receiver"]),
+      sender: User().parse(props["sender"]),
+      project: Project().tryParse(props["project"]),
+      formatedDate: props["formatedDate"],
+    );
+  }
 }

@@ -113,7 +113,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
         "companyName": name,
         "size": size,
         "website": web,
-        "description": desc
+        appStore.description: desc
       }),
     )
         .then((response) {
@@ -243,7 +243,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                   SizedBox(height: 25),
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text("Company name",
+                    child: Text(appStore.companyName,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
@@ -261,8 +261,8 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                       f1.unfocus();
                       FocusScope.of(context).requestFocus(f1);
                     },
-                    decoration:
-                        inputDecoration(context, hintText: "Company name"),
+                    decoration: inputDecoration(context,
+                        hintText: appStore.companyName),
                   ),
                   SizedBox(height: 15),
                   Align(
@@ -279,7 +279,7 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                   SizedBox(height: 15),
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text("Description",
+                    child: Text(appStore.description,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
@@ -288,13 +288,13 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                     controller: descriptionController,
                     minLines: 3,
                     maxLines: 3,
-                    decoration:
-                        inputDecoration(context, hintText: "Description"),
+                    decoration: inputDecoration(context,
+                        hintText: appStore.description),
                   ),
                   SizedBox(height: 15),
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text("How many people are in your company?",
+                    child: Text(appStore.howManyPeopleAreInYourCompany,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
@@ -315,16 +315,15 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
-                        color: appStore.isDarkModeOn
-                            ? cardDarkColor
-                            : Colors.white,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(45),
                         border: Border.all(
                           color: Colors.black,
                           width: 2,
                         ),
                       ),
-                      child: Text('Edit', style: boldTextStyle(color: black)),
+                      child: Text(appStore.edit,
+                          style: boldTextStyle(color: black)),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -341,7 +340,8 @@ class _ProfileInputAhaaScreenState extends State<ProfileInputAhaaScreen> {
                             : Colors.black,
                         borderRadius: BorderRadius.circular(45),
                       ),
-                      child: Text('Cancel', style: boldTextStyle(color: white)),
+                      child: Text(appStore.cancel,
+                          style: boldTextStyle(color: white)),
                     ),
                   ),
                 ],

@@ -153,15 +153,19 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                       4.width,
                       Text(
                           widget.data!.numberOfStudents.toString() +
-                              " students",
+                              " ${appStore.student}",
                           style: secondaryTextStyle()),
                       12.width,
                       Icon(Icons.alarm, size: 15, color: context.iconColor),
                       4.width,
                       Text(
                           widget.data!.projectScopeFlag == 0
-                              ? "1-3 months"
-                              : "3-6 months",
+                              ? appStore.isVi
+                                  ? "1-3 tháng"
+                                  : "1-3 months"
+                              : appStore.isVi
+                                  ? "3-6 tháng"
+                                  : "3-6 months",
                           style: secondaryTextStyle()),
                     ],
                   ),
@@ -218,7 +222,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                           Icon(Icons.file_present, size: 12, color: white),
                           3.width,
                           Text(
-                              "Proposals: " +
+                              "${appStore.proposal}: " +
                                   widget.data!.countProposals.toString(),
                               style: primaryTextStyle(size: 12, color: white))
                         ],

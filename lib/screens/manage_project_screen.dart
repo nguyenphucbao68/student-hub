@@ -1,6 +1,7 @@
 import 'package:carea/components/all_hired_commponent.dart';
 import 'package:carea/components/all_proposal_component.dart';
 import 'package:carea/components/manage_project_detail_component.dart';
+import 'package:carea/main.dart';
 import 'package:carea/screens/switch_account_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -32,6 +33,12 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
     Tab(text: 'Details'),
     Tab(text: 'Message'),
     Tab(text: 'Hired'),
+  ];
+  final tabsVi = const [
+    Tab(text: 'Đề xuất'),
+    Tab(text: 'Chi tiết'),
+    Tab(text: 'Tin nhắn'),
+    Tab(text: 'Đã thuê'),
   ];
 
   @override
@@ -93,6 +100,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
       return Scaffold(
           appBar: AppBar(
             backgroundColor: context.scaffoldBackgroundColor,
+            iconTheme: IconThemeData(color: context.iconColor),
             actions: [
               IconButton(
                 onPressed: () {
@@ -105,7 +113,8 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                 icon: Icon(Icons.person, color: context.iconColor),
               ),
             ],
-            title: Text("Project information", style: boldTextStyle(size: 18)),
+            title: Text(appStore.projectInformation,
+                style: boldTextStyle(size: 18)),
             elevation: 0.0,
           ),
           body: SingleChildScrollView(
@@ -127,17 +136,17 @@ class _ManageProjectScreenState extends State<ManageProjectScreen>
                 SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: appStore.appColorPrimaryLightColor,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: TabBar(
                     controller: tabController,
                     indicator: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
-                        color: Colors.black),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
-                    tabs: tabs,
+                        color: appStore.iconColor),
+                    labelColor: appStore.txtPrimaryColor,
+                    unselectedLabelColor: appStore.textPrimaryColor,
+                    tabs: appStore.isVi ? tabsVi : tabs,
                     labelStyle:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                     indicatorSize: TabBarIndicatorSize.tab,

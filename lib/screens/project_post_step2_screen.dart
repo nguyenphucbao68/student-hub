@@ -110,13 +110,14 @@ class _ProjectPostStep2ScreenState extends State<ProjectPostStep2Screen> {
                           title: Row(
                             children: [
                               SizedBox(width: 16),
-                              Text(timeList[index], style: primaryTextStyle()),
+                              Text(timeList[index],
+                                  style: primaryTextStyle(color: Colors.black)),
                             ],
                           ),
                           controlAffinity: ListTileControlAffinity.trailing,
                           value: timeList[index],
                           groupValue: time,
-                          activeColor: context.iconColor,
+                          activeColor: Colors.black,
                           hoverColor: Colors.black,
                           onChanged: (value) {
                             setState(() {

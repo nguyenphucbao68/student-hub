@@ -54,6 +54,7 @@ class _AllHiredComponentState extends State<AllHiredComponent> {
   Future<void> getProposals() async {
     if (profi.projectInfo == null) return Navigator.pop(context);
     int? projectID = profi.projectInfo!.id;
+    log({'token': authStore.token.toString()});
     await http.get(
       Uri.parse(AppConstants.BASE_URL +
           '/proposal/getByProjectId/$projectID?statusFlag=3'),

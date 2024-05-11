@@ -78,13 +78,13 @@ class _ManageProjectDetailComponentState
               padding: EdgeInsets.only(left: 16),
               child: Align(
                   alignment: Alignment.topLeft,
-                  child: Text("Description", style: boldTextStyle())),
+                  child: Text(appStore.description, style: boldTextStyle())),
             ),
             SizedBox(height: 10),
             Text.rich(
               TextSpan(
                 style: secondaryTextStyle(),
-                text: profi.projectInfo!.description!,
+                text: profi.projectInfo!.description ?? '',
               ),
             ).paddingOnly(right: 16, left: 16),
             SizedBox(height: 25),
@@ -92,13 +92,14 @@ class _ManageProjectDetailComponentState
               padding: EdgeInsets.only(left: 16),
               child: Align(
                   alignment: Alignment.topLeft,
-                  child: Text("Extra Information", style: boldTextStyle())),
+                  child:
+                      Text(appStore.extraInformation, style: boldTextStyle())),
             ),
             SizedBox(height: 5),
             ListTile(
               contentPadding: EdgeInsets.only(left: 16),
               leading: Icon(Icons.alarm_rounded, size: 30),
-              title: Text("Project Scope", style: boldTextStyle()),
+              title: Text(appStore.projectScope, style: boldTextStyle()),
               subtitle: Text(
                 profi.projectInfo!.projectScopeFlag ==
                         ProjectScopeFlagToNum[ProjectScopeFlag.OneToThreeMonth]
@@ -110,9 +111,10 @@ class _ManageProjectDetailComponentState
             ListTile(
               contentPadding: EdgeInsets.only(left: 16),
               leading: Icon(Icons.people, size: 30),
-              title: Text("Student required", style: boldTextStyle()),
+              title: Text(appStore.studentrequired, style: boldTextStyle()),
               subtitle: Text(
-                profi.projectInfo!.numberOfStudents.toString() + " students",
+                profi.projectInfo!.numberOfStudents.toString() +
+                    " ${appStore.student}",
                 style: secondaryTextStyle(),
               ),
             ),
@@ -144,7 +146,7 @@ class _ManageProjectDetailComponentState
                             width: 1.0,
                           ),
                         ),
-                        child: Text('Edit project',
+                        child: Text(appStore.editProject,
                             style: boldTextStyle(color: Colors.black)),
                       ),
                     ),
@@ -165,7 +167,7 @@ class _ManageProjectDetailComponentState
                               : Colors.black,
                           borderRadius: BorderRadius.circular(35),
                         ),
-                        child: Text('Delete project',
+                        child: Text(appStore.deletPproject,
                             style: boldTextStyle(color: white)),
                       ),
                     ),

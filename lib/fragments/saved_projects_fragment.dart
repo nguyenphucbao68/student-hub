@@ -126,7 +126,7 @@ class _SavedProjectsFragmentState extends State<SavedProjectsFragment> {
             icon: Icon(Icons.chat, color: context.iconColor),
           ),
         ],
-        title: Text("Favorite Projects", style: boldTextStyle(size: 18)),
+        title: Text(appStore.favoriteProjects, style: boldTextStyle(size: 18)),
         elevation: 0.0,
       ),
       body: new ActiveComponent(

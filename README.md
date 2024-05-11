@@ -4,8 +4,14 @@ A new Flutter project.
 
 ## Getting Started
 
-Video demo Phasing 2:
+Video demo 
 
-Part 1: https://www.youtube.com/watch?v=81i0COzMSbc
+Phasing 1: https://youtu.be/OZlh9wX5saU
 
-Part 2: https://youtu.be/nGXJO00n2ag
+Phasing 2:
+- Part 1: https://youtu.be/81i0COzMSbc
+- Part 2: https://youtu.be/nGXJO00n2ag
+
+Phasing 3: https://youtu.be/Oa3fVRRIzIM
+
+Phasing 4: https://youtu.be/LDXQ13naao8

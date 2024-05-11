@@ -2,8 +2,10 @@ import 'package:carea/commons/constants.dart';
 import 'package:carea/commons/images.dart';
 import 'package:carea/main.dart';
 import 'package:carea/model/proposal.model.dart';
+import 'package:carea/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:carea/commons/route_transition.dart';
 
 class SubmittedProposalWidget extends StatefulWidget {
   ProposalModel data;
@@ -132,16 +134,22 @@ class _SubmittedProposalWidgetState extends State<SubmittedProposalWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(createRoute(ChatScreen(
+                      name: this.widget.data.studentName,
+                      projectId: this.widget.data.id.toInt(),
+                      senderId: 1)));
+                },
                 child: Text("Message", style: boldTextStyle(color: grey)),
               ),
               if (widget.data.hireStatus != HIRE_STATUS.hired)
                 ElevatedButton(
-                  onPressed: widget.data.hireStatus == HIRE_STATUS.sent_hire_status
-                      ? null
-                      : () {
-                          _onHireHandleBtn(context);
-                        },
+                  onPressed:
+                      widget.data.hireStatus == HIRE_STATUS.sent_hire_status
+                          ? null
+                          : () {
+                              _onHireHandleBtn(context);
+                            },
                   child: Text(
                       widget.data.hireStatus == HIRE_STATUS.sent_hire_status
                           ? "Sent hired offer"

@@ -1,4 +1,5 @@
 // Date Handler Class
+import 'package:carea/main.dart';
 import 'package:intl/intl.dart';
 
 class DateHandler {
@@ -36,11 +37,15 @@ class DateHandler {
   static String getDateTimeDifference(DateTime dateTime) {
     Duration difference = DateTime.now().difference(dateTime);
     if (difference.inDays > 0) {
-      return '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} ago';
+      return '${difference.inDays} ${difference.inDays == 1 ? appStore.isVi ? 'ngày' : 'day' : appStore.isVi ? 'ngày' : 'days'} ${appStore.isVi ? 'trước' : 'ago'}';
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} hours ago';
+      return appStore.isVi
+          ? '${difference.inHours} giờ trước'
+          : '${difference.inHours} hours ago';
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minutes ago';
+      return appStore.isVi
+          ? '${difference.inMinutes} phút trước'
+          : '${difference.inMinutes} minutes ago';
     } else {
       return 'Just now';
     }
