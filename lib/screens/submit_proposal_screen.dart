@@ -106,7 +106,7 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
         // throw Exception('Failed to login');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Invalid password"),
+            content: Text("Something wrong now"),
           ),
         );
       }

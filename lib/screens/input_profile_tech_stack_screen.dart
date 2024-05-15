@@ -747,13 +747,17 @@ class _InputProfileTechStackScreenState
 
     log({
       "languages": languageList
-          .map((item) =>
-              {"languageName": item.languageName, "level": item.level})
+          .map((item) => {
+                "id": languageList.indexOf(item),
+                "languageName": item.languageName,
+                "level": item.level
+              })
           .toList()
     });
     log({
       "education": educationList
           .map((item) => {
+                "id": educationList.indexOf(item),
                 "schoolName": item.schoolName,
                 "startYear": item.startYear,
                 "endYear": item.endYear
@@ -785,6 +789,7 @@ class _InputProfileTechStackScreenState
                   'Authorization': 'Bearer ' + authStore.token.toString(),
                 },
                 body: jsonEncode({
+                  "fullname": profi.user!.fullName,
                   "techStackId": selectedValue?.id,
                   "skillSets": _multiSelectController.selectedOptions
                       .map((item) => item.value)
@@ -812,8 +817,11 @@ class _InputProfileTechStackScreenState
             },
             body: jsonEncode({
               "languages": languageList
-                  .map((item) =>
-                      {"languageName": item.languageName, "level": item.level})
+                  .map((item) => {
+                        "id": languageList.indexOf(item),
+                        "languageName": item.languageName,
+                        "level": item.level
+                      })
                   .toList(),
             }))
         .then((response) {
@@ -838,6 +846,7 @@ class _InputProfileTechStackScreenState
             body: jsonEncode({
               "education": educationList
                   .map((item) => {
+                        "id": educationList.indexOf(item),
                         "schoolName": item.schoolName,
                         "startYear": item.startYear,
                         "endYear": item.endYear

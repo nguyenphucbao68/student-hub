@@ -163,15 +163,15 @@ class _AllProjectComponentsState extends State<AllProjectComponents> {
   Widget build(BuildContext context) {
     return Consumer<ProfileOb>(builder: (context, profi, child) {
       if (profi.currentRole == UserRole.COMPANY) {
-        // List<Project> projects = projectData.toList();
-        List<Project> projects = [];
-        if (widget.titleProject == "all") {
-          projects = projectData.where((item) => item.typeFlag == 0).toList();
-        } else if (widget.titleProject == "working") {
-          projects = projectData.where((item) => item.typeFlag == 1).toList();
-        } else if (widget.titleProject == "archieved") {
-          projects = projectData.where((item) => item.typeFlag == 2).toList();
-        }
+        List<Project> projects = projectData.toList();
+        // List<Project> projects = [];
+        // if (widget.titleProject == "all") {
+        //   projects = projectData.where((item) => item.typeFlag == 0).toList();
+        // } else if (widget.titleProject == "working") {
+        //   projects = projectData.where((item) => item.typeFlag == 1).toList();
+        // } else if (widget.titleProject == "archieved") {
+        //   projects = projectData.where((item) => item.typeFlag == 2).toList();
+        // }
         return ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
