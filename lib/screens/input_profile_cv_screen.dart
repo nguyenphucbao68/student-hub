@@ -26,6 +26,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
   late AuthProvider authStore;
   late ProfileOb profi;
   bool _isloading = false;
+  bool _isHavingLeading = false;
 
   @override
   Future<void> didChangeDependencies() async {
@@ -42,10 +43,13 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
     log('arg');
     log(arguments["automaticallyImplyLeading"]);
 
+    setState(() {
+      _isHavingLeading = arguments["automaticallyImplyLeading"] != null;
+    });
+
     return Scaffold(
       appBar: commonAppBarWidget(context,
-          automaticallyImplyLeading:
-              arguments["automaticallyImplyLeading"] ?? false),
+          automaticallyImplyLeading: _isHavingLeading),
       body: Container(
           padding: EdgeInsets.all(20),
           height: context.height(),
@@ -229,7 +233,7 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
       var requestTranscript = await http.MultipartRequest(
         'PUT',
         Uri.parse(AppConstants.BASE_URL +
-            "/profile/student/${profi.user?.student?.id}/resume"),
+            "/profile/student/${profi.user?.student?.id}/transcript"),
       );
       requestTranscript.files
           .add(await http.MultipartFile.fromPath('file', _fileCV!.path!));
@@ -257,39 +261,48 @@ class _InputProfileCVScreenState extends State<InputProfileCVScreen> {
   }
 
   void _handleShowDialog() {
-    HomeScreen().launch(context, isNewTask: true);
+    log({"id": profi.user?.student?.id});
+    if (!_isHavingLeading) {
+      HomeScreen().launch(context, isNewTask: true);
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: 10.0, left: 20.0, right: 20.0, bottom: 15.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Welcome",
-                    style: boldTextStyle(size: 14),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                      "Welcome to StudentHub, a marketplace to connect Student <> Real-world projects"),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("Next", style: boldTextStyle(color: black)),
-                  ),
-                ],
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: 10.0, left: 20.0, right: 20.0, bottom: 15.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Welcome",
+                      style: boldTextStyle(size: 14),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                        "Welcome to StudentHub, a marketplace to connect Student <> Real-world projects"),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Next", style: boldTextStyle(color: black)),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Your documents are uploaded"),
+        ),
+      );
+    }
   }
 }

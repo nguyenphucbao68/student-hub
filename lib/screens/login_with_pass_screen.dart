@@ -104,6 +104,7 @@ class _LoginWithPassScreenState extends State<LoginWithPassScreen> {
             if (response.statusCode == 200) {
               var user = jsonDecode(response.body)["result"];
               log("Data" + user.toString());
+              
               observer.login(data['result']['token']);
 
               if (user['roles'].contains(0) && user['student'] == null) {

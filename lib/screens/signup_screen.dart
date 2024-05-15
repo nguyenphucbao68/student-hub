@@ -35,7 +35,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode focusName = FocusNode();
   FocusNode focusPassword = FocusNode();
 
-  bool isIconTrue = false;
+  bool isIconTrue = true;
+  bool isLoading = false;
 
   // declare userSignupStore
   @override
@@ -46,6 +47,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _signup() async {
     // if (_formKey.currentState!.validate()) {
+    setState(() {
+      isLoading = true;
+    });
     final email = _emailController.text;
     final password = _passwordController.text;
     final name = _nameController.text;
@@ -99,6 +103,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
           },
         );
 
+        // if (auth.authSignUp == UserRole.STUDENT) {
+        //   http.post(Uri.parse(AppConstants.BASE_URL + '/profile/student'),
+        //       headers: <String, String>{
+        //         'Content-Type': 'application/json; charset=UTF-8',
+        //       },
+        //       body: jsonEncode({
+        //         "techStackId": 1
+        //       })).then((value) {
+        //         log('Student create successfully');
+        //       });
+        // }
+
         log("Data" + data.toString());
       } else {
         // If the server returns an error response, then throw an exception.
@@ -115,6 +131,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     });
     // }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -268,7 +287,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       backgroundColor:
                           appStore.isDarkModeOn ? cardDarkColor : black,
                     ),
-                    child: Text('Sign Up', style: boldTextStyle(color: white)),
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                            color: white,
+                          )
+                        : Text('Sign Up', style: boldTextStyle(color: white)),
                   ),
                 ),
                 //Divider

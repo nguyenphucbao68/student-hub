@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/model/experience.dart';
+import 'package:carea/model/user_info.dart';
 import 'package:carea/screens/input_profile_cv_screen.dart';
 import 'package:carea/store/profile_ob.dart';
 import 'package:flutter/material.dart';
@@ -62,10 +63,17 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
   bool _isLoading = false;
 
   @override
-  void didChangeDependencies() {
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
     profi = Provider.of<ProfileOb>(context);
-    super.didChangeDependencies();
+    init();
+  }
+
+  void init() async {
+    if (profi.user?.student == null) {
+      await initData();
+    }
   }
 
   @override
@@ -527,6 +535,8 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
           .toList()
     }));
 
+    log({"Tokenn": authStore.token.toString()});
+
     await http
         .put(
             Uri.parse(AppConstants.BASE_URL +
@@ -540,6 +550,7 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
                   .asMap()
                   .entries
                   .map((entry) => {
+                        "id": entry.key,
                         "title": entry.value.title,
                         "startMonth": entry.value.startMonth,
                         "endMonth": entry.value.endMonth,
@@ -552,6 +563,24 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
                   .toList()
             }))
         .then((response) {
+      log({"uid": profi.user?.student?.id});
+      log({
+        "data_send": projectList
+            .asMap()
+            .entries
+            .map((entry) => {
+                  "id": entry.key,
+                  "title": entry.value.title,
+                  "startMonth": entry.value.startMonth,
+                  "endMonth": entry.value.endMonth,
+                  "description": entry.value.description,
+                  "skillSets": _multiSelectControllerList[entry.key]
+                      .selectedOptions
+                      .map((item) => item.value)
+                      .toList()
+                })
+            .toList()
+      });
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -559,11 +588,40 @@ class _InputProfileExperienceState extends State<InputProfileExperience> {
           ),
         );
         InputProfileCVScreen().launch(context, isNewTask: true);
+      } else if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Can't update experience. Something went wrong"),
+          ),
+        );
       }
     });
 
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  Future<void> initData() async {
+    await http.get(
+      Uri.parse(AppConstants.BASE_URL + '/auth/me'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + authStore.token.toString(),
+      },
+    ).then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        log('Fetch data: ' + data.toString());
+        if (data['result'] != null) {
+          profi.setUser(User().parse(data['result']));
+          if (profi.currentRole == null ||
+              !data['result']['roles']
+                  .contains(profi.currentRole == UserRole.STUDENT ? 1 : 0))
+            profi.setUserCurrentRole(data['result']['roles'][0]);
+          setState(() {});
+        }
+      }
     });
   }
 }
