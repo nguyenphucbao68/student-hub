@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:carea/commons/widgets.dart';
 import 'package:carea/constants/app_constants.dart';
 import 'package:carea/main.dart';
-import 'package:carea/model/skill_set.dart';
 import 'package:carea/screens/input_profile_experience_screen.dart';
 import 'package:carea/store/authprovider.dart';
 import 'package:carea/store/profile_ob.dart';
@@ -69,6 +68,16 @@ class _InputProfileTechStackScreenState
     super.didChangeDependencies();
     authStore = Provider.of<AuthProvider>(context);
     profi = Provider.of<ProfileOb>(context);
+
+    if (profi.user?.student != null) {
+      setState(() {
+        languageList.clear();
+        languageList.addAll(profi.user!.student!.languages!.toList());
+
+        educationList.clear();
+        educationList.addAll(profi.user!.student!.educations!.toList());
+      });
+    }
   }
 
   @override
@@ -738,12 +747,30 @@ class _InputProfileTechStackScreenState
 
   Future<void> _handleSubmitForm() async {
     log(_multiSelectController.selectedOptions);
-    log({"techStackId": selectedValue?.id});
-    log({
-      "skillSets": _multiSelectController.selectedOptions
-          .map((item) => item.value)
-          .toList()
-    });
+    // log({"techStackId": selectedValue?.id});
+    // log({
+    //   "skillSets": _multiSelectController.selectedOptions
+    //       .map((item) => item.value)
+    //       .toList()
+    // });
+
+    // log({
+    //   "languages": languageList
+    //       .map((item) =>
+    //           {"languageName": item.languageName, "level": item.level})
+    //       .toList()
+    // });
+    // log({
+    //   "education": educationList
+    //       .map((item) => {
+    //             "schoolName": item.schoolName,
+    //             "startYear": item.startYear,
+    //             "endYear": item.endYear
+    //           })
+    //       .toList()
+    // });
+
+    log({'token_1': authStore.token.toString()});
 
     log({
       "languages": languageList
@@ -764,6 +791,8 @@ class _InputProfileTechStackScreenState
               })
           .toList()
     });
+
+    var studentId;
     await http
         .post(Uri.parse(AppConstants.BASE_URL + "/profile/student"),
             headers: <String, String>{
@@ -777,9 +806,12 @@ class _InputProfileTechStackScreenState
                   .toList()
             }))
         .then((response) {
-      if (response.statusCode == 422) {
+      if (response.statusCode == 201) {
+        studentId = jsonDecode(response.body)["result"]["id"];
+        authStore.login(authStore.token.toString());
+      } else if (response.statusCode == 422) {
         // Role  student existed
-        log({"studentId": profi.user!.student?.id});
+        studentId = profi.user!.student?.id;
         http
             .put(
                 Uri.parse(AppConstants.BASE_URL +
@@ -797,6 +829,7 @@ class _InputProfileTechStackScreenState
                 }))
             .then((response) {
           if (response.statusCode != 200) {
+            log('fail: ${response.reasonPhrase}');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text("Can't update profile. Something went wrong"),
@@ -807,10 +840,12 @@ class _InputProfileTechStackScreenState
       }
     });
 
+    log({"Student_ID": studentId});
+
     await http
         .put(
             Uri.parse(AppConstants.BASE_URL +
-                "/language/updateByStudentId/${profi.user!.student?.id}"),
+                "/language/updateByStudentId/${studentId}"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': 'Bearer ' + authStore.token.toString(),
@@ -838,7 +873,7 @@ class _InputProfileTechStackScreenState
     await http
         .put(
             Uri.parse(AppConstants.BASE_URL +
-                "/education/updateByStudentId/${profi.user!.student?.id}"),
+                "/education/updateByStudentId/${studentId}"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Authorization': 'Bearer ' + authStore.token.toString(),

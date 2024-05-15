@@ -233,51 +233,6 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                       size: 18, color: context.iconColor),
             ),
             (profi.currentRole == UserRole.STUDENT &&
-                    profi.user!.company == null)
-                ? SettingItemWidget(
-                    leading: Icon(Icons.person_2, color: context.iconColor),
-                    title: 'Create your own company',
-                    titleTextStyle: boldTextStyle(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileInputNhapScreen()),
-                      );
-                    },
-                    trailing: showInfoStudentRow
-                        ? Transform.rotate(
-                            angle: 3.14 / 2, // Độ xoay 90 độ
-                            child: Icon(Icons.arrow_forward_ios_rounded,
-                                size: 18, color: context.iconColor))
-                        : Icon(Icons.arrow_forward_ios_rounded,
-                            size: 18, color: context.iconColor),
-                  )
-                : SizedBox(),
-            (profi.currentRole == UserRole.COMPANY &&
-                    profi.user!.student == null)
-                ? SettingItemWidget(
-                    leading: Icon(Icons.person_2, color: context.iconColor),
-                    title: 'Create your student profile',
-                    titleTextStyle: boldTextStyle(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                InputProfileTechStackOnlyScreen()),
-                      );
-                    },
-                    trailing: showInfoStudentRow
-                        ? Transform.rotate(
-                            angle: 3.14 / 2, // Độ xoay 90 độ
-                            child: Icon(Icons.arrow_forward_ios_rounded,
-                                size: 18, color: context.iconColor))
-                        : Icon(Icons.arrow_forward_ios_rounded,
-                            size: 18, color: context.iconColor),
-                  )
-                : SizedBox(),
-            (profi.currentRole == UserRole.STUDENT &&
                     profi.user!.student != null)
                 ? SizedBox(
                     width: 340,
@@ -336,6 +291,51 @@ class _SwitchAccountScreenState extends State<SwitchAccountScreen> {
                             ],
                           )
                         : null,
+                  )
+                : SizedBox(),
+            (profi.currentRole == UserRole.STUDENT &&
+                    profi.user!.company == null)
+                ? SettingItemWidget(
+                    leading: Icon(Icons.person_2, color: context.iconColor),
+                    title: 'Create your own company',
+                    titleTextStyle: boldTextStyle(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileInputNhapScreen()),
+                      );
+                    },
+                    trailing: showInfoStudentRow
+                        ? Transform.rotate(
+                            angle: 3.14 / 2, // Độ xoay 90 độ
+                            child: Icon(Icons.arrow_forward_ios_rounded,
+                                size: 18, color: context.iconColor))
+                        : Icon(Icons.arrow_forward_ios_rounded,
+                            size: 18, color: context.iconColor),
+                  )
+                : SizedBox(),
+            (profi.currentRole == UserRole.COMPANY &&
+                    profi.user!.student == null)
+                ? SettingItemWidget(
+                    leading: Icon(Icons.person_2, color: context.iconColor),
+                    title: 'Create your student profile',
+                    titleTextStyle: boldTextStyle(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                InputProfileTechStackOnlyScreen()),
+                      );
+                    },
+                    trailing: showInfoStudentRow
+                        ? Transform.rotate(
+                            angle: 3.14 / 2, // Độ xoay 90 độ
+                            child: Icon(Icons.arrow_forward_ios_rounded,
+                                size: 18, color: context.iconColor))
+                        : Icon(Icons.arrow_forward_ios_rounded,
+                            size: 18, color: context.iconColor),
                   )
                 : SizedBox(),
             SettingItemWidget(
